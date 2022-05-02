@@ -1,4 +1,4 @@
-Clone, then **Go to the Main folder, and run Main.sln**
+Clone and **Go to the Main folder, and run Main.sln**
 <br/>
 <br/>
 <br/>
