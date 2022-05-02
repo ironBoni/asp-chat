@@ -21,11 +21,34 @@ namespace Models.DataServices {
                 new Message(3, "text", "It's my favorite song :)", "dvir", new DateTime(2021, 4, 8, 12, 30, 0))
             }),
 
-            new Chat(3, new List<string>{ "ron", "dan" }, new List<Message>
+            new Chat(4, new List<string>{ "ron", "dan" }, new List<Message>
             {
                 new Message(1, "text", "Dan, let's go to the mall", "ron", new DateTime(2021, 4, 6, 10, 12, 0)),
                 new Message(2, "text", "Ok bro. Nice idea Ron", "dan", new DateTime(2021, 4, 6, 10, 20, 0)),
                 new Message(3, "text", "Lovely :)", "dvir", new DateTime(2021, 4, 8, 12, 30, 0))
+            }),
+            new Chat(5, new List<string>{ "ron", "idan" }, new List<Message>
+            {
+                new Message(1, "text", "Idan, how was your semester?", "ron", new DateTime(2021, 4, 5, 10, 21, 0)),
+                new Message(2, "text", "It was good. Thanks Ron.", "idan", new DateTime(2021, 4, 5, 10, 22, 0))
+            }),
+            new Chat(6, new List<string>{ "ron", "shlomo" }, new List<Message>
+            {
+                new Message(1, "text", "Shlomo, let's go to eat pizza", "ron", new DateTime(2021, 4, 6, 10, 40, 0)),
+                new Message(2, "text", "Fine Ron, nice idea", "shlomo", new DateTime(2021, 4, 6, 10, 52, 0)),
+                new Message(3, "text", "Ron, I like it!", "shlomo", new DateTime(2021, 4, 8, 12, 30, 0))
+            }),
+            new Chat(7, new List<string>{ "noam", "dvir" }, new List<Message>
+            {
+                new Message(1, "text","Hey Dvir, how are you?", "noam", new DateTime(2021, 4, 6, 12, 5, 0)),
+                new Message(2, "text", "I'm great. Thanks Noam!", "dvir", new DateTime(2021, 4, 6, 12, 7, 0)),
+                new Message(2, "text", "I Love it Noam! It's a very nice song! :)", "dvir", new DateTime(2021, 4, 8, 12, 30, 0))
+            }),
+            new Chat(8, new List<string>{ "noam", "dan" }, new List<Message>
+            {
+                new Message(1, "text","Hey, how are you?", "noam", new DateTime(2021, 4, 6, 12, 5, 0)),
+                new Message(2, "text", "I'm great. Thanks!", "dan", new DateTime(2021, 4, 6, 12, 7, 0)),
+                new Message(2, "text", "Always smile! :)", "noam", new DateTime(2021, 4, 8, 12, 30, 0))
             }),
         };
 
