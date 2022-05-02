@@ -1,4 +1,4 @@
-** Go to the Main folder, and run Main.sln **
+**Go to the Main folder, and run Main.sln **
 
 **Packages in use:** react-router-dom, react-bootstrap.  
 
