@@ -14,5 +14,12 @@ namespace Models {
 
         [Required(ErrorMessage = "Please enter the messages.")]
         public List<Message> Messages { get; set; }
+
+        public Chat(int id, List<string> participants, List<Message> messages)
+        {
+            Id = id;
+            Participants = participants;
+            Messages = messages;
+        }
     }
 }

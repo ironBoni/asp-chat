@@ -24,5 +24,23 @@ namespace Models {
         public DateTime WrittenIn { get; set; }
 
         public string FileName { get; set; }
+
+        public Message(int id, string type, string text, string senderUsername, DateTime writtenIn, string fileName)
+        {
+            Id = id;
+            Type = type;
+            SenderUsername = senderUsername;
+            WrittenIn = writtenIn;
+            FileName = fileName;
+        }
+
+        public Message(int id, string type, string text, string senderUsername, DateTime writtenIn)
+        {
+            Id = id;
+            Type = type;
+            SenderUsername = senderUsername;
+            WrittenIn = writtenIn;
+            FileName = "";
+        }
     }
 }
