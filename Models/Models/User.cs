@@ -17,5 +17,13 @@ namespace Models {
         public string Password { get; set; }
 
         public string ProfileImage { get; set; }
+
+        public User(string username, string nickname, string password, string profileImage)
+        {
+            Username = username;
+            Nickname = nickname;
+            Password = password;
+            ProfileImage = profileImage;
+        }
     }
 }
