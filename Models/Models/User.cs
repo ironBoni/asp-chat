@@ -18,12 +18,25 @@ namespace Models {
 
         public string ProfileImage { get; set; }
 
+        [Required(ErrorMessage ="Please enter server")]
+        public string Server { get; set; }
+
+        public User(string username, string nickname, string password, string profileImage, string server)
+        {
+            Username = username;
+            Nickname = nickname;
+            Password = password;
+            ProfileImage = profileImage;
+            Server = server;
+        }
+
         public User(string username, string nickname, string password, string profileImage)
         {
             Username = username;
             Nickname = nickname;
             Password = password;
             ProfileImage = profileImage;
+            Server = "http://localhost:5186/";
         }
     }
 }
