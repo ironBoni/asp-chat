@@ -14,6 +14,6 @@ namespace AspNetMvc.Data
         {
         }
 
-        public DbSet<AspNetMvc.Models.Rating> Rating { get; set; }
+       // public DbSet<AspNetMvc.Models.Rating> Rating { get; set; }
     }
 }
