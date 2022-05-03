@@ -1,4 +1,5 @@
 ﻿using AspWebApi.Models;
+using AspWebApi.Models.Contacts;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.DataServices;
@@ -21,13 +22,46 @@ namespace AspWebApi.Controllers {
         }
 
         [HttpGet]
-        [Route("/api/contacts/{id}/messages/{id2}")]
-        public IActionResult GetMessagesByContact(string id, string id2)
+        [Route("/api/contacts/{id}/messages")]
+        public IActionResult GetMessagesByContact(string id)
         {
-            var messages = chatService.GetAllMessages(id, id2);
+            var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             return Ok(messages);
         }
+
+        [HttpGet]
+        [Route("/api/contacts/{id}/messages/{id2}")]
+        public IActionResult GetMessagesByContact(string id, int id2)
+        {
+            var messages = chatService.GetAllMessages(id, Current.Username);
+            if (messages == null) return BadRequest();
+            return Ok(messages.Find(m => m.Id == id2));
+        }
+
+        [HttpDelete]
+        [Route("/api/contacts/{id}/messages/{id2}")]
+        public IActionResult RemoveMessageById(string id, int id2)
+        {
+            var messages = chatService.GetAllMessages(id, Current.Username);
+            if (messages == null) return BadRequest();
+            return StatusCode(204, messages.Remove(messages.Find(m => m.Id == id2)));
+
+        }
+
+        [HttpPut]
+        [Route("/api/contacts/{id}/messages/{id2}")]
+        public IActionResult UpdateMessageById(string id, int id2, [FromBody] PutMessageRequest req)
+        {
+            var messages = chatService.GetAllMessages(id, Current.Username);
+            if (messages == null) return BadRequest();
+            messages.Remove(messages.Find(m => m.Id == id2));
+            var chat = chatService.GetChatByParticipants(id, Current.Username);
+            var msgId = chatService.GetNewMsgIdInChat(chat.Id);
+            messages.Add(new Message(msgId, req.Content, id));
+            return StatusCode(201);
+        }
+
         // GET: api/<ContactsController>
         [HttpGet]
         public IActionResult Get()
@@ -51,6 +85,7 @@ namespace AspWebApi.Controllers {
 
         // POST api/<ContactsController>
         [HttpPost]
+        [Route("/api/contacts/{id}/messages")]
         public IActionResult Post([FromBody] ContactRequest req)
         {
             var isAddOk = userService.AddContact(req.Id, req.Name, req.Server);
