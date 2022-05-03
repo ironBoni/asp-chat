@@ -53,14 +53,23 @@ namespace AspWebApi.Controllers {
 
         // PUT api/<ContactsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(string contactId, [FromBody] PutContactRequest request)
         {
+            var contact = userService.GetContacts(Current.Username).Find(c => c.Id == contactId);
+            if (contact == null)
+                return StatusCode(400);
+
+            contact.Name = request.Name;
+            contact.Server = request.Server;
+            return StatusCode(204);
         }
 
         // DELETE api/<ContactsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{username}")]
+        public void Delete(int username)
         {
+            var contact = userService.RemoveContact(username);
+
         }
     }
 }

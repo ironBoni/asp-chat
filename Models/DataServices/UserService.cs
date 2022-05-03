@@ -30,7 +30,7 @@ namespace Models.DataServices {
             var contactsByMessages = new List<Contact>();
             var chats = chatsService.GetAll();
             var chatsWithHim = chats.Where(chat => chat.Participants.Contains(username));
-          
+
             var friends = chatsWithHim.Select(chat => chat.Participants.Find(participant => participant != username));
 
             foreach (var fUsername in friends)
@@ -46,7 +46,7 @@ namespace Models.DataServices {
 
             foreach (var contact in contactsByMessages)
             {
-                if(!currentUser.Contacts.Contains(contact))
+                if (!currentUser.Contacts.Contains(contact))
                     currentUser.Contacts.Add(contact);
             }
         }
@@ -76,7 +76,7 @@ namespace Models.DataServices {
 
             var newChat = new Chat(new List<string>() {
                 username, friendToAdd});
-            
+
             var friend = users.Find(user => user.Username == friendToAdd);
             // then add it
             if (friend == null)
@@ -125,6 +125,32 @@ namespace Models.DataServices {
             user.Password = entity.Password;
             user.ProfileImage = entity.ProfileImage;
             return true;
+        }
+
+        public bool RemoveContact(string userToRemove)
+        {
+            var username = Current.Username;
+            var currentUser = users.Find(user => user.Username == Current.Username);
+            var currentContacts = GetContacts(username);
+            if (currentContacts == null) return false;
+
+            // You cannot add yourself to the chat list.
+            if (username == Current.Username) return false;
+
+            // You cannot add someone that is already in your chats.
+            if (!currentContacts.Any(user => user.Id == userToRemove)) return false;
+
+            var contactToRemove = currentContacts.Find(c => c.Id == userToRemove);
+            if (contactToRemove == null) return false;
+
+            currentUser.Contacts.Remove(contactToRemove);
+
+            var chatToRemove = chatsService.GetAll().Find(
+                c => c.Participants.Contains(userToRemove) &&
+                c.Participants.Contains(Current.Username));
+
+            if (chatToRemove == null) return false;
+            return chatsService.Delete(chatToRemove.Id);
         }
     }
 }
