@@ -1,3 +1,10 @@
+Clone and **Go to the Main folder, and run Main.sln**
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 **Packages in use:** react-router-dom, react-bootstrap.  
 
 1. in CMD in path of the project,
