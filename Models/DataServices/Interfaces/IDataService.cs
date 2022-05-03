@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models {
     public interface IDataService<T, TKey> {
-        IEnumerable<T> GetAll();
+        List<T> GetAll();
         T GetById(TKey id);
         // Create, read, update, remove
         bool Create(T entity);

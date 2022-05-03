@@ -19,7 +19,7 @@ namespace AspWebApi.Controllers {
 
         // GET: api/<ContactsController>
         [HttpGet]
-        public IEnumerable<User> Get()
+        public List<Contact> Get()
         {
             return userService.GetContacts(Current.Username);
         }

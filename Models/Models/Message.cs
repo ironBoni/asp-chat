@@ -9,18 +9,18 @@ namespace Models {
     public class Message {
         [Key]
         public int Id { get; set; }
-        
+
         [Required]
         [MaxLength(10)]
         public string Type { get; set; }
-        
-        [Required(ErrorMessage ="Please enter the message text")]
+
+        [Required(ErrorMessage = "Please enter the message text")]
         public string Text { get; set; }
-        
-        [Required(ErrorMessage ="Please enter the sender username")]
+
+        [Required(ErrorMessage = "Please enter the sender username")]
         public string SenderUsername { get; set; }
-        
-        [Required(ErrorMessage ="Please enter when the message was written in")]
+
+        [Required(ErrorMessage = "Please enter when the message was written in")]
         public DateTime WrittenIn { get; set; }
 
         public string FileName { get; set; }
@@ -29,18 +29,13 @@ namespace Models {
         {
             Id = id;
             Type = type;
+            Text = text;
             SenderUsername = senderUsername;
             WrittenIn = writtenIn;
             FileName = fileName;
         }
 
         public Message(int id, string type, string text, string senderUsername, DateTime writtenIn)
-        {
-            Id = id;
-            Type = type;
-            SenderUsername = senderUsername;
-            WrittenIn = writtenIn;
-            FileName = "";
-        }
+            : this(id, type, text, senderUsername, writtenIn, "") { }
     }
 }

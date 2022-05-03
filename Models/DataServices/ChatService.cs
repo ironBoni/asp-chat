@@ -110,7 +110,7 @@ namespace Models.DataServices {
             return true;
         }
 
-        public IEnumerable<Chat> GetAll()
+        public List<Chat> GetAll()
         {
             return chats.ToList();
         }

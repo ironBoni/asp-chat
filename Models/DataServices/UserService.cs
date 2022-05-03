@@ -1,4 +1,5 @@
 ﻿using Models.DataServices.Interfaces;
+using Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,16 +24,27 @@ namespace Models.DataServices {
         };
 
         private static IDataService<Chat, int> chatsService = new ChatService();
-        public IEnumerable<User> GetContacts(string username)
+        public List<Contact> GetContacts(string username)
         {
-            var contacts = new List<User>();
+            var contacts = new List<Contact>();
             var chats = chatsService.GetAll();
             var chatsWithHim = chats.Where(chat => chat.Participants.Contains(username));
             if (chatsWithHim == null)
                 return contacts;
 
             var friends = chatsWithHim.Select(chat => chat.Participants.Find(participant => participant != username));
-            return friends.Select(friendUsername => users.Find(user => user.Username == friendUsername));
+            
+            foreach(var fUsername in friends)
+            {
+                var fUser = users.Find(user => user.Username == fUsername); 
+                var chat = chats.Find(chat => chat.Participants.Contains(username) &&
+                                                       chat.Participants.Contains(fUsername));
+                var lastTime = chat.Messages.Max(message => message.WrittenIn);
+                var lastMsg = chat.Messages.Find(message => message.WrittenIn == lastTime);
+                var contact = new Contact(fUsername, fUser.Nickname, fUser.Server, lastMsg.Text, lastTime);
+                contacts.Add(contact);
+            }
+            return contacts;
         }
 
         public bool AddContact(string username, string friendToAdd)
@@ -46,7 +58,7 @@ namespace Models.DataServices {
                 return false;
 
             // You cannot add someone that is already in your chats.
-            if (currentContacts.Any(user => user.Username == friendToAdd))
+            if (currentContacts.Any(user => user.Id == friendToAdd))
                 return false;
 
             var newChat = new Chat(new List<string>() {
@@ -70,7 +82,7 @@ namespace Models.DataServices {
             return true;
         }
 
-        public IEnumerable<User> GetAll()
+        public List<User> GetAll()
         {
             return users.ToList();
         }
