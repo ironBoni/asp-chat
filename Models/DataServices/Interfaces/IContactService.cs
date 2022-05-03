@@ -9,6 +9,7 @@ namespace Models.DataServices.Interfaces {
     public interface IContactService {
         List<Contact> GetContacts(string username);
         bool AddContact(string id, string name, string server);
+        bool AcceptInvitation(string from, string server);
         bool RemoveContact(string username);
     }
 }

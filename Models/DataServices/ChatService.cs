@@ -148,5 +148,17 @@ namespace Models.DataServices {
             chat.Messages.Add(message);
             return true;
         }
+
+        public Chat GetChatByParticipants(string username, string other)
+        {
+            return chats.Find(c => c.Participants.Contains(username) && c.Participants.Contains(other));
+        }
+
+        public List<Message> GetAllMessages(string username, string other)
+        {
+            var chat = GetChatByParticipants(username, other);
+            if(chat == null) return null;
+            return chat.Messages;
+        }
     }
 }

@@ -152,5 +152,13 @@ namespace Models.DataServices {
             if (chatToRemove == null) return false;
             return chatsService.Delete(chatToRemove.Id);
         }
+
+        public bool AcceptInvitation(string from, string server)
+        {
+            var userToAdd = users.Find(u => u.Username == from);
+            string name = "";
+            if (userToAdd == null) name = userToAdd.Username;
+            return AddContact(from, name, server);
+        }
     }
 }

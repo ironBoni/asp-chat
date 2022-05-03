@@ -13,12 +13,21 @@ namespace AspWebApi.Controllers {
     [ApiController]
     public class ContactsController : ControllerBase {
         private readonly IUserService userService;
-
+        private readonly IChatService chatService;
         public ContactsController()
         {
             userService = new UserService();
+            chatService = new ChatService();
         }
 
+        [HttpGet]
+        [Route("/api/contacts/{id}/messages/{id2}")]
+        public IActionResult GetMessagesByContact(string id, string id2)
+        {
+            var messages = chatService.GetAllMessages(id, id2);
+            if (messages == null) return BadRequest();
+            return Ok(messages);
+        }
         // GET: api/<ContactsController>
         [HttpGet]
         public IActionResult Get()
