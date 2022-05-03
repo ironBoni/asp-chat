@@ -25,10 +25,10 @@ namespace AspWebApi.Controllers {
         }
 
         // GET api/<ContactsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{username}")]
+        public Contact Get(string username)
         {
-            return "value";
+            return userService.GetContacts(Current.Username).Find(contact => contact.Id == username);
         }
 
         // POST api/<ContactsController>
