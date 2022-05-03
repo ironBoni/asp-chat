@@ -40,6 +40,20 @@ namespace AspWebApi.Controllers {
             return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent));
         }
 
+        [HttpPost]
+        [Route("/api/contacts/{id}/messages")]
+        public IActionResult SendMessage(string id, [FromBody] SendMessageRequest req)
+        {
+            var messages = chatService.GetAllMessages(id, Current.Username);
+            if (messages == null) return BadRequest();
+            var chat = chatService.GetChatByParticipants(id, Current.Username);
+            var msgId = chatService.GetNewMsgIdInChat(chat.Id);
+            var message = new Message(msgId, req.Content, id, true);
+            var success = chatService.AddMessage(chat.Id, message);
+            if(!success) return BadRequest("The message could not be added.");
+            return StatusCode(201);
+        }
+
         [HttpDelete]
         [Route("/api/contacts/{id}/messages/{id2}")]
         public IActionResult RemoveMessageById(string id, int id2)
@@ -57,10 +71,8 @@ namespace AspWebApi.Controllers {
         {
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
-            messages.Remove(messages.Find(m => m.Id == id2));
-            var chat = chatService.GetChatByParticipants(id, Current.Username);
-            var msgId = chatService.GetNewMsgIdInChat(chat.Id);
-            messages.Add(new Message(msgId, req.Content, id));
+            var message = messages.Find(m => m.Id == id2);
+            message.Text = req.Content;
             return StatusCode(201);
         }
 
