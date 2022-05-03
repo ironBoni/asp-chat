@@ -27,7 +27,7 @@ namespace AspWebApi.Controllers {
         {
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
-            return Ok(messages);
+            return Ok(messages.Select(m => new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent)));
         }
 
         [HttpGet]
@@ -36,7 +36,8 @@ namespace AspWebApi.Controllers {
         {
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
-            return Ok(messages.Find(m => m.Id == id2));
+            var m = messages.Find(m => m.Id == id2);
+            return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent));
         }
 
         [HttpDelete]
@@ -45,7 +46,8 @@ namespace AspWebApi.Controllers {
         {
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
-            return StatusCode(204, messages.Remove(messages.Find(m => m.Id == id2)));
+            messages.Remove(messages.Find(m => m.Id == id2));
+            return StatusCode(204);
 
         }
 
@@ -73,6 +75,18 @@ namespace AspWebApi.Controllers {
             return Ok(result);
         }
 
+        // POST api/<ContactsController>
+        [HttpPost]
+        public IActionResult Post([FromBody] ContactRequest req)
+        {
+            string response;
+            var isAddOk = userService.AddContact(req.Id, req.Name, req.Server, out response);
+            if (!isAddOk)
+                return BadRequest(response);
+
+            return StatusCode(201);
+        }
+
         // GET api/<ContactsController>/5
         [HttpGet("{username}")]
         public IActionResult Get(string username)
@@ -83,23 +97,11 @@ namespace AspWebApi.Controllers {
             return Ok(result);
         }
 
-        // POST api/<ContactsController>
-        [HttpPost]
-        [Route("/api/contacts/{id}/messages")]
-        public IActionResult Post([FromBody] ContactRequest req)
-        {
-            var isAddOk = userService.AddContact(req.Id, req.Name, req.Server);
-            if (isAddOk)
-                return StatusCode(201);
-
-            return Ok();
-        }
-
         // PUT api/<ContactsController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(string contactId, [FromBody] PutContactRequest request)
+        public IActionResult Put(string id, [FromBody] PutContactRequest request)
         {
-            var contact = userService.GetContacts(Current.Username).Find(c => c.Id == contactId);
+            var contact = userService.GetContacts(Current.Username).Find(c => c.Id == id);
             if (contact == null)
                 return StatusCode(400);
 
@@ -110,10 +112,12 @@ namespace AspWebApi.Controllers {
 
         // DELETE api/<ContactsController>/5
         [HttpDelete("{username}")]
-        public void Delete(string username)
+        public IActionResult Delete(string username)
         {
-            var contact = userService.RemoveContact(username);
-
+            string res;
+            var success = userService.RemoveContact(username, out res);
+            if (success) return StatusCode(204);
+            return BadRequest(res);
         }
     }
 }

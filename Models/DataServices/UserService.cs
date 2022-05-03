@@ -58,21 +58,31 @@ namespace Models.DataServices {
             return users.Find(user => user.Username == username).Contacts;
         }
 
-        public bool AddContact(string friendToAdd, string name, string server)
+        public bool AddContact(string friendToAdd, string name, string server, out string response)
         {
             var username = Current.Username;
             var currentUser = users.Find(user => user.Username == Current.Username);
             var currentContacts = GetContacts(username);
+
             if (currentContacts == null)
+            {
+                response = "There are not contacts.";
                 return false;
+            }
 
             // You cannot add yourself to the chat list.
             if (username == friendToAdd)
+            {
+                response = "You cannot add yourself to the chat list";
                 return false;
+            }
 
             // You cannot add someone that is already in your chats.
             if (currentContacts.Any(user => user.Id == friendToAdd))
+            {
+                response = "You cannot add him, because he's already in your chat list.";
                 return false;
+            }
 
             var newChat = new Chat(new List<string>() {
                 username, friendToAdd});
@@ -80,7 +90,10 @@ namespace Models.DataServices {
             var friend = users.Find(user => user.Username == friendToAdd);
             // then add it
             if (friend == null)
+            {
+                response = "The user doesn't exist in the system.";
                 return false;
+            }
 
             friend.Server = server;
 
@@ -88,6 +101,7 @@ namespace Models.DataServices {
             if (!currentUser.Contacts.Contains(newContact))
                 currentUser.Contacts.Add(newContact);
 
+            response = "";
             return chatsService.Create(newChat);
         }
 
@@ -127,21 +141,36 @@ namespace Models.DataServices {
             return true;
         }
 
-        public bool RemoveContact(string userToRemove)
+        public bool RemoveContact(string userToRemove, out string res)
         {
             var username = Current.Username;
             var currentUser = users.Find(user => user.Username == Current.Username);
             var currentContacts = GetContacts(username);
-            if (currentContacts == null) return false;
+            res = "";
+            if (currentContacts == null)
+            {
+                res = "Current Contacts not set.";
+                return false;
+            }
 
-            // You cannot add yourself to the chat list.
-            if (username == Current.Username) return false;
+            if (userToRemove == Current.Username)
+            {
+                res = "You cannot add yourself to the chat list.";
+                return false;
+            }
 
-            // You cannot add someone that is already in your chats.
-            if (!currentContacts.Any(user => user.Id == userToRemove)) return false;
+            if (!currentContacts.Any(user => user.Id == userToRemove))
+            {
+                res = "You cannot add someone that is already in your chats.";
+                return false;
+            }
 
             var contactToRemove = currentContacts.Find(c => c.Id == userToRemove);
-            if (contactToRemove == null) return false;
+            if (contactToRemove == null)
+            {
+                res = "You cannot remove it. It's not one of your contacts.";
+                return false;
+            }
 
             currentUser.Contacts.Remove(contactToRemove);
 
@@ -149,16 +178,21 @@ namespace Models.DataServices {
                 c => c.Participants.Contains(userToRemove) &&
                 c.Participants.Contains(Current.Username));
 
-            if (chatToRemove == null) return false;
+            if (chatToRemove == null)
+            {
+                res = "There is no chat with such participants.";
+                return false;
+            }
+
             return chatsService.Delete(chatToRemove.Id);
         }
 
-        public bool AcceptInvitation(string from, string server)
+        public bool AcceptInvitation(string from, string server, out string response)
         {
             var userToAdd = users.Find(u => u.Username == from);
             string name = "";
             if (userToAdd == null) name = userToAdd.Username;
-            return AddContact(from, name, server);
+            return AddContact(from, name, server, out response);
         }
     }
 }

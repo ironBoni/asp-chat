@@ -14,40 +14,16 @@ namespace AspWebApi.Controllers {
         {
             service = new UserService();
         }
-        // GET: api/<InvitationsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<InvitationsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         // POST api/<InvitationsController>
         [HttpPost]
         public IActionResult Post([FromBody] InvitationRequest req)
         {
 
-            var success = service.AcceptInvitation(req.From, req.Server);
+            string response;
+            var success = service.AcceptInvitation(req.From, req.Server, out response);
             if (success) return StatusCode(201);
-            return BadRequest();
-        }
-
-        // PUT api/<InvitationsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<InvitationsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return BadRequest(response);
         }
     }
 }

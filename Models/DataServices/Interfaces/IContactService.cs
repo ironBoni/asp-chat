@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace Models.DataServices.Interfaces {
     public interface IContactService {
         List<Contact> GetContacts(string username);
-        bool AddContact(string id, string name, string server);
-        bool AcceptInvitation(string from, string server);
-        bool RemoveContact(string username);
+        bool AddContact(string id, string name, string server, out string response);
+        bool AcceptInvitation(string from, string server, out string response);
+        bool RemoveContact(string username, out string res);
     }
 }

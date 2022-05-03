@@ -24,7 +24,7 @@ namespace Models {
         public DateTime WrittenIn { get; set; }
 
         public string FileName { get; set; }
-
+        public bool Sent { get; set; }
         public Message(int id, string type, string text, string senderUsername, DateTime writtenIn, string fileName)
         {
             Id = id;
@@ -33,14 +33,36 @@ namespace Models {
             SenderUsername = senderUsername;
             WrittenIn = writtenIn;
             FileName = fileName;
+            Sent = false;
+        }
+
+        public Message(int id, string type, string text, string senderUsername, DateTime writtenIn, string fileName, bool sent)
+        {
+            Id = id;
+            Type = type;
+            Text = text;
+            SenderUsername = senderUsername;
+            WrittenIn = writtenIn;
+            FileName = fileName;
+            Sent = sent;
         }
 
         public Message(int id, string text, string senderUsername)
-            : this(id,"text", text, senderUsername, DateTime.Now)
+            : this(id, "text", text, senderUsername, DateTime.Now)
         {
+        }
+
+        public Message(int id, string text, string senderUsername, bool sent)
+            : this(id, "text", text, senderUsername, DateTime.Now)
+        {
+            Sent = sent;
         }
 
         public Message(int id, string type, string text, string senderUsername, DateTime writtenIn)
             : this(id, type, text, senderUsername, writtenIn, "") { }
+
+
+        public Message(int id, string type, string text, string senderUsername, DateTime writtenIn, bool sent)
+            : this(id, type, text, senderUsername, writtenIn, "") { Sent = sent; }
     }
 }

@@ -16,20 +16,6 @@ namespace AspWebApi.Controllers {
             service = new ChatService();
         }
 
-        // GET: api/<TransferController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<TransferController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<TransferController>
         [HttpPost]
         public IActionResult Post([FromBody] TransferRequest request)
@@ -44,26 +30,14 @@ namespace AspWebApi.Controllers {
                     request.To
                 });
                 var success = service.Create(chat);
-                if (success) return Ok();
+                if (success) { return Ok(); }
                 else return BadRequest();
             }
 
             var messageId = service.GetNewMsgIdInChat(chat.Id);
-            var addSuccess = service.AddMessage(chat.Id, new Message(messageId, request.Content, request.From));
+            var addSuccess = service.AddMessage(chat.Id, new Message(messageId, request.Content, request.From, true));
             if(!addSuccess) return BadRequest();
             return Ok();
-        }
-
-        // PUT api/<TransferController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<TransferController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
