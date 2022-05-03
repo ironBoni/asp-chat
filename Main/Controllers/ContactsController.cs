@@ -1,83 +1,52 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Models;
+using Models.DataServices;
 using Models.DataServices.Interfaces;
+using Models.Models;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AspWebApi.Controllers {
-    public class ContactsController : Controller {
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ContactsController : ControllerBase {
         private readonly IUserService userService;
-        // GET: ContactsController
-        public ActionResult Index()
+
+        public ContactsController()
         {
-            return View();
+            userService = new UserService();
         }
 
-        // GET: ContactsController/Details/5
-        public ActionResult Details(int id)
+        // GET: api/<ContactsController>
+        [HttpGet]
+        public IEnumerable<User> Get()
         {
-            return View();
+            return userService.GetContacts(Current.Username);
         }
 
-        // GET: ContactsController/Create
-        public ActionResult Create()
+        // GET api/<ContactsController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
         {
-            return View();
+            return "value";
         }
 
-        // POST: ContactsController/Create
+        // POST api/<ContactsController>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public void Post([FromBody] string value)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
-        // GET: ContactsController/Edit/5
-        public ActionResult Edit(int id)
+        // PUT api/<ContactsController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
         {
-            return View();
         }
 
-        // POST: ContactsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // DELETE api/<ContactsController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ContactsController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ContactsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

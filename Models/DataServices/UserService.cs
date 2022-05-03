@@ -32,7 +32,7 @@ namespace Models.DataServices {
                 return contacts;
 
             var friends = chatsWithHim.Select(chat => chat.Participants.Find(participant => participant != username));
-            return friends.Select(friendUsername => users.Find(user => user.Username == username));
+            return friends.Select(friendUsername => users.Find(user => user.Username == friendUsername));
         }
 
         public bool AddContact(string username, string friendToAdd)
