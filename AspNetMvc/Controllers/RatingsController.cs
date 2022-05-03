@@ -113,7 +113,7 @@ namespace AspNetMvc.Controllers {
         // POST: Ratings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
             var rating = service.GetById(id);
             service.Delete(rating.ID);
