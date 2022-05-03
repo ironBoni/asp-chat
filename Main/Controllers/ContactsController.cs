@@ -66,7 +66,7 @@ namespace AspWebApi.Controllers {
 
         // DELETE api/<ContactsController>/5
         [HttpDelete("{username}")]
-        public void Delete(int username)
+        public void Delete(string username)
         {
             var contact = userService.RemoveContact(username);
 

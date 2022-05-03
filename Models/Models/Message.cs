@@ -35,6 +35,11 @@ namespace Models {
             FileName = fileName;
         }
 
+        public Message(int id, string text, string senderUsername)
+            : this(id,"text", text, senderUsername, DateTime.Now)
+        {
+        }
+
         public Message(int id, string type, string text, string senderUsername, DateTime writtenIn)
             : this(id, type, text, senderUsername, writtenIn, "") { }
     }

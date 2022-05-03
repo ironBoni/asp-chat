@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Models.DataServices.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Models.DataServices {
-    public class ChatService : IDataService<Chat, int> {
+    public class ChatService : IChatService {
         private static List<Chat> chats = new List<Chat>() {
             new Chat(1, new List<string>{ "ron", "noam" }, new List<Message>
             {
@@ -127,6 +128,24 @@ namespace Models.DataServices {
                 return false;
             chat.Id = entity.Id;
             //
+            return true;
+        }
+
+        public int GetNewMsgIdInChat(int id)
+        {
+            var chat = chats.Find(chat => chat.Id == id);
+            if (chat == null)
+                return 0;
+
+            var maxMessageId = chat.Messages.Max(message => message.Id);
+            return maxMessageId + 1;
+        }
+
+        public bool AddMessage(int chatId, Message message)
+        {
+            var chat = chats.Find(chat => chat.Id == chatId);
+            if (chat == null) return false;
+            chat.Messages.Add(message);
             return true;
         }
     }
