@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace Models {
         [Required(ErrorMessage ="Please enter server")]
         public string Server { get; set; }
 
+        public List<Contact> Contacts { get; set; }
+
         public User(string username, string nickname, string password, string profileImage, string server)
         {
             Username = username;
@@ -28,15 +31,12 @@ namespace Models {
             Password = password;
             ProfileImage = profileImage;
             Server = server;
+            Contacts = new List<Contact>();
         }
 
         public User(string username, string nickname, string password, string profileImage)
+            :this(username, nickname, password, profileImage, "http://localhost:5186/")    
         {
-            Username = username;
-            Nickname = nickname;
-            Password = password;
-            ProfileImage = profileImage;
-            Server = "http://localhost:5186/";
         }
     }
 }
