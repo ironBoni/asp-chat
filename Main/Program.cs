@@ -1,3 +1,4 @@
+using Models.DataServices;
 using Models.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,4 +24,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 Current.Username = "noam";
+UserService.SetContactsForEveryUser();
+
 app.Run();

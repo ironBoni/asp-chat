@@ -20,9 +20,9 @@ namespace Models.Models {
         public string Last { get; set; }
 
         [Required(ErrorMessage ="Please enter date")]
-        public DateTime Lastdate { get; set; }
+        public DateTime? Lastdate { get; set; }
 
-        public Contact(string id, string name, string server, string last, DateTime lastDate)
+        public Contact(string id, string name, string server, string last, DateTime? lastDate)
         {
             Id = id;
             Name = name;

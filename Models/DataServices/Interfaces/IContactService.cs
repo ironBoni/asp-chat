@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 namespace Models.DataServices.Interfaces {
     public interface IContactService {
         List<Contact> GetContacts(string username);
-        bool AddContact(string username, string friendToAdd);
+        bool AddContact(string id, string name, string server);
     }
 }

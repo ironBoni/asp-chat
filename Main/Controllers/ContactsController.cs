@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspWebApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.DataServices;
 using Models.DataServices.Interfaces;
@@ -8,6 +9,7 @@ using Models.Models;
 
 namespace AspWebApi.Controllers {
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class ContactsController : ControllerBase {
         private readonly IUserService userService;
@@ -19,22 +21,34 @@ namespace AspWebApi.Controllers {
 
         // GET: api/<ContactsController>
         [HttpGet]
-        public List<Contact> Get()
+        public IActionResult Get()
         {
-            return userService.GetContacts(Current.Username);
+            var result = userService.GetContacts(Current.Username);
+
+            if (result == null)
+                return NotFound();
+            return Ok(result);
         }
 
         // GET api/<ContactsController>/5
         [HttpGet("{username}")]
-        public Contact Get(string username)
+        public IActionResult Get(string username)
         {
-            return userService.GetContacts(Current.Username).Find(contact => contact.Id == username);
+            var result = userService.GetContacts(Current.Username).Find(contact => contact.Id == username);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
         }
 
         // POST api/<ContactsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] ContactRequest req)
         {
+            var isAddOk = userService.AddContact(req.Id, req.Name, req.Server);
+            if (isAddOk)
+                return StatusCode(201);
+
+            return Ok();
         }
 
         // PUT api/<ContactsController>/5
