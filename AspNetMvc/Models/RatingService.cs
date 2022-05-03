@@ -6,12 +6,13 @@ namespace AspNetMvc.Models {
         private static List<Rating> ratings = new List<Rating>()
         {
             new Rating(1, 5, "dvir", "Awesome website!"),
-            new Rating(1, 5, "hadar", "Very good website"),
-            new Rating(1, 4, "dan", "I liked this")
+            new Rating(2, 5, "hadar", "Very good website"),
+            new Rating(3, 4, "dan", "I liked this")
         };
 
         public bool Create(Rating entity)
         {
+            entity.ID= ratings.Max(r => r.ID) + 1;
             ratings.Add(entity);
             return true;
         }
