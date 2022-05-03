@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Models.DataServices {
-    internal class ChatService : IDataService<Chat, int> {
+    public class ChatService : IDataService<Chat, int> {
         private static List<Chat> chats = new List<Chat>() {
             new Chat(1, new List<string>{ "ron", "noam" }, new List<Message>
             {

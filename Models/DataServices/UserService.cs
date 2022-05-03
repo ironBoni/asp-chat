@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Models.DataServices {
     // The key is string
-    internal class UserService : IDataService<User, string>, IContactService {
+    public class UserService : IUserService {
         private static List<User> users = new List<User>() {
             new User("noam", "Noam Cohen", "Np1234", "/profile/noam.jpg"),
             new User("hadar", "Hadar Pinto", "Np1234", "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png"),

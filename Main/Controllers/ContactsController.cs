@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models.DataServices.Interfaces;
 
 namespace AspWebApi.Controllers {
     public class ContactsController : Controller {
-        
+        private readonly IUserService userService;
         // GET: ContactsController
         public ActionResult Index()
         {

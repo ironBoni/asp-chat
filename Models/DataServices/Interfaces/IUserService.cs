@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Models.DataServices.Interfaces {
-    public interface IContactService {
-        IEnumerable<User> GetContacts(string username);
-        bool AddContact(string username, string friendToAdd);
+    public interface IUserService : IDataService<User, string>, IContactService {
     }
 }
