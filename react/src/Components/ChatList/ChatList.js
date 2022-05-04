@@ -61,32 +61,32 @@ const ChatList = (props) => {
             return;
         var usernameToAdd = textBox.value.trimEnd();
         var myUsername = localStorage.getItem('username');
-        var nickName = getUserInfoByUsername(usernameToAdd);
-        if (nickName == undefined) nickName = usernameToAdd;
+        var nickname = "";
+        var user = getUserInfoByUsername(usernameToAdd);
+        if (user == undefined) nickName = usernameToAdd;
+        nickname = user.nickname;
         // GET to get the server of the usernameToAdd 
-        var reqHeaders = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-
-        var res = await fetch(dataServer+"api/contacts/server/"+usernameToAdd, reqHeaders);
+        var res = await fetch(dataServer+"api/contacts/server/"+usernameToAdd);
         var friendServer = await res.json();
         console.log(friendServer);
+        
         // POST request to add contact to server
-        reqHeaders = {
+        var data = { "id": usernameToAdd, "name": nickName, "server": friendServer };
+        console.log(data);
+        const config = {
             method: 'POST',
-            body: JSON.stringify({ id: usernameToAdd, name: nickName, server: friendServer }),
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
         }
         console.log('before POST')
-        res = await fetch(dataServer +"api/contacts", reqHeaders);
-        var data = await res.json(); 
+        var res = await fetch(dataServer+"api/Contacts/", config);
+        var dataRes = await res.json();
+        
         console.log('after POST')
-        console.log(data);
+        console.log(dataRes);
         return;
 
         // End of POST
