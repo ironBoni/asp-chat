@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './ChatList.css';
 import Contact from '../Contact/Contact'
-import { users, chats } from '../../Data/data'
+import { users, chats, myServer, dataServer } from '../../Data/data'
 import { Modal } from 'react-bootstrap';
 
 const ChatList = (props) => {
@@ -55,33 +55,45 @@ const ChatList = (props) => {
         users.filter((user) => user.username === otherUsername)[0];
 
 
-    const addUserAsFriend = (e) => {
+    async function addUserAsFriend() {
         var textBox = document.getElementById('contact-user');
         if (!textBox)
             return;
         var usernameToAdd = textBox.value.trimEnd();
         var myUsername = localStorage.getItem('username');
-        // then check if username is already in the contacts list
-        // setErrorAddUser('Username is already your contact.') and return.
-        if(usernameToAdd === myUsername) {
-            setErrorAddUser('You cannot add yourself to the chat list.');
-            return;
-        }
-
-        for (const user of myContacts) {
-            if (user.username === usernameToAdd) {
-                setErrorAddUser('Username is already in your contacts list.')
-                return;
+        var nickName = getUserInfoByUsername(usernameToAdd);
+        if (nickName == undefined) nickName = usernameToAdd;
+        // GET to get the server of the usernameToAdd 
+        var reqHeaders = {
+            method: 'GET',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json'
             }
         }
 
-        // first check if username exists, if not - update errorAddUser
-        // setErrorAddUser('Username doesn't exist.') and return.
-        if (users.filter(user => user.username === usernameToAdd).length === 0) {
-            setErrorAddUser('Username does not exist.')
-            return;
+        var res = await fetch(dataServer+"api/contacts/server/"+usernameToAdd, reqHeaders);
+        var friendServer = res.json();
+        console.log(friendServer);
+        
+        // POST request to add contact to server
+        reqHeaders = {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ id: usernameToAdd, name: nickName, server: friendServer }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }
+        console.log('before POST')
+        res = await fetch(dataServer +"api/contacts", reqHeaders);
+        console.log('after POST')
+        res = res.json();
+        
+        console.log(res);
+        return;
 
+        // End of POST
         chats.push({
             chatId: Math.floor(1000 * Math.random() + 200),
             participicants: [usernameToAdd, username],
