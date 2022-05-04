@@ -4,17 +4,12 @@ import Contact from '../Contact/Contact'
 import { users, chats, myServer, dataServer } from '../../Data/data'
 import { Modal } from 'react-bootstrap';
 
-const ChatList = (props) => {
-    var username = localStorage.getItem('username');
+function ChatList(props) {
+    var id = localStorage.getItem('id');
     var myContacts = [];
+    var setContactsAlready = false;
     // goes over the chat and find the contacts he talked with.
-    chats.forEach(chat => {
-        if (chat.participicants.includes(username)) {
-            let contactUser = chat.participicants.filter(p => p !== username)[0];
-            let contactData = users.filter((user) => user.username === contactUser)[0];
-            myContacts.push(contactData)
-        }
-    })
+    // GET from the server the list of contact
 
     const [usersList, setUsersList] = useState(users);
     const [contactsLst, setContactsLst] = useState(myContacts);
@@ -24,23 +19,24 @@ const ChatList = (props) => {
     const [errorAddUser, setErrorAddUser] = useState('')
     const [showAddModal, setShowAddModal] = useState(false);
 
-    function createContacts() {
-        return contactsLst.map((user, key) => {
-            if (user.username != localStorage.getItem('username')) {
-                return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                    updateLastM={props.updateLastProp} />)
-            }
-        })
-    }
-
     useEffect(() => {
-        var username = localStorage.getItem('username');
-        if (!username)
-            username = 'noam';
-        var userData = users.filter((user) => user.username === username)[0];
+        if(myContacts.length === 0 && setContactsAlready === false) {
+            fetch(dataServer+"api/contacts/").then(res => res.json())
+            .then(data => {
+                myContacts = data;
+                setContactsLst(myContacts);
+                setContactsAlready = true;
+            });
+        }
+        var id = localStorage.getItem('id');
+        if (!id)
+            id = 'noam';
+        var userData = users.filter((user) => user.id === id)[0];
 
+        
         setUserImage(userData.profileImage);
         setNickname(userData.nickname);
+
     })
 
     useEffect(() => {
@@ -51,36 +47,36 @@ const ChatList = (props) => {
     }, [showAddModal])
 
 
-    const getUserInfoByUsername = (otherUsername) =>
-        users.filter((user) => user.username === otherUsername)[0];
+    const getUserInfoByid = (otherid) =>
+        users.filter((user) => user.id === otherid)[0];
 
 
     async function addUserAsFriend() {
         var textBox = document.getElementById('contact-user');
         if (!textBox)
             return;
-        var usernameToAdd = textBox.value.trimEnd();
-        var myUsername = localStorage.getItem('username');
+        var idToAdd = textBox.value.trimEnd();
+        var myid = localStorage.getItem('id');
         var nick = "";
-        var user = getUserInfoByUsername(usernameToAdd);
-        if (!user) nick = usernameToAdd;
+        var user = getUserInfoByid(idToAdd);
+        if (!user) nick = idToAdd;
         else nick = user.nickname;
-        // GET to get the server of the usernameToAdd 
-        var res = await fetch(dataServer+"api/contacts/server/"+usernameToAdd);
+        // GET to get the server of the idToAdd 
+        var res = await fetch(dataServer+"api/contacts/server/"+idToAdd);
         var friendServer = await res.json();
         if(res.status === 404) {
-            setErrorAddUser("Username doesn't exist.");
+            setErrorAddUser("id doesn't exist.");
             return;
         }
 
-        if(usernameToAdd === myUsername) {
+        if(idToAdd === myid) {
             setErrorAddUser("You cannot add yourself to the chat list.");
             return;
         }
         console.log(friendServer);
 
         // POST request to add contact to server
-        var data = { "id": usernameToAdd, "name": nickName, "server": friendServer };
+        var data = { "id": idToAdd, "name": nickName, "server": friendServer };
         console.log(data);
         var config = {
             method: 'POST',
@@ -103,11 +99,11 @@ const ChatList = (props) => {
         // End of POST
         chats.push({
             chatId: Math.floor(1000 * Math.random() + 200),
-            participicants: [usernameToAdd, username],
+            participicants: [idToAdd, id],
             messages: []
         });
         var newContacts = [...contactsLst];
-        newContacts.push(getUserInfoByUsername(usernameToAdd));
+        newContacts.push(getUserInfoByid(idToAdd));
         setContactsLst(newContacts);
         setErrorAddUser('');
         setShowAddModal(false);
@@ -142,11 +138,11 @@ const ChatList = (props) => {
                                 setErrorAddUser('');
                             }}>
                                 <Modal.Header closeButton className='header'>
-                                    Please enter username to add:
+                                    Please enter id to add:
                                 </Modal.Header>
                                 <Modal.Body>{
                                     <div>
-                                        <input type="text" placeholder='Enter a username' autoComplete="off"
+                                        <input type="text" placeholder='Enter a id' autoComplete="off"
                                             className="form-control" id="contact-user" onKeyDown={addUserPressedEnter} />
                                         <div className='error-add-user' id='errorAddingUser'>{errorAddUser}</div>
                                     </div>
@@ -178,7 +174,12 @@ const ChatList = (props) => {
                 </div>
 
                 <div className='left-bar'>
-                    {createContacts()}
+                    { contactsLst.map((user, key) => {
+                        if (user.id != localStorage.getItem('id')) {
+                            return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
+                                updateLastM={props.updateLastProp} />)
+                        }
+                    })}
                 </div>
             </div>
         </div>

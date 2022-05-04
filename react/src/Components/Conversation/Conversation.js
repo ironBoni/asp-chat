@@ -42,14 +42,14 @@ const Conversation = (props) => {
     }
 
     const { chosenChat } = props;
-    var myUsername = localStorage.getItem('username');
+    var myid = localStorage.getItem('id');
     var canAddRecord = false;
 
     useEffect(() => {
         var shouldBreak = false;
         chats.forEach(chatData => {
-            if (chatData.participicants.includes(myUsername)
-                && chatData.participicants.includes(chosenChat.username)) {
+            if (chatData.participicants.includes(myid)
+                && chatData.participicants.includes(chosenChat.id)) {
                 setMsgList(chatData.messages);
                 shouldBreak = true;
                 return;
@@ -72,7 +72,7 @@ const Conversation = (props) => {
             // get last message
             chats.forEach(chatData => {
                 chatData.participicants.forEach(participicant => {
-                    if (participicant === chosenChat.username && chatData.participicants.includes(myUsername)) {
+                    if (participicant === chosenChat.id && chatData.participicants.includes(myid)) {
                         msgListInDb = chatData.messages;
                         return;
                     }
@@ -84,7 +84,7 @@ const Conversation = (props) => {
                 id: Math.floor(1000 * Math.random() + 200),
                 type: "text",
                 text: msg,
-                senderUsername: myUsername,
+                senderid: myid,
                 writtenIn: new Date()
             };
 
@@ -124,7 +124,7 @@ const Conversation = (props) => {
         // get last message - for audio
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === chosenChat.username && chatData.participicants.includes(myUsername)) {
+                if (participicant === chosenChat.id && chatData.participicants.includes(myid)) {
                     newId = Math.max.apply(Math, chatData.messages.map((msg => {
                         msgListInDb = chatData.messages;
                         return msg.id;
@@ -139,7 +139,7 @@ const Conversation = (props) => {
             id: newId,
             type: "audio",
             text: audioUrl,
-            senderUsername: myUsername,
+            senderid: myid,
             writtenIn: new Date(),
             fileName: "record" + newId + ".mp3"
         };
@@ -267,7 +267,7 @@ const Conversation = (props) => {
             // get last message
             chats.forEach(chatData => {
                 chatData.participicants.forEach(participicant => {
-                    if (participicant === chosenChat.username && chatData.participicants.includes(myUsername)) {
+                    if (participicant === chosenChat.id && chatData.participicants.includes(myid)) {
                         lastMsgId = Math.max.apply(Math, chatData.messages.map((msg => {
                             msgListInDb = chatData.messages;
                             return msg.id;
@@ -282,7 +282,7 @@ const Conversation = (props) => {
                 id: lastMsgId + 1,
                 type: getTypeByFileName(fileName),
                 text: fileSrc,
-                senderUsername: myUsername,
+                senderid: myid,
                 writtenIn: new Date(),
                 fileName: fileName
             };
@@ -301,7 +301,7 @@ const Conversation = (props) => {
         // get last message     
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === chosenChat.username && chatData.participicants.includes(myUsername)) {
+                if (participicant === chosenChat.id && chatData.participicants.includes(myid)) {
                     lastMessageId = Math.max.apply(Math, chatData.messages.map((msg => {
                         msgListInDb = chatData.messages;
                         return msg.id;
@@ -316,7 +316,7 @@ const Conversation = (props) => {
             id: newId,
             type: 'image',
             text: imageTaken,
-            senderUsername: myUsername,
+            senderid: myid,
             writtenIn: new Date(),
             fileName: "image" + newId + ".png"
         };
@@ -342,7 +342,7 @@ const Conversation = (props) => {
                 </div>
                 <div className='message-container' id="chat" scolltop={sTop}>
                     {msgList?.map((msg, key) => (
-                        <MessageField type={msg.type} text={msg.text} senderUsername={msg.senderUsername} key={key}
+                        <MessageField type={msg.type} text={msg.text} senderid={msg.senderid} key={key}
                             fileName={msg.fileName}>
                         </MessageField>
                     ))}

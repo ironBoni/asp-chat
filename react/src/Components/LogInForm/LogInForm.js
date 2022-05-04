@@ -10,8 +10,8 @@ const LogInForm = (props) => {
   return (
     <form id="LogIn" className="input-form" onSubmit={handleSubmit}>
       <input type="text" className="input-field" placeholder="User Name" autoComplete="off"
-        name="username" value={values.username} onChange={handleChange}></input>
-        {<p className="error" >{errors.username}</p>}
+        name="id" value={values.id} onChange={handleChange}></input>
+        {<p className="error" >{errors.id}</p>}
         {<p className="error" >{errors.password}</p>}
       <input type="password"
        className="input-field" placeholder="Enter Password" 

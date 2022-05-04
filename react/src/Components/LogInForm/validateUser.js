@@ -5,23 +5,23 @@ export default function validateInfo(values) {
   let errors = {};
 
   //user field is empty
-  if (!values.username.trim()) {
-    errors.username = 'Username is required';
+  if (!values.id.trim()) {
+    errors.id = 'id is required';
     isValidateOk = false;
     return { errors, isValidateOk };
   }
 
   //get user info
-  const userData = users.find((user) => user.username === values.username);
+  const userData = users.find((user) => user.id === values.id);
   if (userData) {
     //user passwords don't match
     if (userData.password !== values.password) {
-      errors.password = 'Username or Password does not match';
+      errors.password = 'id or Password does not match';
       isValidateOk = false;
     }
     //user was not found
   } else {
-    errors.username = 'Username or Password does not match';
+    errors.id = 'id or Password does not match';
     isValidateOk = false;
   }
   return { errors, isValidateOk };

@@ -8,7 +8,7 @@ const Contact = (props) => {
     const [lastMsgTime, setLastMsgTime] = useState('');
     const [lastMsgType, setLastMsgType] = useState('text');
     const [fileName, setFileName] = useState('');
-    var myUsername = localStorage.getItem('username');
+    var myid = localStorage.getItem('id');
 
     useEffect(() => {
         updateLastMessage();
@@ -20,7 +20,7 @@ const Contact = (props) => {
     function updateLastMessage() {
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === userInfo.username && chatData.participicants.includes(myUsername)) {
+                if (participicant === userInfo.id && chatData.participicants.includes(myid)) {
                     var maxDate = new Date(1970, 1, 1);
                     var message;
 
@@ -55,7 +55,7 @@ const Contact = (props) => {
         <div className='contact' onClick={() => setChosenChat(userInfo)}>
             <img className='profile-image' alt='profile' src={userInfo.profileImage}></img>
             <div className='text'>
-                <h6 className='contact-name'>{userInfo.nickname}</h6>
+                <h6 className='contact-name'>{userInfo.name}</h6>
                 <p className='contact-message'>
                     {lastMsgType === 'text' ? (lastMsg) : (fileName)}
                 </p>
