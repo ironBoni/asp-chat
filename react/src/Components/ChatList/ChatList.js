@@ -61,19 +61,28 @@ const ChatList = (props) => {
             return;
         var usernameToAdd = textBox.value.trimEnd();
         var myUsername = localStorage.getItem('username');
-        var nickname = "";
+        var nick = "";
         var user = getUserInfoByUsername(usernameToAdd);
-        if (user == undefined) nickName = usernameToAdd;
-        nickname = user.nickname;
+        if (!user) nick = usernameToAdd;
+        else nick = user.nickname;
         // GET to get the server of the usernameToAdd 
         var res = await fetch(dataServer+"api/contacts/server/"+usernameToAdd);
         var friendServer = await res.json();
+        if(res.status === 404) {
+            setErrorAddUser("Username doesn't exist.");
+            return;
+        }
+
+        if(usernameToAdd === myUsername) {
+            setErrorAddUser("You cannot add yourself to the chat list.");
+            return;
+        }
         console.log(friendServer);
-        
+
         // POST request to add contact to server
         var data = { "id": usernameToAdd, "name": nickName, "server": friendServer };
         console.log(data);
-        const config = {
+        var config = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -83,11 +92,13 @@ const ChatList = (props) => {
         }
         console.log('before POST')
         var res = await fetch(dataServer+"api/Contacts/", config);
-        var dataRes = await res.json();
-        
+        console.log(res.status);
         console.log('after POST')
-        console.log(dataRes);
-        return;
+
+        if(res.status === 400) {
+            setErrorAddUser("This user is already in your contacts list.");
+            return;
+        }
 
         // End of POST
         chats.push({

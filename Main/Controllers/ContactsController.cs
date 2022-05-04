@@ -99,10 +99,10 @@ namespace AspWebApi.Controllers {
         // POST api/<ContactsController>
         [HttpPost]
         [Route("/api/Contacts")]
-        public IActionResult Post([Bind("id", "name", "server")] ContactRequest req)
+        public IActionResult Post([FromBody] ContactRequest req)
         {
             string response;
-            var isAddOk = userService.AddContact(req.id, req.name, req.server, out response);
+            var isAddOk = userService.AddContact(req.Id, req.Name, req.Server, out response);
             if (!isAddOk)
                 return BadRequest(response);
 
