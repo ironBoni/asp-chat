@@ -14,7 +14,7 @@ function ChatList(props) {
     const [usersList, setUsersList] = useState(users);
     const [contactsLst, setContactsLst] = useState(myContacts);
     const [userImage, setUserImage] = useState('');
-    const [nickName, setNickname] = useState('');
+    const [name, setname] = useState('');
     const [showImageModal, setShowImageModal] = useState(false);
     const [errorAddUser, setErrorAddUser] = useState('')
     const [showAddModal, setShowAddModal] = useState(false);
@@ -35,7 +35,7 @@ function ChatList(props) {
 
         
         setUserImage(userData.profileImage);
-        setNickname(userData.nickname);
+        setname(userData.name);
 
     })
 
@@ -60,7 +60,7 @@ function ChatList(props) {
         var nick = "";
         var user = getUserInfoByid(idToAdd);
         if (!user) nick = idToAdd;
-        else nick = user.nickname;
+        else nick = user.name;
         // GET to get the server of the idToAdd 
         var res = await fetch(dataServer+"api/contacts/server/"+idToAdd);
         var friendServer = await res.json();
@@ -76,7 +76,7 @@ function ChatList(props) {
         console.log(friendServer);
 
         // POST request to add contact to server
-        var data = { "id": idToAdd, "name": nickName, "server": friendServer };
+        var data = { "id": idToAdd, "name": name, "server": friendServer };
         console.log(data);
         var config = {
             method: 'POST',
@@ -121,7 +121,7 @@ function ChatList(props) {
                 <div className='settings-tray'>
                     <button className='click-button' onClick={() => setShowImageModal(true)}>
                         <img className='user-image' alt='user' src={userImage}></img></button>
-                    <span className='nickname'>{nickName}</span>
+                    <span className='name'>{name}</span>
                     <span className="settings-tray--right float-right">
                         <i className="bi bi-person-plus">
                             <button className='click-button' onClick={() => setShowAddModal(true)}>
@@ -155,7 +155,7 @@ function ChatList(props) {
                     </span>
                     <Modal show={showImageModal} centered onHide={() => setShowImageModal(false)}>
                         <Modal.Header closeButton className='header'>
-                            {nickName}
+                            {name}
                         </Modal.Header>
                         <Modal.Body><img src={userImage} className='big-image'></img></Modal.Body>
                     </Modal>

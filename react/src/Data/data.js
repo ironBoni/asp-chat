@@ -770,61 +770,61 @@ export const dataServer = "http://localhost:5186/";
 export const users = [
     {
         id: 'noam',
-        nickname: 'Noam Cohen',
+        name: 'Noam Cohen',
         password: 'Np1234',
         profileImage: "/profile/noam.jpg"
     },
     {
         id: 'dvir',
-        nickname: 'Dvir Pollak',
+        name: 'Dvir Pollak',
         password: 'Np1234',
         profileImage: "/profile/dvir.jpg"
     },
     {
         id: 'ron',
-        nickname: 'Ron Segal',
+        name: 'Ron Segal',
         password: 'Np1234',
         profileImage: "/profile/ron.jpg"
     },
     {
         id: 'dan',
-        nickname: 'Dan Cohen',
+        name: 'Dan Cohen',
         password: 'Np1234',
         profileImage: "/profile/dan.jpg"
     },
     {
         id: 'idan',
-        nickname: 'Idan Ben Ari',
+        name: 'Idan Ben Ari',
         password: 'Np1234',
         profileImage: "/profile/idan.jpg"
     },
     {
         id: 'shlomo',
-        nickname: 'Shlomo Levin',
+        name: 'Shlomo Levin',
         password: 'Np1234',
         profileImage: "/profile/shlomo.png"
     },
     {
         id: 'yaniv',
-        nickname: 'Yaniv Hoffman',
+        name: 'Yaniv Hoffman',
         password: 'Np1234',
         profileImage: "/profile/yaniv.png"
     },
     {
         id: 'oren',
-        nickname: 'Oren Orbach',
+        name: 'Oren Orbach',
         password: 'Np1234',
         profileImage: "/profile/oren.webp"
     },
     {
         id: 'yuval',
-        nickname: 'Yuval Baruchi',
+        name: 'Yuval Baruchi',
         password: 'Np1234',
         profileImage: "/profile/yuval.png"
     },
     {
         id: 'ran',
-        nickname: 'Ran Levi',
+        name: 'Ran Levi',
         password: 'Np1234',
         profileImage: "/profile/ran.webp"
     }
