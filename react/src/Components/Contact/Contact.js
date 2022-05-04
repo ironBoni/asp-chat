@@ -25,23 +25,23 @@ const Contact = (props) => {
                     var message;
 
                     chatData.messages.forEach((msg => {
-                        if (msg.writtenIn > maxDate) {
+                        if (msg.created > maxDate) {
                             message = msg;
-                            maxDate = msg.writtenIn;
+                            maxDate = msg.created;
                         }
                     }));
 
                     if (message == undefined)
                         return;
 
-                    setLastMsg(message.text);
+                    setLastMsg(message.content);
                     setLastMsgType(message.type);
                     setFileName(message.fileName);
-                    var time =message.writtenIn.toLocaleTimeString().substring(0, 5)
+                    var time =message.created.toLocaleTimeString().substring(0, 5)
                     if(time[time.length -1 ] ===":" ){
                         time=time.substring(0,time.length-1)
                     }
-                    setLastMsgTime(message.writtenIn.toLocaleDateString() + " " +
+                    setLastMsgTime(message.created.toLocaleDateString() + " " +
                        time);
                     
                     return;

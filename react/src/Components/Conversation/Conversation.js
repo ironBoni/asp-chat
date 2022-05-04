@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import MessageField from '../MessageField/MessageField';
 import UserImage from '../UserImage/UserImage';
 import './Conversation.css';
-import { chats, video_extensions, audio_extensions, image_extensions } from '../../Data/data';
+import { dataServer, chats, video_extensions, audio_extensions, image_extensions } from '../../Data/data';
 import { Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Contact from '../Contact/Contact';
@@ -44,22 +44,18 @@ const Conversation = (props) => {
     const { chosenChat } = props;
     var myid = localStorage.getItem('id');
     var canAddRecord = false;
-
+    var alreadyGotMessages = false;
+    var oldUser = ""; 
+    useEffect(() => {
+            fetch(dataServer+"api/contacts/"+chosenChat.id+"/messages").then(res => res.json())
+            .then(data => {
+                setMsgList(data);
+                oldUser = chosenChat.id;
+            });
+    })
+    
     useEffect(() => {
         var shouldBreak = false;
-        chats.forEach(chatData => {
-            if (chatData.participicants.includes(myid)
-                && chatData.participicants.includes(chosenChat.id)) {
-                setMsgList(chatData.messages);
-                shouldBreak = true;
-                return;
-            }
-            if (shouldBreak) {
-                return;
-            }
-            ;
-        })
-
         var textbox = document.getElementById('textbox');
         if (textbox)
             textbox.focus();
@@ -83,9 +79,9 @@ const Conversation = (props) => {
             var newMsg = {
                 id: Math.floor(1000 * Math.random() + 200),
                 type: "text",
-                text: msg,
-                senderid: myid,
-                writtenIn: new Date()
+                content: msg,
+                senderUsername: myid,
+                created: new Date()
             };
 
             newMessages.push(newMsg);
@@ -138,13 +134,13 @@ const Conversation = (props) => {
         var newMsg = {
             id: newId,
             type: "audio",
-            text: audioUrl,
-            senderid: myid,
-            writtenIn: new Date(),
+            content: audioUrl,
+            senderUsername: myid,
+            created: new Date(),
             fileName: "record" + newId + ".mp3"
         };
 
-        if ((msgListInDb.filter(msg => msg.text === newMsg.text).length === 0)
+        if ((msgListInDb.filter(msg => msg.content === newMsg.content).length === 0)
             && canAddRecord) {
             newMessages.push(newMsg);
             setMsgList(newMessages);
@@ -281,9 +277,9 @@ const Conversation = (props) => {
             var newMsg = {
                 id: lastMsgId + 1,
                 type: getTypeByFileName(fileName),
-                text: fileSrc,
-                senderid: myid,
-                writtenIn: new Date(),
+                content: fileSrc,
+                senderUsername: myid,
+                created: new Date(),
                 fileName: fileName
             };
 
@@ -315,9 +311,9 @@ const Conversation = (props) => {
         var newMsg = {
             id: newId,
             type: 'image',
-            text: imageTaken,
-            senderid: myid,
-            writtenIn: new Date(),
+            content: imageTaken,
+            senderUsername: myid,
+            created: new Date(),
             fileName: "image" + newId + ".png"
         };
 
@@ -342,7 +338,7 @@ const Conversation = (props) => {
                 </div>
                 <div className='message-container' id="chat" scolltop={sTop}>
                     {msgList?.map((msg, key) => (
-                        <MessageField type={msg.type} text={msg.text} senderid={msg.senderid} key={key}
+                        <MessageField type={msg.type} content={msg.content} senderUsername={msg.senderUsername} key={key}
                             fileName={msg.fileName}>
                         </MessageField>
                     ))}
