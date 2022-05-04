@@ -48,7 +48,10 @@ namespace AspWebApi.Controllers {
             if (messages == null) return BadRequest();
             var chat = chatService.GetChatByParticipants(id, Current.Username);
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
-            var message = new Message(msgId, req.Content, id, true);
+            string sender = "";
+            if (req.SenderUsername == null) sender = id;
+            else sender = Current.Username;
+            var message = new Message(msgId, req.Content, sender, true);
             var success = chatService.AddMessage(chat.Id, message);
             if(!success) return BadRequest("The message could not be added.");
             return StatusCode(201);

@@ -15,8 +15,8 @@ export default function validateInfo(values) {
     flag=false;
   }
 
-  if (!values.nickname.trim()) {
-    errors.nickname = 'nick name required';
+  if (!values.name.trim()) {
+    errors.name = 'nick name required';
     flag=false;
   }
 

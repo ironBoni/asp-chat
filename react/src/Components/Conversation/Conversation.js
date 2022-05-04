@@ -42,18 +42,19 @@ const Conversation = (props) => {
     }
 
     const { chosenChat } = props;
-    var myid = localStorage.getItem('id');
+    var id = localStorage.getItem('id');
     var canAddRecord = false;
     var alreadyGotMessages = false;
-    var oldUser = ""; 
+    var oldUser = "";
+
     useEffect(() => {
-            fetch(dataServer+"api/contacts/"+chosenChat.id+"/messages").then(res => res.json())
+        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages").then(res => res.json())
             .then(data => {
                 setMsgList(data);
                 oldUser = chosenChat.id;
             });
     })
-    
+
     useEffect(() => {
         var shouldBreak = false;
         var textbox = document.getElementById('textbox');
@@ -68,7 +69,7 @@ const Conversation = (props) => {
             // get last message
             chats.forEach(chatData => {
                 chatData.participicants.forEach(participicant => {
-                    if (participicant === chosenChat.id && chatData.participicants.includes(myid)) {
+                    if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
                         msgListInDb = chatData.messages;
                         return;
                     }
@@ -80,13 +81,27 @@ const Conversation = (props) => {
                 id: Math.floor(1000 * Math.random() + 200),
                 type: "text",
                 content: msg,
-                senderUsername: myid,
+                senderUsername: id,
                 created: new Date()
             };
+
+            // POST - Transfer
+            var data = { "from": id, "to": chosenChat.id, "content": msg };
+            var config = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }
+            fetch(dataServer + "api/transfer/", config);
 
             newMessages.push(newMsg);
             msgListInDb.push(newMsg)
             setMsgList(newMessages);
+
+
             setMsg("");
             updateScroll();
             updateLastMsgInGui();
@@ -120,7 +135,7 @@ const Conversation = (props) => {
         // get last message - for audio
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === chosenChat.id && chatData.participicants.includes(myid)) {
+                if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
                     newId = Math.max.apply(Math, chatData.messages.map((msg => {
                         msgListInDb = chatData.messages;
                         return msg.id;
@@ -135,7 +150,7 @@ const Conversation = (props) => {
             id: newId,
             type: "audio",
             content: audioUrl,
-            senderUsername: myid,
+            senderUsername: id,
             created: new Date(),
             fileName: "record" + newId + ".mp3"
         };
@@ -263,7 +278,7 @@ const Conversation = (props) => {
             // get last message
             chats.forEach(chatData => {
                 chatData.participicants.forEach(participicant => {
-                    if (participicant === chosenChat.id && chatData.participicants.includes(myid)) {
+                    if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
                         lastMsgId = Math.max.apply(Math, chatData.messages.map((msg => {
                             msgListInDb = chatData.messages;
                             return msg.id;
@@ -278,7 +293,7 @@ const Conversation = (props) => {
                 id: lastMsgId + 1,
                 type: getTypeByFileName(fileName),
                 content: fileSrc,
-                senderUsername: myid,
+                senderUsername: id,
                 created: new Date(),
                 fileName: fileName
             };
@@ -297,7 +312,7 @@ const Conversation = (props) => {
         // get last message     
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === chosenChat.id && chatData.participicants.includes(myid)) {
+                if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
                     lastMessageId = Math.max.apply(Math, chatData.messages.map((msg => {
                         msgListInDb = chatData.messages;
                         return msg.id;
@@ -312,7 +327,7 @@ const Conversation = (props) => {
             id: newId,
             type: 'image',
             content: imageTaken,
-            senderUsername: myid,
+            senderUsername: id,
             created: new Date(),
             fileName: "image" + newId + ".png"
         };
@@ -328,8 +343,8 @@ const Conversation = (props) => {
         <div className="col-9 conversation">
             <div className='conversation-container'>
                 <div className='user-title'>
-                    <UserImage src={chosenChat.profileImage} headOf={chosenChat.nickname} />
-                    <div className='user-nickname'>{chosenChat.nickname}</div>
+                    <UserImage src={chosenChat.profileImage} headOf={chosenChat.name} />
+                    <div className='user-name'>{chosenChat.name}</div>
                     <div className='logout'>
                         <button className="image-logout-button" onClick={() => navigatePages("/", { replace: true })}>
                             <img src="/images/logout.png" className="image-logout" alt='logout'></img>

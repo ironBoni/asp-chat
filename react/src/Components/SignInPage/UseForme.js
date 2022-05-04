@@ -4,7 +4,7 @@ import { users } from '../../Data/data';
 const useForm = (submitForm, validate) => {
   const [values, setValues] = useState({
     id: '',
-    nickname: '',
+    name: '',
     profileImage: '/images/default.jpg',
     password: '',
     confPassword: '',
@@ -46,12 +46,12 @@ const useForm = (submitForm, validate) => {
     if (e.target.name === "Register" && result.flag ) {
 
       users.push({
-        id: values.id, nickname: values.nickname, password: values.password,
+        id: values.id, name: values.name, password: values.password,
         profileImage: values.profileImage
       })
       setValues({
         id: '',
-        nickname: '',
+        name: '',
         profileImage: '/images/default.jpg',
         password: '',
         confPassword: '',

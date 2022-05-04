@@ -23,12 +23,12 @@ const RegisterInForm = ({ submitForm }) => {
       <input type="text"
         className="input-field"
         placeholder="nick name"
-        name="nickname"
+        name="name"
         autoComplete="off"
-        value={values.nickname}
+        value={values.name}
         onChange={handleChange}
       ></input>
-      {<p className="error" >{errors.nickname}</p>}
+      {<p className="error" >{errors.name}</p>}
 
       <input type="password"
         className="input-field"
