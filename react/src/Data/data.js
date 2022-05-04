@@ -765,6 +765,8 @@ export const chats = [
     }
 ]
 
+export const myServer = "localhost://3000/";
+export const dataServer = "http://localhost:5186/";
 export const users = [
     {
         username: 'noam',

@@ -87,8 +87,18 @@ namespace AspWebApi.Controllers {
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("/api/contacts/server/{id}")]
+        public IActionResult GetServerByUsername(string id)
+        {
+            var user = userService.GetById(id);
+            if(user == null) return NotFound();
+            return Ok(user.Server);
+        }
+
         // POST api/<ContactsController>
         [HttpPost]
+        [Route("/api/Contacts")]
         public IActionResult Post([FromBody] ContactRequest req)
         {
             string response;
