@@ -24,6 +24,44 @@ namespace AspNetMvc.Controllers {
             return View(service.GetAll());
         }
 
+        public IActionResult Search()
+        {
+            return View("Index", service.GetAll());
+        }
+        [HttpPost]
+        public IActionResult Search(string query)
+        {
+
+            if (query == null)
+            {
+                return View("Index",query);
+            }
+            else
+            {
+                var search = service.GetAll().FindAll(Rating => Rating.Name.Contains(query));
+                return View("Index", search);
+            }
+
+        }
+        public IActionResult SearchPart(string query)
+        {
+
+            if (query == null)
+            {
+                return PartialView(query);
+            }
+            else
+            {
+                var search = service.GetAll().FindAll(Rating => Rating.Name.Contains(query));
+                if(search.Count == 0)
+                {
+                    return PartialView(null);
+                }
+                return PartialView(search);
+            }
+
+        }
+
         // GET: Ratings/Details/5
         public IActionResult Details(int id)
         {
