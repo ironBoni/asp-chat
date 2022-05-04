@@ -11,7 +11,7 @@ namespace Models.DataServices {
     public class UserService : IUserService {
         private static List<User> users = new List<User>() {
             new User("noam", "Noam Cohen", "Np1234", "/profile/noam.jpg"),
-            new User("hadar", "Hadar Pinto", "Np1234", "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png"),
+            new User("hadar", "Hadar Pinto", "Np1234", "/profile/hadar.jpg"),
             new User("dvir", "Dvir Pollak", "Np1234", "/profile/dvir.jpg"),
             new User("ron", "Ron Solomon", "Np1234", "/profile/ron.jpg"),
             new User("dan", "Dan Cohen", "Np1234", "/profile/dan.jpg"),
