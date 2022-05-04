@@ -3,7 +3,7 @@ import './MessageField.css'
 import { Modal } from 'react-bootstrap';
 
 export default function MessageField(props) {
-    var myUsername = localStorage.getItem('username');
+    var myid = localStorage.getItem('id');
     const [showImageModal, setShowImageModal] = useState(false);
     const audioRef = useRef()
     var content;
@@ -21,8 +21,8 @@ export default function MessageField(props) {
     }
     else {
         content = ((<a href={props.text} download={props.fileName} className='link'>
-            <div className={props.senderUsername === myUsername ? 'file-begin' : 'file-end'}>
-                <div id={props.senderUsername === myUsername ? 'file-div' : 'file-div-end'}>
+            <div className={props.senderid === myid ? 'file-begin' : 'file-end'}>
+                <div id={props.senderid === myid ? 'file-div' : 'file-div-end'}>
                     <img src='/images/file-icon.png' className='file-image' alt='file'></img>
                     <div className='name-div'>{props.fileName}</div>
                     <aside className='file-ext'>{props.fileName.split('.')[1].toUpperCase()}</aside>
@@ -32,14 +32,14 @@ export default function MessageField(props) {
     }
     return (
         props.type !== 'file' ?
-            (<div className={props.senderUsername === myUsername ? 'empty' : 'right-message'}>
-                <div className={props.senderUsername === myUsername ? 'message-div' : 'message-div-end'}>
+            (<div className={props.senderid === myid ? 'empty' : 'right-message'}>
+                <div className={props.senderid === myid ? 'message-div' : 'message-div-end'}>
                     {props.type != 'audio' ?
-                        <div id="main-div" className={props.senderUsername === myUsername ? 'message' : 'message-not-mine'}>
+                        <div id="main-div" className={props.senderid === myid ? 'message' : 'message-not-mine'}>
                             {content}
                         </div>
                         : (
-                            <div id="main-div" className={props.senderUsername === myUsername ? 'message-audio' : 'message-not-mine-audio'}>
+                            <div id="main-div" className={props.senderid === myid ? 'message-audio' : 'message-not-mine-audio'}>
                                 <audio ref={audioRef} className='audio' controls src={props.text} />
                             </div>
                         )}
@@ -55,9 +55,9 @@ export default function MessageField(props) {
                     </Modal.Body>
                 </Modal>
             </div>) :
-            (<div className={props.senderUsername === myUsername ? 'empty-file' : 'right-message-file'}>
-                <div className={props.senderUsername === myUsername ? 'message-father' : 'message-not-mine-father'}>
-                    <div className={props.senderUsername === myUsername ? 'message-d' : 'message-d-end'}>
+            (<div className={props.senderid === myid ? 'empty-file' : 'right-message-file'}>
+                <div className={props.senderid === myid ? 'message-father' : 'message-not-mine-father'}>
+                    <div className={props.senderid === myid ? 'message-d' : 'message-d-end'}>
                         {content}
                     </div>
                 </div>

@@ -4,8 +4,8 @@ export default function validateInfo(values) {
   let errors = {};
   var flag=true;
 
-  if (!values.username.trim()) {
-    errors.username = 'Username is required';
+  if (!values.id.trim()) {
+    errors.id = 'id is required';
     flag=false;
   }
   
@@ -20,14 +20,14 @@ export default function validateInfo(values) {
     flag=false;
   }
 
-  if(values.username.indexOf(' ') >= 0) {
-    errors.username = 'Username cannot have spaces';
+  if(values.id.indexOf(' ') >= 0) {
+    errors.id = 'id cannot have spaces';
     flag = false;
   }
 
   users.forEach(element => {
-    if (element.username === values.username){
-      errors.username = 'Username already exsist';
+    if (element.id === values.id){
+      errors.id = 'id already exsist';
       flag=false;
     }
   });

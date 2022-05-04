@@ -3,7 +3,7 @@ import { users } from '../../Data/data';
 
 const useForm = (submitForm, validate) => {
   const [values, setValues] = useState({
-    username: '',
+    id: '',
     nickname: '',
     profileImage: '/images/default.jpg',
     password: '',
@@ -46,11 +46,11 @@ const useForm = (submitForm, validate) => {
     if (e.target.name === "Register" && result.flag ) {
 
       users.push({
-        username: values.username, nickname: values.nickname, password: values.password,
+        id: values.id, nickname: values.nickname, password: values.password,
         profileImage: values.profileImage
       })
       setValues({
-        username: '',
+        id: '',
         nickname: '',
         profileImage: '/images/default.jpg',
         password: '',
@@ -68,7 +68,7 @@ const useForm = (submitForm, validate) => {
       if (Object.keys(errors).length === 0 && isSubmitting) {
 
         submitForm();
-        localStorage.setItem("username", values.username);
+        localStorage.setItem("id", values.id);
       }
     },
     [errors]

@@ -15,10 +15,10 @@ const RegisterInForm = ({ submitForm }) => {
         className="input-field"
         placeholder="User Name"
         autoComplete="off"
-        name="username"
-        value={values.username}
+        name="id"
+        value={values.id}
         onChange={handleChange}></input>
-      {<p className="error">{errors.username}</p>}
+      {<p className="error">{errors.id}</p>}
 
       <input type="text"
         className="input-field"

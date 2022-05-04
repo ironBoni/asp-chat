@@ -22,6 +22,7 @@ namespace Models.Models {
         [Required(ErrorMessage ="Please enter date")]
         public DateTime? Lastdate { get; set; }
 
+        public string ProfileImage { get; set; }
         public Contact(string id, string name, string server, string last, DateTime? lastDate)
         {
             Id = id;
@@ -29,6 +30,12 @@ namespace Models.Models {
             Server = server;
             Last = last;
             Lastdate = lastDate;
+        }
+
+        public Contact(string id, string name, string server, string last, DateTime? lastDate, string profileImage)
+            : this(id, name, server, last, lastDate)
+        {
+            ProfileImage = profileImage;
         }
     }
 }

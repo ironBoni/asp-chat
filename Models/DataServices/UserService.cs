@@ -40,7 +40,7 @@ namespace Models.DataServices {
                                                        chat.Participants.Contains(fUsername));
                 var lastTime = chat.Messages.Max(message => message.WrittenIn);
                 var lastMsg = chat.Messages.Find(message => message.WrittenIn == lastTime);
-                var contact = new Contact(fUsername, fUser.Nickname, fUser.Server, lastMsg.Text, lastTime);
+                var contact = new Contact(fUsername, fUser.Nickname, fUser.Server, lastMsg.Text, lastTime, fUser.ProfileImage);
                 contactsByMessages.Add(contact);
             }
 

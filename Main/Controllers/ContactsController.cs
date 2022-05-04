@@ -78,13 +78,11 @@ namespace AspWebApi.Controllers {
 
         // GET: api/<ContactsController>
         [HttpGet]
-        public IActionResult Get()
+        public IEnumerable<Contact> Get()
         {
             var result = userService.GetContacts(Current.Username);
 
-            if (result == null)
-                return NotFound();
-            return Ok(result);
+            return result;
         }
 
         [HttpGet]
