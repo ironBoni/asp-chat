@@ -66,20 +66,17 @@ const ChatList = (props) => {
         // GET to get the server of the usernameToAdd 
         var reqHeaders = {
             method: 'GET',
-            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json'
             }
         }
 
         var res = await fetch(dataServer+"api/contacts/server/"+usernameToAdd, reqHeaders);
-        var friendServer = res.json();
+        var friendServer = await res.json();
         console.log(friendServer);
-        
         // POST request to add contact to server
         reqHeaders = {
             method: 'POST',
-            mode: 'no-cors',
             body: JSON.stringify({ id: usernameToAdd, name: nickName, server: friendServer }),
             headers: {
                 'Content-Type': 'application/json'
@@ -87,10 +84,9 @@ const ChatList = (props) => {
         }
         console.log('before POST')
         res = await fetch(dataServer +"api/contacts", reqHeaders);
+        var data = await res.json(); 
         console.log('after POST')
-        res = res.json();
-        
-        console.log(res);
+        console.log(data);
         return;
 
         // End of POST
