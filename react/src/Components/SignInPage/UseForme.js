@@ -46,7 +46,6 @@ const useForm = (submitForm, validate) => {
     if (e.target.name !== "Register") {
       
         // POST request to add contact to server
-        var data = { "id": idToAdd, "name": name, "server": friendServer };
         console.log(data);
         var config = {
             method: 'POST',
@@ -59,6 +58,7 @@ const useForm = (submitForm, validate) => {
         console.log('before POST')
         var res = await fetch(dataServer+"api/Contacts/", config);
         var token = await res.join();
+        localStorage.setItem('token', token);
         console.log(token);
     }
     if (e.target.name === "Register" && result.flag ) {

@@ -20,23 +20,16 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
     var token = localStorage.getItem('token');
     useEffect(() => {
-        
         // GET request to add contact to server
         var config = {
             method: 'GET',
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            }
+                'Token': localStorage.getItem('token')
+            },
         }
-        console.log('before GET')
-        var res = await fetch(dataServer+"api/Contacts/", config);
-        console.log(res.status);
-        console.log('after POST')
 
         if(myContacts.length === 0 && setContactsAlready === false) {
-            fetch(dataServer+"api/contacts/").then(res => res.json())
+            fetch(dataServer+"api/contacts/", config).then(res => res.json())
             .then(data => {
                 myContacts = data;
                 setContactsLst(myContacts);
@@ -77,7 +70,13 @@ function ChatList(props) {
         if (!user) nick = idToAdd;
         else nick = user.name;
         // GET to get the server of the idToAdd 
-        var res = await fetch(dataServer+"api/contacts/server/"+idToAdd);
+        var config = {
+            method: 'GET',
+            headers: {
+                'Token': localStorage.getItem('token')
+            },
+        }
+        var res = await fetch(dataServer+"api/contacts/server/"+idToAdd, config);
         var friendServer = await res.json();
         if(res.status === 404) {
             setErrorAddUser("id doesn't exist.");
@@ -92,16 +91,15 @@ function ChatList(props) {
 
         // POST request to add contact to server
         var data = { "id": idToAdd, "name": name, "server": friendServer };
-        console.log(data);
         var config = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Token': localStorage.getItem('token')
             },
             body: JSON.stringify(data)
         }
-        console.log('before POST')
         var res = await fetch(dataServer+"api/Contacts/", config);
         console.log(res.status);
         console.log('after POST')
