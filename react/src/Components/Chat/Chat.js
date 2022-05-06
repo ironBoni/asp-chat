@@ -5,16 +5,18 @@ import ChatList from '../ChatList/ChatList'
 import Conversation from '../Conversation/Conversation'
 import Welcome from '../Welcome/Welcome';
 
-const Chat = () => {
+const Chat = (props) => {
     const updateLastArray = useRef(Array(users.length).fill(null));
 
     const [chosenChat, setChosenChat] = useState();
     return (
         <div className="container-fluid">
             <div className='row no-gutters rounded-lg shadow main'>
-                <ChatList setChosenChat={setChosenChat} updateLastProp = {updateLastArray} />
+                <ChatList setChosenChat={setChosenChat} updateLastProp = {updateLastArray} 
+                setIsShowSignIn = {props.setIsShowSignIn}/>
                 {chosenChat ?
-                    <Conversation chosenChat={chosenChat} updateLastProp = {updateLastArray}/>
+                    <Conversation chosenChat={chosenChat} updateLastProp = {updateLastArray}
+                    setIsShowSignIn = {props.setIsShowSignIn}/>
                     : <Welcome />}
             </div>
         </div>

@@ -3,9 +3,8 @@ import "./SignInPage.css";
 import img from "../../imgs/webIcon.png";
 import LogInForm from "../LogInForm/LogInForm.js";
 import RegisterInForm from "../RegisterInForm/RegisterInForm.js";
-import { Navigate } from 'react-router-dom';
 
-const SignInPage = () => {
+const SignInPage = (props) => {
 
   function login() {
     document.getElementById("LogIn").style.left = "50px"
@@ -48,7 +47,7 @@ const SignInPage = () => {
           </div>
 
           <RegisterInForm submitForm={submitForm} />
-          {isSubmittedUser ? <Navigate to='/chat' /> : <LogInForm submitForm={submitFormUser} />}
+          {isSubmittedUser ? props.setIsShowSignIn(false) : <LogInForm submitForm={submitFormUser} />}
         </div>
       </div>
     </div>

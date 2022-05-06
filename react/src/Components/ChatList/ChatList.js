@@ -18,23 +18,8 @@ function ChatList(props) {
     const [showImageModal, setShowImageModal] = useState(false);
     const [errorAddUser, setErrorAddUser] = useState('')
     const [showAddModal, setShowAddModal] = useState(false);
-    var token = localStorage.getItem('token');
-    useEffect(() => {
-        
-        // GET request to add contact to server
-        var config = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            }
-        }
-        console.log('before GET')
-        var res = await fetch(dataServer+"api/Contacts/", config);
-        console.log(res.status);
-        console.log('after POST')
 
+    useEffect(() => {
         if(myContacts.length === 0 && setContactsAlready === false) {
             fetch(dataServer+"api/contacts/").then(res => res.json())
             .then(data => {
@@ -74,6 +59,7 @@ function ChatList(props) {
         var myid = localStorage.getItem('id');
         var nick = "";
         var user = getUserInfoByid(idToAdd);
+        console.log(user);
         if (!user) nick = idToAdd;
         else nick = user.name;
         // GET to get the server of the idToAdd 
@@ -157,7 +143,7 @@ function ChatList(props) {
                                 </Modal.Header>
                                 <Modal.Body>{
                                     <div>
-                                        <input type="text" placeholder='Enter a id' autoComplete="off"
+                                        <input type="text" placeholder='Enter a id'
                                             className="form-control" id="contact-user" onKeyDown={addUserPressedEnter} />
                                         <div className='error-add-user' id='errorAddingUser'>{errorAddUser}</div>
                                     </div>

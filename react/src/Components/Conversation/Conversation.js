@@ -4,14 +4,12 @@ import UserImage from '../UserImage/UserImage';
 import './Conversation.css';
 import { dataServer, chats, video_extensions, audio_extensions, image_extensions } from '../../Data/data';
 import { Modal } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import Contact from '../Contact/Contact';
 
 const Conversation = (props) => {
     const [msg, setMsg] = useState("");
     const [msgList, setMsgList] = useState([]);
     var audioPieces = [];
-    var navigatePages = useNavigate();
     const [showAudioModal, setShowAudioModal] = useState(false);
     const [showFileModal, setShowFileModal] = useState(false);
     const [showVideoModal, setShowVideoModal] = useState(false);
@@ -346,7 +344,7 @@ const Conversation = (props) => {
                     <UserImage src={chosenChat.profileImage} headOf={chosenChat.name} />
                     <div className='user-name'>{chosenChat.name}</div>
                     <div className='logout'>
-                        <button className="image-logout-button" onClick={() => navigatePages("/", { replace: true })}>
+                        <button className="image-logout-button" onClick={() => props.setShowSignIn(true) }>
                             <img src="/images/logout.png" className="image-logout" alt='logout'></img>
                         </button>
                     </div>
