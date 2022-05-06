@@ -18,8 +18,23 @@ function ChatList(props) {
     const [showImageModal, setShowImageModal] = useState(false);
     const [errorAddUser, setErrorAddUser] = useState('')
     const [showAddModal, setShowAddModal] = useState(false);
-
+    var token = localStorage.getItem('token');
     useEffect(() => {
+        
+        // GET request to add contact to server
+        var config = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        }
+        console.log('before GET')
+        var res = await fetch(dataServer+"api/Contacts/", config);
+        console.log(res.status);
+        console.log('after POST')
+
         if(myContacts.length === 0 && setContactsAlready === false) {
             fetch(dataServer+"api/contacts/").then(res => res.json())
             .then(data => {
