@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using AspNetMvc.Data;
+using AspNetMvc.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AspNetMvcContext>(options =>
@@ -26,4 +28,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Ratings}/{action=Index}/{id?}");
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<MyHub>("/myHub");
+});
+
 app.Run();
+
