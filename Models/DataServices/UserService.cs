@@ -58,9 +58,10 @@ namespace Models.DataServices {
             return users.Find(user => user.Username == username).Contacts;
         }
 
-        public bool AddContact(string friendToAdd, string name, string server, out string response)
+        public bool AddContact(string friendToAdd, string name, string server, 
+            string currentUsername, out string response)
         {
-            var username = Current.Username;
+            var username = currentUsername;
             var currentUser = users.Find(user => user.Username == Current.Username);
             var currentContacts = GetContacts(username);
 
@@ -187,12 +188,12 @@ namespace Models.DataServices {
             return chatsService.Delete(chatToRemove.Id);
         }
 
-        public bool AcceptInvitation(string from, string server, out string response)
+        public bool AcceptInvitation(string from, string server, string currentUsername, out string response)
         {
             var userToAdd = users.Find(u => u.Username == from);
             string name = "";
             if (userToAdd == null) name = userToAdd.Username;
-            return AddContact(from, name, server, out response);
+            return AddContact(from, name, server, currentUsername, out response);
         }
     }
 }

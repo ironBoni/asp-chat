@@ -16,7 +16,6 @@ using Models.Models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AspWebApi.Controllers {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase {
@@ -70,7 +69,8 @@ namespace AspWebApi.Controllers {
                 signingCredentials: mac);
 
             var tokenUser = new JwtSecurityTokenHandler().WriteToken(token);
-            Current.TokenToIdDict[tokenUser] = req.Username;
+            var fullToken = string.Format("Bearer " + tokenUser);
+            Current.TokenToIdDict[fullToken] = req.Username;
             return Ok(tokenUser);
 
         }
