@@ -338,11 +338,6 @@ const Conversation = (props) => {
                 <div className='user-title'>
                     <UserImage src={chosenChat.profileImage} headOf={chosenChat.name} />
                     <div className='user-name'>{chosenChat.name}</div>
-                    <div className='logout'>
-                        <button className="image-logout-button" onClick={() => props.setShowSignIn(true) }>
-                            <img src="/images/logout.png" className="image-logout" alt='logout'></img>
-                        </button>
-                    </div>
                 </div>
                 <div className='message-container' id="chat" scolltop={sTop}>
                     {msgList?.map((msg, key) => (

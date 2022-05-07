@@ -245,28 +245,7 @@
     text-align: center !important;
 }
 
-.image-logout-button {
-    display: flex;
-    border: none;
-    float: right;
-}
-
 .conversation {
     max-width: 75.2vw;
     height: 100%;
-}
-
-.image-logout {
-    width: 6vh;
-    height: 6vh;
-    cursor: pointer;
-}
-
-.logout {
-    vertical-align: right !important;
-    justify-content: right !important;
-    text-align: right !important;
-    float: right;
-    margin-left: auto;
-    margin-right: 0;
 }
