@@ -30,11 +30,12 @@ namespace AspWebApi.Controllers {
         }
 
         // POST api/<RegisterController>
+        [Route("/api/Register")]
         [HttpPost]
         public IActionResult Post([FromBody] RegisterRequest req)
         {
-            bool isUserExist = service.GetById(req.Username) == null;
-            var success = !isUserExist & service.Create(new User(req.Username, req.Nickname, req.Password, req.ProfileImage, req.Server));
+            bool isUserExist = service.GetById(req.Id) != null;
+            var success = !isUserExist && service.Create(new User(req.Id, req.Name, req.Password, req.ProfileImage, req.Server));
 
             if (!success) return BadRequest("User already exist.");
             return Ok();
