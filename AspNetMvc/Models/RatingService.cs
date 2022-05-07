@@ -12,7 +12,12 @@ namespace AspNetMvc.Models {
 
         public bool Create(Rating entity)
         {
-            entity.ID= ratings.Max(r => r.ID) + 1;
+            try { 
+                entity.ID = ratings.Max(r => r.ID) + 1; }
+            catch {
+                entity.ID = 1;
+            }   
+
             ratings.Add(entity);
             return true;
         }
