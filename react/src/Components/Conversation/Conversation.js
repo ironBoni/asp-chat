@@ -48,7 +48,13 @@ const Conversation = (props) => {
     var oldUser = "";
 
     useEffect(() => {
-        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages").then(res => res.json())
+        var config = {
+            method: 'GET',
+            headers: {
+                'Token': localStorage.getItem('token')
+            },
+        }
+        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages", config).then(res => res.json())
             .then(data => {
                 setMsgList(data);
                 oldUser = chosenChat.id;
@@ -92,6 +98,7 @@ const Conversation = (props) => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
+                    'Token': localStorage.getItem('token')
                 },
                 body: JSON.stringify(data)
             }
