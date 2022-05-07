@@ -40,10 +40,6 @@ function ChatList(props) {
     })
 
     useEffect(() => {
-        var textBox = document.getElementById('contact-user');
-
-        if (textBox)
-            textBox.focus();
     }, [showAddModal])
 
 
@@ -64,7 +60,8 @@ function ChatList(props) {
         else nick = user.name;
         // GET to get the server of the idToAdd 
         var res = await fetch(dataServer+"api/contacts/server/"+idToAdd);
-        var friendServer = await res.json();
+        var response = await res.json();
+        var profileImage = response.profileImage;
         if(res.status === 404) {
             setErrorAddUser("id doesn't exist.");
             return;
@@ -74,10 +71,10 @@ function ChatList(props) {
             setErrorAddUser("You cannot add yourself to the chat list.");
             return;
         }
-        console.log(friendServer);
+        console.log(res.server);
 
         // POST request to add contact to server
-        var data = { "id": idToAdd, "name": name, "server": friendServer };
+        var data = { "id": idToAdd, "name": response.name, "server": response.server };
         console.log(data);
         var config = {
             method: 'POST',
@@ -104,7 +101,10 @@ function ChatList(props) {
             messages: []
         });
         var newContacts = [...contactsLst];
-        newContacts.push(getUserInfoByid(idToAdd));
+        newContacts.push({ name: response.name, profileImage: profileImage, id: idToAdd,
+        server: response.server, last: ''});
+        console.log({ name: response.name, profileImage: profileImage, id: idToAdd,
+            server: response.server, last: ''});
         setContactsLst(newContacts);
         setErrorAddUser('');
         setShowAddModal(false);

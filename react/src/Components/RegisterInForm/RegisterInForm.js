@@ -5,7 +5,7 @@ import validate from "./validateRegInfo";
 
 
 const RegisterInForm = ({ submitForm }) => {
-  const { handleChange, values, handleSubmit, errors } = useForm(submitForm, validate)
+  const { handleChange, values, handleSubmit, errors } = useForm(submitForm, validate, 'register')
 
 
   

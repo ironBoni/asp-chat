@@ -4,11 +4,11 @@ import useForm from "../SignInPage/UseForme";
 import React from "react";
 const LogInForm = (props) => {
   
-  const { handleChange, values,handleSubmit,errors } = useForm(props.submitForm,validate)
+  const { handleChange, values,handleLogin,errors } = useForm(props.submitForm,validate, 'login')
 
 
   return (
-    <form id="LogIn" className="input-form" onSubmit={handleSubmit}>
+    <form id="LogIn" className="input-form">
       <input type="text" className="input-field" placeholder="User Name" autoComplete="off"
         name="id" value={values.id} onChange={handleChange}></input>
         {<p className="error" >{errors.id}</p>}
@@ -16,7 +16,7 @@ const LogInForm = (props) => {
       <input type="password"
        className="input-field" placeholder="Enter Password" 
         name="password" value={values.password} onChange={handleChange}></input>
-      <button type="submit" className="submit-btn" >Log In</button>
+      <button type="submit" className="submit-btn" onClick={handleLogin}>Log In</button>
     </form>
   );
 }

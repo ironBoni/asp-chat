@@ -28,6 +28,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 Current.Username = "noam";
+Current.TokenToIdDict = new Dictionary<string, string>();
 UserService.SetContactsForEveryUser();
 
 app.Run();
