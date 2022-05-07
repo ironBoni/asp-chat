@@ -23,10 +23,9 @@ namespace Models.DataServices {
             new User("ran", "Ran Levi", "Np1234", "/profile/ran.webp"),
         };
 
-        public static void SetContactsForEveryUser()
+        public static void SetContactsForEveryUser(string username)
         {
-            var username = Current.Username;
-            var currentUser = users.Find(user => user.Username == Current.Username);
+            var currentUser = users.Find(user => user.Username == username);
             var contactsByMessages = new List<Contact>();
             var chats = chatsService.GetAll();
             var chatsWithHim = chats.Where(chat => chat.Participants.Contains(username));
@@ -55,7 +54,10 @@ namespace Models.DataServices {
 
         public List<Contact> GetContacts(string username)
         {
-            return users.Find(user => user.Username == username).Contacts;
+            var user = users.Find(user => user.Username == username);
+            if (user == null) return new List<Contact>();
+            var contacts = user.Contacts;
+            return contacts;
         }
 
         public bool AddContact(string friendToAdd, string name, string server, out string response)
