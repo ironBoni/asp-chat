@@ -1,5 +1,6 @@
 ﻿using AspWebApi.Models;
 using AspWebApi.Models.Contacts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.DataServices;
@@ -9,6 +10,7 @@ using Models.Models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AspWebApi.Controllers {
+    [Authorize]
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
@@ -23,18 +25,20 @@ namespace AspWebApi.Controllers {
 
         [HttpGet]
         [Route("/api/contacts/{id}/messages")]
-        public IActionResult GetMessagesByContact(string id)
+        public IActionResult GetMessagesByContact(string id, [FromHeader] TokenHeader tokenHeader)
         {
-            var messages = chatService.GetAllMessages(id, Current.Username);
+            var username = Current.TokenToIdDict[tokenHeader.Token];
+            var messages = chatService.GetAllMessages(id, username);
             if (messages == null) return BadRequest();
             return Ok(messages.Select(m => new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
         }
 
         [HttpGet]
         [Route("/api/contacts/{id}/messages/{id2}")]
-        public IActionResult GetMessagesByContact(string id, int id2)
+        public IActionResult GetMessagesByContact(string id, int id2, [FromHeader] TokenHeader tokenHeader)
         {
-            var messages = chatService.GetAllMessages(id, Current.Username);
+            var username = Current.TokenToIdDict[tokenHeader.Token];
+            var messages = chatService.GetAllMessages(id, username);
             if (messages == null) return BadRequest();
             var m = messages.Find(m => m.Id == id2);
             return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
@@ -42,15 +46,16 @@ namespace AspWebApi.Controllers {
 
         [HttpPost]
         [Route("/api/contacts/{id}/messages")]
-        public IActionResult SendMessage(string id, [FromBody] SendMessageRequest req)
+        public IActionResult SendMessage(string id, [FromBody] SendMessageRequest req, [FromHeader] TokenHeader tokenHeader)
         {
-            var messages = chatService.GetAllMessages(id, Current.Username);
+            var username = Current.TokenToIdDict[tokenHeader.Token];
+            var messages = chatService.GetAllMessages(id, username);
             if (messages == null) return BadRequest();
-            var chat = chatService.GetChatByParticipants(id, Current.Username);
+            var chat = chatService.GetChatByParticipants(id, username);
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
             string sender = "";
             if (req.SenderUsername == null) sender = id;
-            else sender = Current.Username;
+            else sender = username;
             var message = new Message(msgId, req.Content, sender, true);
             var success = chatService.AddMessage(chat.Id, message);
             if(!success) return BadRequest("The message could not be added.");
@@ -59,9 +64,10 @@ namespace AspWebApi.Controllers {
 
         [HttpDelete]
         [Route("/api/contacts/{id}/messages/{id2}")]
-        public IActionResult RemoveMessageById(string id, int id2)
+        public IActionResult RemoveMessageById(string id, int id2, [FromHeader] TokenHeader tokenHeader)
         {
-            var messages = chatService.GetAllMessages(id, Current.Username);
+            var username = Current.TokenToIdDict[tokenHeader.Token];
+            var messages = chatService.GetAllMessages(id, username);
             if (messages == null) return BadRequest();
             messages.Remove(messages.Find(m => m.Id == id2));
             return StatusCode(204);
@@ -70,9 +76,10 @@ namespace AspWebApi.Controllers {
 
         [HttpPut]
         [Route("/api/contacts/{id}/messages/{id2}")]
-        public IActionResult UpdateMessageById(string id, int id2, [FromBody] PutMessageRequest req)
+        public IActionResult UpdateMessageById(string id, int id2, [FromBody] PutMessageRequest req, [FromHeader] TokenHeader tokenHeader)
         {
-            var messages = chatService.GetAllMessages(id, Current.Username);
+            var username = Current.TokenToIdDict[tokenHeader.Token];
+            var messages = chatService.GetAllMessages(id, username);
             if (messages == null) return BadRequest();
             var message = messages.Find(m => m.Id == id2);
             message.Text = req.Content;
@@ -81,9 +88,10 @@ namespace AspWebApi.Controllers {
 
         // GET: api/<ContactsController>
         [HttpGet]
-        public IEnumerable<Contact> Get()
+        public IEnumerable<Contact> Get([FromHeader] TokenHeader tokenHeader)
         {
-            var result = userService.GetContacts(Current.Username);
+            var username = Current.TokenToIdDict[tokenHeader.Token];
+            var result = userService.GetContacts(username);
 
             return result;
         }
@@ -100,8 +108,9 @@ namespace AspWebApi.Controllers {
         // POST api/<ContactsController>
         [HttpPost]
         [Route("/api/Contacts")]
-        public IActionResult Post([FromBody] ContactRequest req)
+        public IActionResult Post([FromBody] ContactRequest req, [FromHeader] TokenHeader tokenHeader)
         {
+            var username = Current.TokenToIdDict[tokenHeader.Token];
             string response;
             var isAddOk = userService.AddContact(req.Id, req.Name, req.Server, out response);
             if (!isAddOk)
@@ -112,9 +121,10 @@ namespace AspWebApi.Controllers {
 
         // GET api/<ContactsController>/5
         [HttpGet("{username}")]
-        public IActionResult Get(string username)
+        public IActionResult Get(string username, [FromHeader] TokenHeader tokenHeader)
         {
-            var result = userService.GetContacts(Current.Username).Find(contact => contact.Id == username);
+            var myUsername = Current.TokenToIdDict[tokenHeader.Token];
+            var result = userService.GetContacts(myUsername).Find(contact => contact.Id == username);
             if (result == null)
                 return NotFound();
             return Ok(result);
@@ -122,9 +132,10 @@ namespace AspWebApi.Controllers {
 
         // PUT api/<ContactsController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromBody] PutContactRequest request)
+        public IActionResult Put(string id, [FromBody] PutContactRequest request, [FromHeader] TokenHeader tokenHeader)
         {
-            var contact = userService.GetContacts(Current.Username).Find(c => c.Id == id);
+            var username = Current.TokenToIdDict[tokenHeader.Token];
+            var contact = userService.GetContacts(username).Find(c => c.Id == id);
             if (contact == null)
                 return StatusCode(400);
 
