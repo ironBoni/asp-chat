@@ -51,13 +51,10 @@ const Conversation = (props) => {
                 setMsgList(data);
                 oldUser = chosenChat.id;
             });
-    })
+    }, [])
 
     useEffect(() => {
         var shouldBreak = false;
-        var textbox = document.getElementById('textbox');
-        if (textbox)
-            textbox.focus();
     });
 
     const sendMessage = () => {
@@ -83,7 +80,15 @@ const Conversation = (props) => {
                 created: new Date()
             };
 
-            // POST - Transfer
+            newMessages.push(newMsg);
+            msgListInDb.push(newMsg)
+            setMsgList(newMessages);
+            setMsg("");
+            updateScroll();
+            updateLastMsgInGui();
+            setTimeout(updateScroll, 125);
+
+            //POST - Transfer
             var data = { "from": id, "to": chosenChat.id, "content": msg };
             var config = {
                 method: 'POST',
@@ -94,16 +99,6 @@ const Conversation = (props) => {
                 body: JSON.stringify(data)
             }
             fetch(dataServer + "api/transfer/", config);
-
-            newMessages.push(newMsg);
-            msgListInDb.push(newMsg)
-            setMsgList(newMessages);
-
-
-            setMsg("");
-            updateScroll();
-            updateLastMsgInGui();
-            setTimeout(updateScroll, 125);
         }
     };
 
@@ -359,7 +354,7 @@ const Conversation = (props) => {
                 <div className='chat-box'>
                     <div className='search-container'>
                         {/*Take a picture*/}
-                        <button className='click-button'
+                        <button className='click-button hide-it'
                             onClick={() => { setShowPictureModal(true); }}>
                             <img className='button-image' src="/images/take-photo.png" alt='button'></img></button>
                         {/*Upload Image Modal*/}
@@ -378,10 +373,10 @@ const Conversation = (props) => {
                         </Modal>
 
 
-                        <button className='click-button'
+                        <button className='click-button hide-it'
                             onClick={startRecord}>
                             <img className='button-image' src="/images/record-audio.jpg" alt='button'></img></button>
-                        <button className='click-button' onClick={() => { setShowVideoModal(true); }}>
+                        <button className='click-button hide-it' onClick={() => { setShowVideoModal(true); }}>
                             <img className='button-image' src="/images/video-icon.png" alt='button'></img></button>
                         {/*Upload Video Modal*/}
                         <Modal show={showVideoModal} centered dialogClassName="file-modal"
@@ -398,7 +393,7 @@ const Conversation = (props) => {
                             </Modal.Footer>
                         </Modal>
 
-                        <button className='click-button' onClick={setModalFileToShow}>
+                        <button className='click-button hide-it' onClick={setModalFileToShow}>
                             <img className='button-image' src="/images/attach.jpg" alt='button'></img></button>
                         {/*Record Audio Modal*/}
                         <Modal show={showAudioModal} centered onHide={() => setShowAudioModal(false)} id="modalAudio">

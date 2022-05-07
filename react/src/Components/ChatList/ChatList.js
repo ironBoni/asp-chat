@@ -40,10 +40,6 @@ function ChatList(props) {
     })
 
     useEffect(() => {
-        var textBox = document.getElementById('contact-user');
-
-        if (textBox)
-            textBox.focus();
     }, [showAddModal])
 
 

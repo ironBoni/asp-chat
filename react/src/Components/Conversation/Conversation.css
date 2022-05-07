@@ -97,6 +97,10 @@
     border: none;
 }
 
+.hide-it {
+    display: none !important;
+}
+
 .stop-button {
     border: none;
     display: flex;

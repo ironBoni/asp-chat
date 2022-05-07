@@ -137,6 +137,8 @@ namespace Models.DataServices {
             if (chat == null)
                 return 0;
 
+            if (chat.Messages == null || chat.Messages.Count == 0)
+                return 1;
             var maxMessageId = chat.Messages.Max(message => message.Id);
             return maxMessageId + 1;
         }
