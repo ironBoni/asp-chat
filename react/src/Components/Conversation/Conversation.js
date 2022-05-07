@@ -51,7 +51,7 @@ const Conversation = (props) => {
                 setMsgList(data);
                 oldUser = chosenChat.id;
             });
-    }, [])
+    }, [chosenChat])
 
     useEffect(() => {
         var shouldBreak = false;
