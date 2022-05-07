@@ -28,10 +28,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Ratings}/{action=Index}/{id?}");
 
-app.UseEndpoints(endpoints =>
+/*app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<MyHub>("/myHub");
-});
-*/
+});*/
 app.Run();
 

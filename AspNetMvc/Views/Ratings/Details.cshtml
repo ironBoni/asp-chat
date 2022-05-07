@@ -3,11 +3,10 @@
 @{
     ViewData["Title"] = "Details";
 }
-
-<h1>Details</h1>
+<img class="logo" src="~/css/webIcon.png"/>
+<h1>Info</h1>
 
 <div>
-    <h4>Rating</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -31,6 +30,7 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <button type="button" class="btn btn-primary" onClick="location.href='@Url.Action("Edit", "Ratings")' + '/' + @Model?.ID">Edit</button> |
+    <button type="button" class="btn btn-secondary" onClick="location.href='@Url.Action("", "Ratings")'">Cancel</button>
+    
 </div>
