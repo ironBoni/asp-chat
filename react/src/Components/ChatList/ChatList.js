@@ -25,12 +25,11 @@ function ChatList(props) {
             var config = {
                 method: 'GET',
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 },
             }
-            fetch(dataServer + "api/contacts/", config).then(res => res.json())
+            console.log(config.headers);
+            fetch(dataServer + "api/Contacts", config).then(res => res.json())
                 .then(data => {
                     myContacts = data;
                     setContactsLst(myContacts);

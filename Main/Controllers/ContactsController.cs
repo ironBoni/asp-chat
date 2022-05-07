@@ -101,11 +101,9 @@ namespace AspWebApi.Controllers {
         // GET: api/<ContactsController>
         [HttpGet]
         [Route("/api/Contacts")]
-        public IActionResult Get([FromHeader] TokenHeader tokenHeader)
+        public IActionResult Get()
         {
-            var token = tokenHeader?.Authorization;
-            if (token == null) return BadRequest();
-            var username = Current.TokenToIdDict[tokenHeader.Authorization];
+            var username = Current.Username;
             var result = userService.GetContacts(username);
 
             return Ok(result);
