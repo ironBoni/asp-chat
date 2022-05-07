@@ -7,6 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\profile\eyal.webp" />
+    <None Include="wwwroot\profile\oren.webp" />
+    <None Include="wwwroot\profile\ran.webp" />
+    <None Include="wwwroot\static\css\main.216a45fb.css.map" />
+    <None Include="wwwroot\static\js\787.35cea4b2.chunk.js" />
+    <None Include="wwwroot\static\js\787.35cea4b2.chunk.js.map" />
+    <None Include="wwwroot\static\js\main.b572dd80.js" />
+    <None Include="wwwroot\static\js\main.b572dd80.js.map" />
+    <None Include="wwwroot\static\js\main.d07197b7.js" />
+    <None Include="wwwroot\static\js\main.d07197b7.js.map" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
