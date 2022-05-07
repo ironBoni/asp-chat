@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { users } from '../../Data/data';
+import { users, dataServer } from '../../Data/data';
 
-const useForm = (submitForm, validate) => {
+const useForm = (submitForm, validate, type) => {
   const [values, setValues] = useState({
     id: '',
     name: '',
@@ -38,17 +38,44 @@ const useForm = (submitForm, validate) => {
     };
   }
 
-  const handleSubmit = e => {
+  function handleLogin(e) {
     e.preventDefault();
     var result  = validate(values)
-    setErrors(result.errors);
-    
-    if (e.target.name === "Register" && result.flag ) {
+    setErrors(result.errors);    
+    setIsSubmitting(true);
+  };
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+    var result = validate(values)
+    setErrors(result.errors);
+    console.log(result.flag);
+    console.log(e.target.name);
+    if (result.flag) {
+      console.log("line 47");
       users.push({
         id: values.id, name: values.name, password: values.password,
         profileImage: values.profileImage
       })
+
+      // POST request to add contact to server
+      var data = {
+        "id": values.id, "name": values.name, "password": values.password,
+        "profileImage": values.profileImage, "server": "http://localhost:5186"
+      };
+      console.log(data);
+      var config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      }
+      console.log('before POST')
+      console.log(dataServer + "api/Register");
+      var res = await fetch(dataServer + "api/Register", config);
+
       setValues({
         id: '',
         name: '',
@@ -58,8 +85,8 @@ const useForm = (submitForm, validate) => {
 
       })
     }
-
     setIsSubmitting(true);
+    console.log("after post");
   };
 
 
@@ -74,6 +101,8 @@ const useForm = (submitForm, validate) => {
     [errors]
   );
 
+  if (type == 'login')
+    return { handleChange, handleLogin, values, errors };
   return { handleChange, handleSubmit, values, errors };
 };
 
