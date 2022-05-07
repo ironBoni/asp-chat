@@ -10,6 +10,7 @@ const Conversation = (props) => {
     const [msg, setMsg] = useState("");
     const [msgList, setMsgList] = useState([]);
     var audioPieces = [];
+    var token = localStorage.getItem('token');
     const [showAudioModal, setShowAudioModal] = useState(false);
     const [showFileModal, setShowFileModal] = useState(false);
     const [showVideoModal, setShowVideoModal] = useState(false);
@@ -44,9 +45,16 @@ const Conversation = (props) => {
     var canAddRecord = false;
     var alreadyGotMessages = false;
     var oldUser = "";
+    var config = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }
 
     useEffect(() => {
-        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages").then(res => res.json())
+        console.log(token);
+        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages", config).then(res => res.json())
             .then(data => {
                 setMsgList(data);
                 oldUser = chosenChat.id;
@@ -93,11 +101,11 @@ const Conversation = (props) => {
             var config = {
                 method: 'POST',
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(data)
             }
+            console.log(token);
             fetch(dataServer + "api/transfer/", config);
         }
     };

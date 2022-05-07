@@ -40,8 +40,8 @@ const useForm = (submitForm, validate, type) => {
 
   function handleLogin(e) {
     e.preventDefault();
-    var result  = validate(values)
-    setErrors(result.errors);    
+    var result = validate(values)
+    setErrors(result.errors);
     setIsSubmitting(true);
   };
 
@@ -67,8 +67,8 @@ const useForm = (submitForm, validate, type) => {
       var config = {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          'accept': '*/*',
+          'content-Type': 'application/json'
         },
         body: JSON.stringify(data)
       }
@@ -96,6 +96,16 @@ const useForm = (submitForm, validate, type) => {
 
         submitForm();
         localStorage.setItem("id", values.id);
+        fetch(dataServer + "api/Login", {
+          method: 'POST',
+          headers: {
+            'Accept': '*/*',
+            'Accept-Endcoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({ "username": values.id, "password": values.password })})
+          .then(res => res.json()).then(token => localStorage.setItem("token", token));
       }
     },
     [errors]
