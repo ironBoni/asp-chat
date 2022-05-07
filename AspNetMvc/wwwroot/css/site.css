@@ -14,5 +14,25 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background: url(../css/Design-Background.jpg) fixed;
+    background-size: cover;
+    overflow: auto;
 }
+
+.search {
+    padding: 10px 10px;
+    margin: 5px 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom: 1px solid rgb(59, 56, 56);
+    outline: none;
+    background: transparent;
+}
+
+.btn {
+    background: linear-gradient(to right, #241a5a, rgb(59, 60, 110));
+}
+
+
