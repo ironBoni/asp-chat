@@ -14,6 +14,8 @@
     <None Include="wwwroot\static\css\main.822dc955.css.map" />
     <None Include="wwwroot\static\js\787.35cea4b2.chunk.js" />
     <None Include="wwwroot\static\js\787.35cea4b2.chunk.js.map" />
+    <None Include="wwwroot\static\js\main.0e5a3e2a.js" />
+    <None Include="wwwroot\static\js\main.0e5a3e2a.js.map" />
     <None Include="wwwroot\static\js\main.9c1961a7.js" />
     <None Include="wwwroot\static\js\main.9c1961a7.js.map" />
     <None Include="wwwroot\static\js\main.b572dd80.js" />
