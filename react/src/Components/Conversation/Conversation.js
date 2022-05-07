@@ -44,18 +44,9 @@ const Conversation = (props) => {
     var canAddRecord = false;
     var alreadyGotMessages = false;
     var oldUser = "";
-    var token = localStorage.getItem('token');
 
     useEffect(() => {
-        var config = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            }
-        }    
-        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages", config).then(res => res.json())
+        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages").then(res => res.json())
             .then(data => {
                 setMsgList(data);
                 oldUser = chosenChat.id;
@@ -104,7 +95,6 @@ const Conversation = (props) => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(data)
             }

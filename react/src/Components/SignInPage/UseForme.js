@@ -40,28 +40,9 @@ const useForm = (submitForm, validate, type) => {
 
   function handleLogin(e) {
     e.preventDefault();
-    var result = validate(values)
-    setErrors(result.errors);
-    var data = { "username": values.id, "password": values.password };
-    var config = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    }
+    var result  = validate(values)
+    setErrors(result.errors);    
     setIsSubmitting(true);
-    fetch(dataServer + "api/Login", config).then(res => {
-      //if (res.status === 200)
-      //else
-      //  errors.password = 'id or password does not match';
-      console.log(res.status);
-      return res.json()
-    }).then(token => {
-      console.log(token);
-      localStorage.setItem('token', token);
-    })
   };
 
   async function handleSubmit(e) {
