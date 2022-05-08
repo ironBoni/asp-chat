@@ -1,4 +1,5 @@
-﻿using Models.DataServices.Interfaces;
+﻿using AspWebApi.Models;
+using Models.DataServices.Interfaces;
 using Models.Models;
 using System;
 using System.Collections.Generic;
@@ -23,31 +24,14 @@ namespace Models.DataServices {
             new User("ran", "Ran Levi", "Np1234", "/profile/ran.webp"),
         };
 
-        public static void SetContactsForEveryUser(string username)
+        public static void SetContactsForThisUser(string username)
         {
-            var currentUser = users.Find(user => user.Username == username);
-            var contactsByMessages = new List<Contact>();
-            var chats = chatsService.GetAll();
-            var chatsWithHim = chats.Where(chat => chat.Participants.Contains(username));
-
-            var friends = chatsWithHim.Select(chat => chat.Participants.Find(participant => participant != username));
-
-            foreach (var fUsername in friends)
-            {
-                var fUser = users.Find(user => user.Username == fUsername);
-                var chat = chats.Find(chat => chat.Participants.Contains(username) &&
-                                                       chat.Participants.Contains(fUsername));
-                var lastTime = chat.Messages.Max(message => message.WrittenIn);
-                var lastMsg = chat.Messages.Find(message => message.WrittenIn == lastTime);
-                var contact = new Contact(fUsername, fUser.Nickname, fUser.Server, lastMsg.Text, lastTime, fUser.ProfileImage);
-                contactsByMessages.Add(contact);
-            }
-
-            foreach (var contact in contactsByMessages)
-            {
-                if (!currentUser.Contacts.Contains(contact))
-                    currentUser.Contacts.Add(contact);
-            }
+            var user = users.Find(user => user.Username == username);
+            if (user == null) return;
+            
+            if(!CurrentUsers.IdToContactsDict.ContainsKey(username))
+                CurrentUsers.SetContactsForUser(username);
+            user.Contacts = CurrentUsers.IdToContactsDict[username];
         }
 
         private static IDataService<Chat, int> chatsService = new ChatService();
@@ -101,7 +85,10 @@ namespace Models.DataServices {
 
             var newContact = new Contact(friendToAdd, name, server, null, null, friend.ProfileImage);
             if (!currentUser.Contacts.Contains(newContact))
+            {
                 currentUser.Contacts.Add(newContact);
+                CurrentUsers.IdToContactsDict[currentUser.Username] = currentUser.Contacts;
+            }
 
             response = "";
             return chatsService.Create(newChat);
@@ -175,6 +162,7 @@ namespace Models.DataServices {
             }
 
             currentUser.Contacts.Remove(contactToRemove);
+            CurrentUsers.IdToContactsDict[currentUser.Username] = currentUser.Contacts;
 
             var chatToRemove = chatsService.GetAll().Find(
                 c => c.Participants.Contains(userToRemove) &&

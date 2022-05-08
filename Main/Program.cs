@@ -1,6 +1,6 @@
+using AspWebApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Models.DataServices;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,4 +43,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+CurrentUsers.SetContacts();
 app.Run();

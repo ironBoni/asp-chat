@@ -124,7 +124,7 @@ namespace AspNetMvc.Controllers {
                 {
                     service.Update(rating);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     if (!RatingExists(rating.ID))
                     {
