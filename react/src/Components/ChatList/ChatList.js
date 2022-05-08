@@ -7,6 +7,7 @@ import { Modal } from 'react-bootstrap';
 function ChatList(props) {
     var id = localStorage.getItem('id');
     var myContacts = [];
+    var token = localStorage.getItem('token');
     var setContactsAlready = false;
     // goes over the chat and find the contacts he talked with.
     // GET from the server the list of contact
@@ -20,20 +21,31 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
-        if(myContacts.length === 0 && setContactsAlready === false) {
-            fetch(dataServer+"api/contacts/").then(res => res.json())
+        var config = {
+            method: 'GET',
+            headers: {
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        }
+
+        fetch(dataServer + "api/contacts/", config).then(res => res.json())
             .then(data => {
                 myContacts = data;
                 setContactsLst(myContacts);
                 setContactsAlready = true;
             });
-        }
+    }, [])
+    useEffect(() => {
         var id = localStorage.getItem('id');
         if (!id)
             id = 'noam';
         var userData = users.filter((user) => user.id === id)[0];
 
-        
+
         setUserImage(userData.profileImage);
         setname(userData.name);
 
@@ -59,15 +71,23 @@ function ChatList(props) {
         if (!user) nick = idToAdd;
         else nick = user.name;
         // GET to get the server of the idToAdd 
-        var res = await fetch(dataServer+"api/contacts/server/"+idToAdd);
+        var config = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        }
+
+        console.log(token);
+        var res = await fetch(dataServer + "api/contacts/server/" + idToAdd, config);
         var response = await res.json();
         var profileImage = response.profileImage;
-        if(res.status === 404) {
+        if (res.status === 404) {
             setErrorAddUser("id doesn't exist.");
             return;
         }
 
-        if(idToAdd === myid) {
+        if (idToAdd === myid) {
             setErrorAddUser("You cannot add yourself to the chat list.");
             return;
         }
@@ -79,17 +99,18 @@ function ChatList(props) {
         var config = {
             method: 'POST',
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'accept': '*/*',
+                'content-type': 'application/json',
             },
             body: JSON.stringify(data)
         }
         console.log('before POST')
-        var res = await fetch(dataServer+"api/Contacts/", config);
+        console.log(token);
+        var res = await fetch(dataServer + "api/Contacts/", config);
         console.log(res.status);
         console.log('after POST')
 
-        if(res.status === 400) {
+        if (res.status === 400) {
             setErrorAddUser("This user is already in your contacts list.");
             return;
         }
@@ -101,10 +122,14 @@ function ChatList(props) {
             messages: []
         });
         var newContacts = [...contactsLst];
-        newContacts.push({ name: response.name, profileImage: profileImage, id: idToAdd,
-        server: response.server, last: ''});
-        console.log({ name: response.name, profileImage: profileImage, id: idToAdd,
-            server: response.server, last: ''});
+        newContacts.push({
+            name: response.name, profileImage: profileImage, id: idToAdd,
+            server: response.server, last: ''
+        });
+        console.log({
+            name: response.name, profileImage: profileImage, id: idToAdd,
+            server: response.server, last: ''
+        });
         setContactsLst(newContacts);
         setErrorAddUser('');
         setShowAddModal(false);
@@ -175,7 +200,7 @@ function ChatList(props) {
                 </div>
 
                 <div className='left-bar'>
-                    { contactsLst.map((user, key) => {
+                    {contactsLst.map((user, key) => {
                         if (user.id != localStorage.getItem('id')) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
                                 updateLastM={props.updateLastProp} />)
