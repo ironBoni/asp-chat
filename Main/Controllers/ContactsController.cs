@@ -1,5 +1,6 @@
 ﻿using AspWebApi.Models;
 using AspWebApi.Models.Contacts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.DataServices;
@@ -9,6 +10,7 @@ using Models.Models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AspWebApi.Controllers {
+    [Authorize]
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
@@ -25,6 +27,8 @@ namespace AspWebApi.Controllers {
         [Route("/api/contacts/{id}/messages")]
         public IActionResult GetMessagesByContact(string id)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
+            UserService.SetContactsForEveryUser(Current.Username);
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             return Ok(messages.Select(m => new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
@@ -34,6 +38,8 @@ namespace AspWebApi.Controllers {
         [Route("/api/contacts/{id}/messages/{id2}")]
         public IActionResult GetMessagesByContact(string id, int id2)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
+            UserService.SetContactsForEveryUser(Current.Username);
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var m = messages.Find(m => m.Id == id2);
@@ -44,6 +50,9 @@ namespace AspWebApi.Controllers {
         [Route("/api/contacts/{id}/messages")]
         public IActionResult SendMessage(string id, [FromBody] SendMessageRequest req)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
+            UserService.SetContactsForEveryUser(Current.Username);
+
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var chat = chatService.GetChatByParticipants(id, Current.Username);
@@ -61,6 +70,9 @@ namespace AspWebApi.Controllers {
         [Route("/api/contacts/{id}/messages/{id2}")]
         public IActionResult RemoveMessageById(string id, int id2)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
+            UserService.SetContactsForEveryUser(Current.Username);
+
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             messages.Remove(messages.Find(m => m.Id == id2));
@@ -72,6 +84,9 @@ namespace AspWebApi.Controllers {
         [Route("/api/contacts/{id}/messages/{id2}")]
         public IActionResult UpdateMessageById(string id, int id2, [FromBody] PutMessageRequest req)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
+            UserService.SetContactsForEveryUser(Current.Username);
+
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var message = messages.Find(m => m.Id == id2);
@@ -83,6 +98,8 @@ namespace AspWebApi.Controllers {
         [HttpGet]
         public IEnumerable<Contact> Get()
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
+            UserService.SetContactsForEveryUser(Current.Username);
             var result = userService.GetContacts(Current.Username);
 
             return result;
@@ -114,6 +131,9 @@ namespace AspWebApi.Controllers {
         [HttpGet("{username}")]
         public IActionResult Get(string username)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
+            UserService.SetContactsForEveryUser(Current.Username);
+
             var result = userService.GetContacts(Current.Username).Find(contact => contact.Id == username);
             if (result == null)
                 return NotFound();
@@ -124,6 +144,9 @@ namespace AspWebApi.Controllers {
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromBody] PutContactRequest request)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
+            UserService.SetContactsForEveryUser(Current.Username);
+
             var contact = userService.GetContacts(Current.Username).Find(c => c.Id == id);
             if (contact == null)
                 return StatusCode(400);
