@@ -21,32 +21,31 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
-        if(myContacts.length === 0 && setContactsAlready === false) {
-            var config = {
-                method: 'GET',
-                headers: {
-                    'Accept' : '*/*',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'Connection': 'keep-alive',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                }
+        var config = {
+            method: 'GET',
+            headers: {
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             }
+        }
 
-            console.log("the token is: " + token);
-            fetch(dataServer+"api/contacts/", config).then(res => res.json())
+        fetch(dataServer + "api/contacts/", config).then(res => res.json())
             .then(data => {
                 myContacts = data;
                 setContactsLst(myContacts);
                 setContactsAlready = true;
             });
-        }
+    }, [])
+    useEffect(() => {
         var id = localStorage.getItem('id');
         if (!id)
             id = 'noam';
         var userData = users.filter((user) => user.id === id)[0];
 
-        
+
         setUserImage(userData.profileImage);
         setname(userData.name);
 
@@ -80,15 +79,15 @@ function ChatList(props) {
         }
 
         console.log(token);
-        var res = await fetch(dataServer+"api/contacts/server/"+idToAdd, config);
+        var res = await fetch(dataServer + "api/contacts/server/" + idToAdd, config);
         var response = await res.json();
         var profileImage = response.profileImage;
-        if(res.status === 404) {
+        if (res.status === 404) {
             setErrorAddUser("id doesn't exist.");
             return;
         }
 
-        if(idToAdd === myid) {
+        if (idToAdd === myid) {
             setErrorAddUser("You cannot add yourself to the chat list.");
             return;
         }
@@ -107,11 +106,11 @@ function ChatList(props) {
         }
         console.log('before POST')
         console.log(token);
-        var res = await fetch(dataServer+"api/Contacts/", config);
+        var res = await fetch(dataServer + "api/Contacts/", config);
         console.log(res.status);
         console.log('after POST')
 
-        if(res.status === 400) {
+        if (res.status === 400) {
             setErrorAddUser("This user is already in your contacts list.");
             return;
         }
@@ -123,10 +122,14 @@ function ChatList(props) {
             messages: []
         });
         var newContacts = [...contactsLst];
-        newContacts.push({ name: response.name, profileImage: profileImage, id: idToAdd,
-        server: response.server, last: ''});
-        console.log({ name: response.name, profileImage: profileImage, id: idToAdd,
-            server: response.server, last: ''});
+        newContacts.push({
+            name: response.name, profileImage: profileImage, id: idToAdd,
+            server: response.server, last: ''
+        });
+        console.log({
+            name: response.name, profileImage: profileImage, id: idToAdd,
+            server: response.server, last: ''
+        });
         setContactsLst(newContacts);
         setErrorAddUser('');
         setShowAddModal(false);
@@ -197,7 +200,7 @@ function ChatList(props) {
                 </div>
 
                 <div className='left-bar'>
-                    { contactsLst.map((user, key) => {
+                    {contactsLst.map((user, key) => {
                         if (user.id != localStorage.getItem('id')) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
                                 updateLastM={props.updateLastProp} />)

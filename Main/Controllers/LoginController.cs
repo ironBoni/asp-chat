@@ -1,4 +1,5 @@
-﻿using AspWebApi.Models.Login;
+﻿using AspWebApi.Models;
+using AspWebApi.Models.Login;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Models;
@@ -46,8 +47,10 @@ namespace AspWebApi.Controllers {
             }
         }
 
-        private string CreateToken(User user)
+        private TokenResponse CreateToken(User user)
         {
+            if(CurrentUsers.IdToTokenDict.ContainsKey(user.Username))
+                return new TokenResponse(CurrentUsers.IdToTokenDict[user.Username]);   
             //create claims details based on the user information
             var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, configuration["Jwt:Subject"]),
@@ -62,9 +65,9 @@ namespace AspWebApi.Controllers {
                 configuration["Jwt:Issuer"],
                 configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(20),
+                expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: signIn);
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new TokenResponse(new JwtSecurityTokenHandler().WriteToken(token));
             /*       List<Claim> claims = new List<Claim>
                    {
                        new Claim(ClaimTypes.Name, user.Username)

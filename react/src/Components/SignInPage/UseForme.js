@@ -11,6 +11,7 @@ const useForm = (submitForm, validate, type) => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoginOk, setIsLoginOk] = useState(false);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -38,11 +39,15 @@ const useForm = (submitForm, validate, type) => {
     };
   }
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
     var result = validate(values)
     setErrors(result.errors);
-    setIsSubmitting(true);
+    if (Object.keys(errors).length === 0) {
+      localStorage.setItem("id", values.id);
+      waitForToken();
+      submitForm();
+    }
   };
 
   async function handleSubmit(e) {
@@ -85,31 +90,25 @@ const useForm = (submitForm, validate, type) => {
 
       })
     }
-    setIsSubmitting(true);
+    submitForm();
     console.log("after post");
   };
 
-
-  useEffect(
-    (e) => {
-      if (Object.keys(errors).length === 0 && isSubmitting) {
-
-        submitForm();
-        localStorage.setItem("id", values.id);
-        fetch(dataServer + "api/Login", {
-          method: 'POST',
-          headers: {
-            'Accept': '*/*',
-            'Accept-Endcoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-            'Content-type': 'application/json',
-          },
-          body: JSON.stringify({ "username": values.id, "password": values.password })})
-          .then(res => res.json()).then(token => localStorage.setItem("token", token));
-      }
-    },
-    [errors]
-  );
+  async function waitForToken() {
+    var res = await fetch(dataServer + "api/Login", {
+      method: 'POST',
+      headers: {
+        'Accept': '*/*',
+        'Accept-Endcoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({ "username": values.id, "password": values.password })})
+    console.log(res);
+    var token = await res.json();
+    console.log(token.token);
+    localStorage.setItem("token", token.token);
+  }
 
   if (type == 'login')
     return { handleChange, handleLogin, values, errors };
