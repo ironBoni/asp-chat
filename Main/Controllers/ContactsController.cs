@@ -28,7 +28,7 @@ namespace AspWebApi.Controllers {
         public IActionResult GetMessagesByContact(string id)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForEveryUser(Current.Username);
+            UserService.SetContactsForThisUser(Current.Username);
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             return Ok(messages.Select(m => new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
@@ -39,7 +39,7 @@ namespace AspWebApi.Controllers {
         public IActionResult GetMessagesByContact(string id, int id2)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForEveryUser(Current.Username);
+            UserService.SetContactsForThisUser(Current.Username);
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var m = messages.Find(m => m.Id == id2);
@@ -51,7 +51,7 @@ namespace AspWebApi.Controllers {
         public IActionResult SendMessage(string id, [FromBody] SendMessageRequest req)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForEveryUser(Current.Username);
+            UserService.SetContactsForThisUser(Current.Username);
 
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
@@ -71,7 +71,7 @@ namespace AspWebApi.Controllers {
         public IActionResult RemoveMessageById(string id, int id2)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForEveryUser(Current.Username);
+            UserService.SetContactsForThisUser(Current.Username);
 
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
@@ -85,7 +85,7 @@ namespace AspWebApi.Controllers {
         public IActionResult UpdateMessageById(string id, int id2, [FromBody] PutMessageRequest req)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForEveryUser(Current.Username);
+            UserService.SetContactsForThisUser(Current.Username);
 
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
@@ -99,7 +99,7 @@ namespace AspWebApi.Controllers {
         public IEnumerable<Contact> Get()
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForEveryUser(Current.Username);
+            UserService.SetContactsForThisUser(Current.Username);
             var result = userService.GetContacts(Current.Username);
 
             return result;
@@ -132,7 +132,7 @@ namespace AspWebApi.Controllers {
         public IActionResult Get(string username)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForEveryUser(Current.Username);
+            UserService.SetContactsForThisUser(Current.Username);
 
             var result = userService.GetContacts(Current.Username).Find(contact => contact.Id == username);
             if (result == null)
@@ -145,7 +145,7 @@ namespace AspWebApi.Controllers {
         public IActionResult Put(string id, [FromBody] PutContactRequest request)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForEveryUser(Current.Username);
+            UserService.SetContactsForThisUser(Current.Username);
 
             var contact = userService.GetContacts(Current.Username).Find(c => c.Id == id);
             if (contact == null)

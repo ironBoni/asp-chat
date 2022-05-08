@@ -8,6 +8,7 @@ function ChatList(props) {
     var id = localStorage.getItem('id');
     var myContacts = [];
     var token = localStorage.getItem('token');
+    //var token = props.token;
     var setContactsAlready = false;
     // goes over the chat and find the contacts he talked with.
     // GET from the server the list of contact
@@ -21,24 +22,27 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
-        var config = {
-            method: 'GET',
-            headers: {
-                'Accept': '*/*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Connection': 'keep-alive',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+        fetch(dataServer+"api/Login/" + id).then(res => res.json()).then(tok => {
+            token = tok.token;
+            localStorage.setItem('token', tok.token);
+            var config = {
+                method: 'GET',
+                headers: {
+                    'Accept': '*/*',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
             }
-        }
-
-        fetch(dataServer + "api/contacts/", config).then(res => res.json())
-            .then(data => {
-                myContacts = data;
-                setContactsLst(myContacts);
-                setContactsAlready = true;
-            });
-    }, [])
+            fetch(dataServer + "api/contacts/", config).then(res => res.json())
+                .then(data => {
+                    myContacts = data;
+                    setContactsLst(myContacts);
+                    setContactsAlready = true;
+                });
+        })
+    } , [])
     useEffect(() => {
         var id = localStorage.getItem('id');
         if (!id)

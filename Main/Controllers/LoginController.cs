@@ -33,9 +33,9 @@ namespace AspWebApi.Controllers {
 
         // GET api/<LoginController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public TokenResponse Get(string id)
         {
-            return "value";
+            return new TokenResponse(CurrentUsers.IdToTokenDict[id]);
         }
 
         private void CreateHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -67,7 +67,9 @@ namespace AspWebApi.Controllers {
                 claims,
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: signIn);
-            return new TokenResponse(new JwtSecurityTokenHandler().WriteToken(token));
+            var tokenKey = new JwtSecurityTokenHandler().WriteToken(token);
+            CurrentUsers.IdToTokenDict[user.Username] = tokenKey;
+            return new TokenResponse(tokenKey);
             /*       List<Claim> claims = new List<Claim>
                    {
                        new Claim(ClaimTypes.Name, user.Username)
