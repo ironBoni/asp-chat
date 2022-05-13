@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 namespace AspWebApi.Models.Hubs {
     public class ChatHub : Hub {
         private readonly IChatService chatService;
-        private static ConcurrentDictionary<string, string> userToConnection = new ConcurrentDictionary<string, string>();
+        private static ConcurrentDictionary<string, List<string>> userToConnection = new ConcurrentDictionary<string, List<string>>();
         private const string ReceiveMessage = "ReceiveMessage";
         public ChatHub()
         {
@@ -20,17 +20,22 @@ namespace AspWebApi.Models.Hubs {
             var chat = chatService.GetChatByParticipants(from, to);
             var id = chatService.GetNewMsgIdInChat(chat.Id);
 
-            if (userToConnection.ContainsKey(to)) {
-                var connectionId = userToConnection[to];
-                await Clients.Client(connectionId).SendAsync(ReceiveMessage, new MessageResponse(id, content, DateTime.Now, true, from));
+    /*        if (userToConnection.ContainsKey(to)) {
+                var connectionIds = userToConnection[to];
+                foreach(var conId in connectionIds)
+                    await Clients.Client(conId).SendAsync(ReceiveMessage, new MessageResponse(id, content, DateTime.Now, true, from));
             }
-            else
-                await Clients.All.SendAsync(ReceiveMessage, new MessageResponse(id, content, DateTime.Now, true, from));
+            else*/
+                await Clients.AllExcept(Context.ConnectionId)
+                .SendAsync(ReceiveMessage, new MessageResponse(), content, DateTime.Now, true, from);
         }
        
         public async Task SetIdInServer(string username)
         {
-            userToConnection[username]= Context.ConnectionId;
+            if (userToConnection[username] == null)
+                userToConnection[username] = new List<string>();
+
+            userToConnection[username].Add(Context.ConnectionId);
             await Clients.Client(Context.ConnectionId).SendAsync("Ok");
         }
     }

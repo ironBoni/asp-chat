@@ -44,7 +44,7 @@ const Conversation = (props) => {
     }
 
     const { chosenChat } = props;
-    var id = localStorage.getItem('id');
+    var id = props.username;
     var canAddRecord = false;
     var alreadyGotMessages = false;
     var oldUser = "";
@@ -73,30 +73,29 @@ const Conversation = (props) => {
         setConnection(connect)
     }, []);
 
-    function handleMsg (newMsg) {
+    function handleMsg(newMsg) {
         console.log(msgList);
+        var newMessages = [...msgList];
         newMessages.push(newMsg);
         setMsgList(newMessages);
         setMsg("");
         updateScroll();
         //updateLastMsgInGui();
-        setTimeout(updateScroll, 125);           
+        setTimeout(updateScroll, 125);
     }
 
     useEffect(() => {
-        if(connection) {
+        if (connection) {
             connection.start()
-            .then(() => {
-                connection.on("ReceiveMessage", handleMsg)
-                connection.on("Ok", function() { })
-                connection.invoke("SetIdInServer", id);
-            })
+                .then(() => {
+                    connection.on("ReceiveMessage", handleMsg)
+                })
         }
     }, [connection])
 
     const sendMessage = () => {
         if (msg) {
-            const newMessages = [...msgList];
+            var newMessages = [...msgList];
             var msgListInDb;
             // get last message
             chats.forEach(chatData => {
@@ -117,6 +116,7 @@ const Conversation = (props) => {
                 created: new Date()
             };
 
+            var newMessages = [...msgList];
             newMessages.push(newMsg);
             //msgListInDb.push(newMsg)
             setMsgList(newMessages);
@@ -126,7 +126,7 @@ const Conversation = (props) => {
             setTimeout(updateScroll, 125);
 
             //POST - Transfer
-            var data = { "from": id, "to": chosenChat.id, "content": msg };
+            var data = { "from": props.username, "to": chosenChat.id, "content": msg };
             var config = {
                 method: 'POST',
                 headers: {
@@ -140,9 +140,11 @@ const Conversation = (props) => {
             }
             fetch(dataServer + "api/transfer/", config);
 
-            if(connection) {
-                connection.invoke("SendMessage", id, msg, chosenChat.id);
-                connection.send("SendMessage", id, msg, chosenChat.id);
+            if (connection) {
+                //connection.invoke("SetIdInServer", props.username).then(res => { 
+                connection.invoke("SendMessage", props.username, msg, chosenChat.id);
+                //}).catch(error => console.log(error));
+                //connection.send("SetIdInServer", props.username).then(res => { }).catch(error => console.log(error));
             }
         }
     };
@@ -310,7 +312,7 @@ const Conversation = (props) => {
         fileReader.readAsDataURL(input.files[0])
         fileReader.onload = (event) => {
             var fileSrc = event.target.result
-            const newMessages = [...msgList];
+            var newMessages = [...msgList];
             var lastMsgId;
             var msgListInDb;
             // get last message
