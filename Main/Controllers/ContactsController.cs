@@ -1,7 +1,9 @@
 ﻿using AspWebApi.Models;
 using AspWebApi.Models.Contacts;
+using AspWebApi.Models.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Models;
 using Models.DataServices;
 using Models.DataServices.Interfaces;
@@ -17,8 +19,10 @@ namespace AspWebApi.Controllers {
     public class ContactsController : ControllerBase {
         private readonly IUserService userService;
         private readonly IChatService chatService;
+        //private readonly IHubContext<ChatHub> _hub;
         public ContactsController()
         {
+          //  _hub = hub;
             userService = new UserService();
             chatService = new ChatService();
         }

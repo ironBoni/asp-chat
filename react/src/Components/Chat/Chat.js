@@ -16,7 +16,7 @@ const Chat = (props) => {
                 setIsShowSignIn = {props.setIsShowSignIn}/>
                 {chosenChat ?
                     <Conversation chosenChat={chosenChat} updateLastProp = {updateLastArray}
-                    setIsShowSignIn = {props.setIsShowSignIn}/>
+                    setIsShowSignIn = {props.setIsShowSignIn} username= {props.username}/>
                     : <Welcome />}
             </div>
         </div>

@@ -71,7 +71,6 @@ function ChatList(props) {
         var myid = localStorage.getItem('id');
         var nick = "";
         var user = getUserInfoByid(idToAdd);
-        console.log(user);
         if (!user) nick = idToAdd;
         else nick = user.name;
         // GET to get the server of the idToAdd 
@@ -82,7 +81,6 @@ function ChatList(props) {
             }
         }
 
-        console.log(token);
         var res = await fetch(dataServer + "api/contacts/server/" + idToAdd, config);
         var response = await res.json();
         var profileImage = response.profileImage;
@@ -95,11 +93,9 @@ function ChatList(props) {
             setErrorAddUser("You cannot add yourself to the chat list.");
             return;
         }
-        console.log(res.server);
 
         // POST request to add contact to server
         var data = { "id": idToAdd, "name": response.name, "server": response.server };
-        console.log(data);
         var config = {
             method: 'POST',
             headers: {
@@ -108,11 +104,7 @@ function ChatList(props) {
             },
             body: JSON.stringify(data)
         }
-        console.log('before POST')
-        console.log(token);
         var res = await fetch(dataServer + "api/Contacts/", config);
-        console.log(res.status);
-        console.log('after POST')
 
         if (res.status === 400) {
             setErrorAddUser("This user is already in your contacts list.");
@@ -127,10 +119,6 @@ function ChatList(props) {
         });
         var newContacts = [...contactsLst];
         newContacts.push({
-            name: response.name, profileImage: profileImage, id: idToAdd,
-            server: response.server, last: ''
-        });
-        console.log({
             name: response.name, profileImage: profileImage, id: idToAdd,
             server: response.server, last: ''
         });

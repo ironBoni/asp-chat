@@ -5,8 +5,11 @@ import './Conversation.css';
 import { dataServer, chats, video_extensions, audio_extensions, image_extensions } from '../../Data/data';
 import { Modal } from 'react-bootstrap';
 import Contact from '../Contact/Contact';
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+
 
 const Conversation = (props) => {
+    const [connection, setConnection] = useState(null);
     const [msg, setMsg] = useState("");
     const [msgList, setMsgList] = useState([]);
     var audioPieces = [];
@@ -45,6 +48,7 @@ const Conversation = (props) => {
     var canAddRecord = false;
     var alreadyGotMessages = false;
     var oldUser = "";
+    var connectionId = "";
     var config = {
         method: 'GET',
         headers: {
@@ -53,7 +57,6 @@ const Conversation = (props) => {
     }
 
     useEffect(() => {
-        console.log(token);
         fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages", config).then(res => res.json())
             .then(data => {
                 setMsgList(data);
@@ -62,8 +65,34 @@ const Conversation = (props) => {
     }, [chosenChat])
 
     useEffect(() => {
-        var shouldBreak = false;
-    });
+        const connect = new HubConnectionBuilder()
+            .withUrl(dataServer + "hub")
+            .withAutomaticReconnect()
+            .build();
+
+        setConnection(connect)
+    }, []);
+
+    function handleMsg (newMsg) {
+        console.log(msgList);
+        newMessages.push(newMsg);
+        setMsgList(newMessages);
+        setMsg("");
+        updateScroll();
+        //updateLastMsgInGui();
+        setTimeout(updateScroll, 125);           
+    }
+
+    useEffect(() => {
+        if(connection) {
+            connection.start()
+            .then(() => {
+                connection.on("ReceiveMessage", handleMsg)
+                connection.on("Ok", function() { })
+                connection.invoke("SetIdInServer", id);
+            })
+        }
+    }, [connection])
 
     const sendMessage = () => {
         if (msg) {
@@ -89,7 +118,7 @@ const Conversation = (props) => {
             };
 
             newMessages.push(newMsg);
-            msgListInDb.push(newMsg)
+            //msgListInDb.push(newMsg)
             setMsgList(newMessages);
             setMsg("");
             updateScroll();
@@ -101,12 +130,20 @@ const Conversation = (props) => {
             var config = {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + token
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': '*/*',
+                    'Accept-Endcoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Content-type': 'application/json'
                 },
                 body: JSON.stringify(data)
             }
-            console.log(token);
             fetch(dataServer + "api/transfer/", config);
+
+            if(connection) {
+                connection.invoke("SendMessage", id, msg, chosenChat.id);
+                connection.send("SendMessage", id, msg, chosenChat.id);
+            }
         }
     };
 
@@ -160,7 +197,7 @@ const Conversation = (props) => {
             && canAddRecord) {
             newMessages.push(newMsg);
             setMsgList(newMessages);
-            msgListInDb.push(newMsg);
+            //msgListInDb.push(newMsg);
             canAddRecord = false;
             updateLastMsgInGui();
             setTimeout(updateScroll, 125);
@@ -300,7 +337,7 @@ const Conversation = (props) => {
             };
 
             newMessages.push(newMsg);
-            msgListInDb.push(newMsg)
+            //msgListInDb.push(newMsg)
             setTimeout(updateScroll, 125);
             setMsgList(newMessages);
             updateLastMsgInGui();
@@ -334,7 +371,7 @@ const Conversation = (props) => {
         };
 
         newMessages.push(newMsg);
-        msgListInDb.push(newMsg)
+        //msgListInDb.push(newMsg)
         setMsgList(newMessages);
         setTimeout(updateScroll, 125);
         updateLastMsgInGui();
