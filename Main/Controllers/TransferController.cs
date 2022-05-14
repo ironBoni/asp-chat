@@ -1,4 +1,5 @@
-﻿using AspWebApi.Models.Transfer;
+﻿using AspWebApi.Models.Hubs;
+using AspWebApi.Models.Transfer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -20,7 +21,8 @@ namespace AspWebApi.Controllers {
 
         // POST api/<TransferController>
         [HttpPost]
-        public IActionResult Post([FromBody] TransferRequest request)
+        [Route("/api/transfer")]
+        public IActionResult Post([Bind("From,To,Content")] TransferRequest request)
         {
             Chat chat = service.GetAll().Find(c => c.Participants.Contains(request.From) 
             && c.Participants.Contains(request.To));

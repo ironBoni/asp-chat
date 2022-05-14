@@ -13,10 +13,11 @@ const Chat = (props) => {
         <div className="container-fluid">
             <div className='row no-gutters rounded-lg shadow main'>
                 <ChatList setChosenChat={setChosenChat} updateLastProp = {updateLastArray} 
-                setIsShowSignIn = {props.setIsShowSignIn}/>
+                setIsShowSignIn = {props.setIsShowSignIn} username= {props.username} token = {props.token}
+                setToken = {props.setToken}/>
                 {chosenChat ?
                     <Conversation chosenChat={chosenChat} updateLastProp = {updateLastArray}
-                    setIsShowSignIn = {props.setIsShowSignIn}/>
+                    setIsShowSignIn = {props.setIsShowSignIn} username= {props.username} token = {props.token}/>
                     : <Welcome />}
             </div>
         </div>

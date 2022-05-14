@@ -1,16 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import MessageField from '../MessageField/MessageField';
 import UserImage from '../UserImage/UserImage';
 import './Conversation.css';
 import { dataServer, chats, video_extensions, audio_extensions, image_extensions } from '../../Data/data';
 import { Modal } from 'react-bootstrap';
 import Contact from '../Contact/Contact';
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+
 
 const Conversation = (props) => {
+    const [connection, setConnection] = useState(null);
     const [msg, setMsg] = useState("");
     const [msgList, setMsgList] = useState([]);
+    var newMsgs = [];
     var audioPieces = [];
-    var token = localStorage.getItem('token');
+    var token = props.token;
+    const latestChat = useRef(null);
+    latestChat.current = msgList;
+    const [counter, setCounter] = useState(0);
     const [showAudioModal, setShowAudioModal] = useState(false);
     const [showFileModal, setShowFileModal] = useState(false);
     const [showVideoModal, setShowVideoModal] = useState(false);
@@ -41,10 +49,11 @@ const Conversation = (props) => {
     }
 
     const { chosenChat } = props;
-    var id = localStorage.getItem('id');
+    var id = props.username;
     var canAddRecord = false;
     var alreadyGotMessages = false;
     var oldUser = "";
+    var connectionId = "";
     var config = {
         method: 'GET',
         headers: {
@@ -53,7 +62,6 @@ const Conversation = (props) => {
     }
 
     useEffect(() => {
-        console.log(token);
         fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages", config).then(res => res.json())
             .then(data => {
                 setMsgList(data);
@@ -62,12 +70,50 @@ const Conversation = (props) => {
     }, [chosenChat])
 
     useEffect(() => {
-        var shouldBreak = false;
-    });
+        const connect = new HubConnectionBuilder()
+            .withUrl(dataServer + "hub")
+            .withAutomaticReconnect()
+            .build();
 
-    const sendMessage = () => {
+        setConnection(connect)
+    }, []);
+    // content - V
+    // d - to
+    function handleMsg(a, content, dateTime, sent, to) {
+        var msgId = Math.floor(1000 * Math.random() + 200);
+        var msg = { id: msgId, content: content, created: new Date(), sent:true, senderUsername: chosenChat.id };
+        //console.log(msg)
+        newMsgs.push(msg);
+        setCounter(Math.random() * 1000);
+        //var newMessages = [...msgList];
+        //newMessages.push(newMsg);
+        //setMsgList(newMessages);
+        //setMsg("");
+        updateScroll();
+        //updateLastMsgInGui();
+        setTimeout(updateScroll, 125);
+    }
+
+    useEffect(() => {
+        if (connection) {
+            connection.start()
+                .then(result => {
+                    connection.on("ReceiveMessage", message => {
+                        console.log(message);
+                        console.log(latestChat.current);
+                        const updatedMsgList = [...latestChat.current];
+                        updatedMsgList.push(message);
+                        setMsgList(updatedMsgList);
+                    })
+                    connection.invoke("SetIdInServer", props.username).then(res => {});
+                })
+                .catch(e => console.log('Connection failed: ', e));
+        }
+    }, [connection])
+
+    async function sendMessage() {
         if (msg) {
-            const newMessages = [...msgList];
+            var newMessages = [...msgList];
             var msgListInDb;
             // get last message
             chats.forEach(chatData => {
@@ -88,8 +134,9 @@ const Conversation = (props) => {
                 created: new Date()
             };
 
+            var newMessages = [...msgList];
             newMessages.push(newMsg);
-            msgListInDb.push(newMsg)
+            //msgListInDb.push(newMsg)
             setMsgList(newMessages);
             setMsg("");
             updateScroll();
@@ -97,26 +144,40 @@ const Conversation = (props) => {
             setTimeout(updateScroll, 125);
 
             //POST - Transfer
-            var data = { "from": id, "to": chosenChat.id, "content": msg };
+            var data = { "from": props.username, "to": chosenChat.id, "content": msg };
             var config = {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + token
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': '*/*',
+                    'Accept-Endcoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Content-type': 'application/json'
                 },
                 body: JSON.stringify(data)
             }
-            console.log(token);
             fetch(dataServer + "api/transfer/", config);
+
+                //connection.invoke("SetIdInServer", props.username).then(res => { 
+                try {
+                await connection.invoke("SendMsg", props.username, msg, chosenChat.id);
+                }
+                catch(e) {
+                    console.log(e);
+                }
+                //}).catch(error => console.log(error));
+                //connection.send("SetIdInServer", props.username).then(res => { }).catch(error => console.log(error));
+            
         }
     };
 
-    const onSend = (e) => {
-        sendMessage();
+    async function onSend(e) {
+        await sendMessage();
     }
 
-    const onEnter = (e) => {
+    async function onEnter(e){
         if (e.key === "Enter") {
-            sendMessage();
+            await sendMessage();
         }
     }
 
@@ -160,7 +221,7 @@ const Conversation = (props) => {
             && canAddRecord) {
             newMessages.push(newMsg);
             setMsgList(newMessages);
-            msgListInDb.push(newMsg);
+            //msgListInDb.push(newMsg);
             canAddRecord = false;
             updateLastMsgInGui();
             setTimeout(updateScroll, 125);
@@ -273,7 +334,7 @@ const Conversation = (props) => {
         fileReader.readAsDataURL(input.files[0])
         fileReader.onload = (event) => {
             var fileSrc = event.target.result
-            const newMessages = [...msgList];
+            var newMessages = [...msgList];
             var lastMsgId;
             var msgListInDb;
             // get last message
@@ -300,7 +361,7 @@ const Conversation = (props) => {
             };
 
             newMessages.push(newMsg);
-            msgListInDb.push(newMsg)
+            //msgListInDb.push(newMsg)
             setTimeout(updateScroll, 125);
             setMsgList(newMessages);
             updateLastMsgInGui();
@@ -334,7 +395,7 @@ const Conversation = (props) => {
         };
 
         newMessages.push(newMsg);
-        msgListInDb.push(newMsg)
+        //msgListInDb.push(newMsg)
         setMsgList(newMessages);
         setTimeout(updateScroll, 125);
         updateLastMsgInGui();
@@ -350,7 +411,7 @@ const Conversation = (props) => {
                 <div className='message-container' id="chat" scolltop={sTop}>
                     {msgList?.map((msg, key) => (
                         <MessageField type={msg.type} content={msg.content} senderUsername={msg.senderUsername} key={key}
-                            fileName={msg.fileName}>
+                            fileName={msg.fileName} username={props.username}>
                         </MessageField>
                     ))}
                 </div>

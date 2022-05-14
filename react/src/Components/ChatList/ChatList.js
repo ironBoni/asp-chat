@@ -5,9 +5,9 @@ import { users, chats, myServer, dataServer } from '../../Data/data'
 import { Modal } from 'react-bootstrap';
 
 function ChatList(props) {
-    var id = localStorage.getItem('id');
+    var id = props.username;
     var myContacts = [];
-    var token = localStorage.getItem('token');
+    var token = props.token;
     //var token = props.token;
     var setContactsAlready = false;
     // goes over the chat and find the contacts he talked with.
@@ -24,7 +24,7 @@ function ChatList(props) {
     useEffect(() => {
         fetch(dataServer+"api/Login/" + id).then(res => res.json()).then(tok => {
             token = tok.token;
-            localStorage.setItem('token', tok.token);
+            props.setToken(tok.token);
             var config = {
                 method: 'GET',
                 headers: {
@@ -44,7 +44,7 @@ function ChatList(props) {
         })
     } , [])
     useEffect(() => {
-        var id = localStorage.getItem('id');
+        var id = props.username;
         if (!id)
             id = 'noam';
         var userData = users.filter((user) => user.id === id)[0];
@@ -68,10 +68,9 @@ function ChatList(props) {
         if (!textBox)
             return;
         var idToAdd = textBox.value.trimEnd();
-        var myid = localStorage.getItem('id');
+        var myid = props.username;
         var nick = "";
         var user = getUserInfoByid(idToAdd);
-        console.log(user);
         if (!user) nick = idToAdd;
         else nick = user.name;
         // GET to get the server of the idToAdd 
@@ -82,7 +81,6 @@ function ChatList(props) {
             }
         }
 
-        console.log(token);
         var res = await fetch(dataServer + "api/contacts/server/" + idToAdd, config);
         var response = await res.json();
         var profileImage = response.profileImage;
@@ -95,11 +93,9 @@ function ChatList(props) {
             setErrorAddUser("You cannot add yourself to the chat list.");
             return;
         }
-        console.log(res.server);
 
         // POST request to add contact to server
         var data = { "id": idToAdd, "name": response.name, "server": response.server };
-        console.log(data);
         var config = {
             method: 'POST',
             headers: {
@@ -108,11 +104,7 @@ function ChatList(props) {
             },
             body: JSON.stringify(data)
         }
-        console.log('before POST')
-        console.log(token);
         var res = await fetch(dataServer + "api/Contacts/", config);
-        console.log(res.status);
-        console.log('after POST')
 
         if (res.status === 400) {
             setErrorAddUser("This user is already in your contacts list.");
@@ -127,10 +119,6 @@ function ChatList(props) {
         });
         var newContacts = [...contactsLst];
         newContacts.push({
-            name: response.name, profileImage: profileImage, id: idToAdd,
-            server: response.server, last: ''
-        });
-        console.log({
             name: response.name, profileImage: profileImage, id: idToAdd,
             server: response.server, last: ''
         });
@@ -205,9 +193,9 @@ function ChatList(props) {
 
                 <div className='left-bar'>
                     {contactsLst.map((user, key) => {
-                        if (user.id != localStorage.getItem('id')) {
+                        if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                                updateLastM={props.updateLastProp} />)
+                                updateLastM={props.updateLastProp} username={props.username}/>)
                         }
                     })}
                 </div>

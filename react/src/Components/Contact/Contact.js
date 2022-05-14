@@ -8,7 +8,7 @@ const Contact = (props) => {
     const [lastMsgTime, setLastMsgTime] = useState('');
     const [lastMsgType, setLastMsgType] = useState('text');
     const [fileName, setFileName] = useState('');
-    var myid = localStorage.getItem('id');
+    var myid = props.username;
 
     useEffect(() => {
         updateLastMessage();

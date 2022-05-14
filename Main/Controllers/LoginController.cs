@@ -35,6 +35,7 @@ namespace AspWebApi.Controllers {
         [HttpGet("{id}")]
         public TokenResponse Get(string id)
         {
+            if (!CurrentUsers.IdToContactsDict.ContainsKey(id)) return null;
             return new TokenResponse(CurrentUsers.IdToTokenDict[id]);
         }
 

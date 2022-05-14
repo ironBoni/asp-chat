@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { users, dataServer } from '../../Data/data';
 
-const useForm = (submitForm, validate, type) => {
+const useForm = (submitForm, validate, type, setUsername, setToken) => {
   const [values, setValues] = useState({
     id: '',
     name: '',
@@ -40,12 +40,13 @@ const useForm = (submitForm, validate, type) => {
   }
 
   async function handleLogin(e) {
+    setUsername(values.id);
     e.preventDefault();
     var result = validate(values)
     setErrors(result.errors);
     if (Object.keys(errors).length === 0) {
-      localStorage.setItem("id", values.id);
-      waitForToken();
+      setUsername(values.id);
+      var token = await waitForToken();
       submitForm();
     }
   };
@@ -54,10 +55,7 @@ const useForm = (submitForm, validate, type) => {
     e.preventDefault();
     var result = validate(values)
     setErrors(result.errors);
-    console.log(result.flag);
-    console.log(e.target.name);
     if (result.flag) {
-      console.log("line 47");
       users.push({
         id: values.id, name: values.name, password: values.password,
         profileImage: values.profileImage
@@ -68,7 +66,6 @@ const useForm = (submitForm, validate, type) => {
         "id": values.id, "name": values.name, "password": values.password,
         "profileImage": values.profileImage, "server": "http://localhost:5186"
       };
-      console.log(data);
       var config = {
         method: 'POST',
         headers: {
@@ -77,8 +74,6 @@ const useForm = (submitForm, validate, type) => {
         },
         body: JSON.stringify(data)
       }
-      console.log('before POST')
-      console.log(dataServer + "api/Register");
       var res = await fetch(dataServer + "api/Register", config);
 
       setValues({
@@ -91,7 +86,6 @@ const useForm = (submitForm, validate, type) => {
       })
     }
     submitForm();
-    console.log("after post");
   };
 
   async function waitForToken() {
@@ -104,10 +98,9 @@ const useForm = (submitForm, validate, type) => {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({ "username": values.id, "password": values.password })})
-    console.log(res);
     var token = await res.json();
-    console.log(token.token);
-    localStorage.setItem("token", token.token);
+    setToken(token.token);
+    return token.token;
   }
 
   if (type == 'login')

@@ -4,8 +4,8 @@ import useForm from "../SignInPage/UseForme";
 import validate from "./validateRegInfo";
 
 
-const RegisterInForm = ({ submitForm }) => {
-  const { handleChange, values, handleSubmit, errors } = useForm(submitForm, validate, 'register')
+const RegisterInForm = ({ submitForm , setUsername, setToken}) => {
+  const { handleChange, values, handleSubmit, errors } = useForm(submitForm, validate, 'register', setUsername, setToken)
 
 
   
