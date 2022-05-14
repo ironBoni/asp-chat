@@ -1,38 +1,69 @@
 Clone and **Go to the Main folder, and run Main.sln**
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-**Packages in use:** react-router-dom, react-bootstrap.  
 
-1. in CMD in path of the project,
-  run : "npm install", and then: "npm start".
+**First of all - npm install in "react" directory**
+go inside the "react" directory.
+run the following commands:
+1. npm install @microsoft/signalr
+2. npm install react-bootstrap
 
-**Login**: <br/>
+**ASP.NET MVC (Parts 0-2)**: <br/>
+Right-click on AspNetMvc > Set As Startup Project.
+Run the application.
+The home page is the chat-client (in wwwroot).
+To see the rating page go to http://localhost:5266/Ratings
+
+**ASP.NET WebAPI (Part 3) - localhost:5186** <br/>
+Set as startup project, and run it.
+
+To run the client we recommand on "npm start" in "react" folder(although it can be viewed from the MVC home page).
+
+First, you should sign in in order to get a token from the server.
+Meaning, send a POST request to http://localhost:5186/api/Login
+in the body:
+{
+    "username": "noam",
+    "password": "Np1234"
+}
+You will get a JWT token in the response.
+Save it. This token will by sent by the client in the header
+"Authorization": "Bearer blablah...token..."
+
+Methods you can perform:
+Login:
+GET /api/login/{username} - returns its token.
+POST /api/Login - example is above.
+
+Register:
+POST /api/Register - in the body:
+{
+    "id": "shlomo",
+    "name": "Shlomo Levin",
+    "password": "Np1234",
+    "profileImage": "/profile/hadar.jpg",
+    "server": "localhost:5186"
+}
+
+Invitations, Transfer, Contacts:
+as mentioned in the exercise.
+
+**SignalR - Part4**
+in the client (npm start in "react" folder)
+open two tabs,
+in the first login with: "noam", "Np1234"
+in the second login with: "Dan", "Np1234"
+you can send message from one to the second,
+and see that it wil get it immediately by the server ChatHub.
+
+**React - general use instructions**
+1. Enter "react" folder and run "npm start".
 2. enter username: "noam", and password: "Np1234". <br/>
 3. To chat with Ron, click on his name in the left menu. <br/>
 4. Enter a message and click Enter or on the send-button. <br/>
-5. a. To Add audio message, click on the **voice icon**. <br/>
-&nbsp; b. a modal will open, then speak, and click on the stop when  
- &nbsp; &nbsp;  you've finished.  
-
-[**camera-icon** = upload image from computer, 
-**video-icon** = upload video from computer,
-**attachment-icon** - choose picture/video/voice from pc]
-
-6.  to add file click on the **attachment-icon** and choose: <br/>
-    a) Image from computer. <br/>
-    b) Video.  
-    c) Voice.  
-    d) Other file (PDF for instance).   
-
-7. To make image bigger - click on it.
+5. To make image bigger - click on it.
    (the profile image will become bigger if you click on it).
-8. To logout - click on the top-right button.
-
-10. To **add a contact** click on the icon - **man-with-plus** (left-top, next to profile image)
+6. To logout - click on the top-right button.
+7. To **add a contact** click on the icon - **man-with-plus** (left-top, next to profile image)
     You can add one of the following usernames: <br/>
     a) ran <br/> 
     b) yaniv <br/>
@@ -47,5 +78,20 @@ Clone and **Go to the Main folder, and run Main.sln**
     and must contain at least 1 Capital letter and 1 digit.
     Click Register. 
 
+**React: Packages:** react-bootstrap, @microsoft/signalr,   
+**ASP.Net: Packages:**
+"AspWebApi" project's Packages:
+Microsoft.AspNetCore.Authentication.JwtBearer
+Microsoft.AspNetCore.Identity.EntityFrameworkCore
+Microsoft.AspNetCore.SignalR
+Microsoft.AspNetCore.SignalR.Client
+Microsoft.AspNetCore.SignalR.Core
+Microsoft.IdentityModel.Tokens
+System.IdentityModel.Tokens.Jwt
+
+"AspNetMvc" project's Packages:
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Tools
+  
 The Images (profile images, button-images), Audio (Hatikva.mp3), 
 Video (Hatikva.mp4) sources in imageSources.txt.
