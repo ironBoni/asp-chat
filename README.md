@@ -1,41 +1,44 @@
-Clone and **Go to the Main folder, and run Main.sln**
+To open the Server's code - 
+Clone and **Go to the Main folder, and run Main.sln**.
 <br/>
 
-**First of all - npm install in "react" directory**
-go inside the "react" directory.
+**First of all - npm install in "react" directory**<br/>
+go to the "react" directory.<br/>
 run the following commands:
 1. npm install @microsoft/signalr
 2. npm install react-bootstrap
 
 **ASP.NET MVC (Parts 0-2)**: <br/>
-Right-click on AspNetMvc > Set As Startup Project.
+(Open the server - Go to "Main" and open "Main.sln").
+Right-click on "AspNetMvc" project > "Set As Startup Project".
 Run the application.
-The home page is the chat-client (in wwwroot).
-To see the rating page go to http://localhost:5266/Ratings
+The home page is the react-client (in wwwroot).
+**To see the rating page go to http://localhost:5266/Ratings**
 
 **ASP.NET WebAPI (Part 3) - localhost:5186** <br/>
+(Open the server - Go to "Main" and open "Main.sln").
 Set as startup project, and run it.
 
-To run the client we recommand on "npm start" in "react" folder(although it can be viewed from the MVC home page).
+To run the client we recommand on "npm start" in "react" folder (although it can be viewed from the ASP.NET-MVC home page).
 
-First, you should sign in in order to get a token from the server.
-Meaning, send a POST request to http://localhost:5186/api/Login
-in the body:
+**First, you should sign in in order to get a token from the server.**
+Meaning, send a **POST request to http://localhost:5186/api/Login**
+**in the body:
 {
     "username": "noam",
     "password": "Np1234"
-}
-You will get a JWT token in the response.
+}**
+**You will get a JWT token in the response.
 Save it. This token will by sent by the client in the header
-"Authorization": "Bearer blablah...token..."
+"Authorization": "Bearer blablah...token..."**
 
-Methods you can perform:
-Login:
+Methods you can perform:<br/>
+Login:<br/>
 GET /api/login/{username} - returns its token.
 POST /api/Login - example is above.
 
-Register:
-POST /api/Register - in the body:
+Register:<br/>
+POST /api/Register - in the body:<br/>
 {
     "id": "shlomo",
     "name": "Shlomo Levin",
@@ -48,14 +51,14 @@ Invitations, Transfer, Contacts:
 as mentioned in the exercise.
 
 **SignalR - Part4**
-in the client (npm start in "react" folder)
+**in the client (npm start in "react" folder)
 open two tabs,
 in the first login with: "noam", "Np1234"
-in the second login with: "Dan", "Np1234"
+in the second login with: "dan", "Np1234"**
 you can send message from one to the second,
 and see that it wil get it immediately by the server ChatHub.
 
-**React - general use instructions**
+React - general use instructions
 1. Enter "react" folder and run "npm start".
 2. enter username: "noam", and password: "Np1234". <br/>
 3. To chat with Ron, click on his name in the left menu. <br/>
