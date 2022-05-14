@@ -5,9 +5,9 @@ import { users, chats, myServer, dataServer } from '../../Data/data'
 import { Modal } from 'react-bootstrap';
 
 function ChatList(props) {
-    var id = localStorage.getItem('id');
+    var id = props.username;
     var myContacts = [];
-    var token = localStorage.getItem('token');
+    var token = props.token;
     //var token = props.token;
     var setContactsAlready = false;
     // goes over the chat and find the contacts he talked with.
@@ -24,7 +24,7 @@ function ChatList(props) {
     useEffect(() => {
         fetch(dataServer+"api/Login/" + id).then(res => res.json()).then(tok => {
             token = tok.token;
-            localStorage.setItem('token', tok.token);
+            props.setToken(tok.token);
             var config = {
                 method: 'GET',
                 headers: {
@@ -44,7 +44,7 @@ function ChatList(props) {
         })
     } , [])
     useEffect(() => {
-        var id = localStorage.getItem('id');
+        var id = props.username;
         if (!id)
             id = 'noam';
         var userData = users.filter((user) => user.id === id)[0];
@@ -68,7 +68,7 @@ function ChatList(props) {
         if (!textBox)
             return;
         var idToAdd = textBox.value.trimEnd();
-        var myid = localStorage.getItem('id');
+        var myid = props.username;
         var nick = "";
         var user = getUserInfoByid(idToAdd);
         if (!user) nick = idToAdd;
@@ -193,9 +193,9 @@ function ChatList(props) {
 
                 <div className='left-bar'>
                     {contactsLst.map((user, key) => {
-                        if (user.id != localStorage.getItem('id')) {
+                        if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                                updateLastM={props.updateLastProp} />)
+                                updateLastM={props.updateLastProp} username={props.username}/>)
                         }
                     })}
                 </div>

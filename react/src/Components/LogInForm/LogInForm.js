@@ -5,7 +5,7 @@ import React from "react";
 import { useEffect } from "react/cjs/react.production.min";
 const LogInForm = (props) => {
   
-  const { handleChange, values,handleLogin,errors } = useForm(props.submitForm,validate, 'login', props.setUsername)
+  const { handleChange, values,handleLogin,errors } = useForm(props.submitForm,validate, 'login', props.setUsername, props.setToken)
 
   return (
     <form id="LogIn" className="input-form">

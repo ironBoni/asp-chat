@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { users, dataServer } from '../../Data/data';
 
-const useForm = (submitForm, validate, type, setUsername) => {
+const useForm = (submitForm, validate, type, setUsername, setToken) => {
   const [values, setValues] = useState({
     id: '',
     name: '',
@@ -45,7 +45,7 @@ const useForm = (submitForm, validate, type, setUsername) => {
     var result = validate(values)
     setErrors(result.errors);
     if (Object.keys(errors).length === 0) {
-      localStorage.setItem("id", values.id);
+      setUsername(values.id);
       var token = await waitForToken();
       submitForm();
     }
@@ -99,7 +99,7 @@ const useForm = (submitForm, validate, type, setUsername) => {
       },
       body: JSON.stringify({ "username": values.id, "password": values.password })})
     var token = await res.json();
-    localStorage.setItem("token", token.token);
+    setToken(token.token);
     return token.token;
   }
 

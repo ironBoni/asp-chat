@@ -13,7 +13,7 @@ const Conversation = (props) => {
     const [msg, setMsg] = useState("");
     const [msgList, setMsgList] = useState([]);
     var audioPieces = [];
-    var token = localStorage.getItem('token');
+    var token = props.token;
     const [showAudioModal, setShowAudioModal] = useState(false);
     const [showFileModal, setShowFileModal] = useState(false);
     const [showVideoModal, setShowVideoModal] = useState(false);
@@ -73,12 +73,18 @@ const Conversation = (props) => {
         setConnection(connect)
     }, []);
 
-    function handleMsg(newMsg) {
-        console.log(msgList);
-        var newMessages = [...msgList];
-        newMessages.push(newMsg);
-        setMsgList(newMessages);
-        setMsg("");
+    function handleMsg(a, msgId, content, from, d) {
+        console.log(id);
+        console.log(content);
+        console.log(from);
+        console.log(a);
+        console.log(d);
+        var msg = { id: msgId, content: content, created: new Date(), sent:true, senderUsername: from };
+        console.log(msg)
+        //var newMessages = [...msgList];
+        //newMessages.push(newMsg);
+        //setMsgList(newMessages);
+        //setMsg("");
         updateScroll();
         //updateLastMsgInGui();
         setTimeout(updateScroll, 125);
@@ -389,7 +395,7 @@ const Conversation = (props) => {
                 <div className='message-container' id="chat" scolltop={sTop}>
                     {msgList?.map((msg, key) => (
                         <MessageField type={msg.type} content={msg.content} senderUsername={msg.senderUsername} key={key}
-                            fileName={msg.fileName}>
+                            fileName={msg.fileName} username={props.username}>
                         </MessageField>
                     ))}
                 </div>

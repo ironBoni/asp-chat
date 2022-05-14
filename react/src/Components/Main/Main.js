@@ -24,6 +24,7 @@ export default function Main() {
     const [isShowSignIn, setIsShowSignIn] = useState(true);
     const [isSubmittedReg, setIsSubmittedReg] = useState(false);
     const [isSubmittedUser, setIsSubmittedUser] = useState(false);
+    const [token, setToken] = useState('');
     const [username, setUsername] = useState('');
     //user register submit
     function submitForm() {
@@ -52,12 +53,13 @@ export default function Main() {
                       <button type="button" className="toggle-btn" onClick={register}>Register</button>
                     </div>
           
-                    <RegisterInForm submitForm={submitForm} setUsername = {setUsername}/>
-                    {isSubmittedUser ? setIsShowSignIn(false) : <LogInForm submitForm={submitFormUser} setUsername = {setUsername}/>}
+                    <RegisterInForm submitForm={submitForm} setUsername = {setUsername} setToken = {setToken}/>
+                    {isSubmittedUser ? setIsShowSignIn(false) : <LogInForm submitForm={submitFormUser} setUsername = {setUsername}
+                    setToken = {setToken}/>}
                   </div>
                 </div>
               </div>)
-                : (<Chat setIsShowSignIn={setIsShowSignIn} username = {username}/>)}
+                : (<Chat setIsShowSignIn={setIsShowSignIn} username = {username} token={token} setToken={setToken}/>)}
         </div>
     )
 }

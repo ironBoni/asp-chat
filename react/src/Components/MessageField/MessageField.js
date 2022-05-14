@@ -3,7 +3,7 @@ import './MessageField.css'
 import { Modal } from 'react-bootstrap';
 
 export default function MessageField(props) {
-    var myid = localStorage.getItem('id');
+    var myid = props.username;
     const [showImageModal, setShowImageModal] = useState(false);
     const audioRef = useRef()
     var content;
