@@ -1,18 +1,80 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background: url(../css/Design-Background.jpg) fixed;
+    background-size: cover;
+    overflow: auto;
+}
+
+.search {
+    padding: 10px 10px;
+    margin: 5px 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom: 1px solid rgb(59, 56, 56);
+    outline: none;
+    background: transparent;
+}
+
+.btn-primary {
+    background: linear-gradient(to right, #241a5a, rgb(59, 60, 110));
+}
+
+.star-ratings {
+    unicode-bidi: bidi-override;
+    color: #ccc;
+    font-size: 64px;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    margin-left: 39%
+}
+.fill-ratings {
+    color: #a54f4f    ;
+    padding: 0;
+    position: absolute;
+    z-index: 1;
+    display: block;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+.stars {
+    display: inline-block;
+}
+
+
+.empty-ratings {
+    padding: 0;
+    display: block;
+    z-index: 0;
+}
+
+.logo {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-left: 45%;
+}
+
+.feedback {
+    max-width: 600px;
+    overflow-wrap: break-word;
 }
