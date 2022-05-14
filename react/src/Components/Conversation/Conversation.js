@@ -70,42 +70,27 @@ const Conversation = (props) => {
     }, [chosenChat])
 
     useEffect(() => {
+        try {
         const connect = new HubConnectionBuilder()
             .withUrl(dataServer + "hub")
             .withAutomaticReconnect()
             .build();
-
-        setConnection(connect)
+            
+            setConnection(connect)
+        }
+        catch(e) { console.log(e); }
     }, []);
-    // content - V
-    // d - to
-    function handleMsg(a, content, dateTime, sent, to) {
-        var msgId = Math.floor(1000 * Math.random() + 200);
-        var msg = { id: msgId, content: content, created: new Date(), sent:true, senderUsername: chosenChat.id };
-        //console.log(msg)
-        newMsgs.push(msg);
-        setCounter(Math.random() * 1000);
-        //var newMessages = [...msgList];
-        //newMessages.push(newMsg);
-        //setMsgList(newMessages);
-        //setMsg("");
-        updateScroll();
-        //updateLastMsgInGui();
-        setTimeout(updateScroll, 125);
-    }
 
     useEffect(() => {
         if (connection) {
             connection.start()
                 .then(result => {
                     connection.on("ReceiveMessage", message => {
-                        console.log(message);
-                        console.log(latestChat.current);
                         const updatedMsgList = [...latestChat.current];
                         updatedMsgList.push(message);
                         setMsgList(updatedMsgList);
                     })
-                    connection.invoke("SetIdInServer", props.username).then(res => {});
+                    connection.invoke("SetIdInServer", props.username).then(res => {}).catch(e => console.log("Not connected"));
                 })
                 .catch(e => console.log('Connection failed: ', e));
         }
@@ -136,7 +121,6 @@ const Conversation = (props) => {
 
             var newMessages = [...msgList];
             newMessages.push(newMsg);
-            //msgListInDb.push(newMsg)
             setMsgList(newMessages);
             setMsg("");
             updateScroll();
@@ -158,16 +142,12 @@ const Conversation = (props) => {
             }
             fetch(dataServer + "api/transfer/", config);
 
-                //connection.invoke("SetIdInServer", props.username).then(res => { 
                 try {
                 await connection.invoke("SendMsg", props.username, msg, chosenChat.id);
                 }
                 catch(e) {
                     console.log(e);
-                }
-                //}).catch(error => console.log(error));
-                //connection.send("SetIdInServer", props.username).then(res => { }).catch(error => console.log(error));
-            
+                } 
         }
     };
 
@@ -221,7 +201,6 @@ const Conversation = (props) => {
             && canAddRecord) {
             newMessages.push(newMsg);
             setMsgList(newMessages);
-            //msgListInDb.push(newMsg);
             canAddRecord = false;
             updateLastMsgInGui();
             setTimeout(updateScroll, 125);
@@ -361,7 +340,6 @@ const Conversation = (props) => {
             };
 
             newMessages.push(newMsg);
-            //msgListInDb.push(newMsg)
             setTimeout(updateScroll, 125);
             setMsgList(newMessages);
             updateLastMsgInGui();
@@ -395,7 +373,6 @@ const Conversation = (props) => {
         };
 
         newMessages.push(newMsg);
-        //msgListInDb.push(newMsg)
         setMsgList(newMessages);
         setTimeout(updateScroll, 125);
         updateLastMsgInGui();
