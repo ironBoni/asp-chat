@@ -28,8 +28,8 @@ Meaning, send a **POST request to http://localhost:5186/api/Login**
     "username": "noam",
     "password": "Np1234"
 }**
-**You will get a JWT token in the response.
-Save it. This token will by sent by the client in the header
+**You will get a JWT token in the response. 
+This token will by sent by the client in the header
 "Authorization": "Bearer blablah...token..."**
 
 Methods you can perform:<br/>
