@@ -22,7 +22,7 @@ namespace AspWebApi.Controllers {
         // POST api/<TransferController>
         [HttpPost]
         [Route("/api/transfer")]
-        public async Task<IActionResult> Post([Bind("From,To,Content")] TransferRequest request)
+        public IActionResult Post([Bind("From,To,Content")] TransferRequest request)
         {
             Chat chat = service.GetAll().Find(c => c.Participants.Contains(request.From) 
             && c.Participants.Contains(request.To));

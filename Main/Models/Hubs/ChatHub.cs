@@ -14,25 +14,25 @@ namespace AspWebApi.Models.Hubs {
         {
             chatService = new ChatService();
         }
-        public async Task SendMessage(string from, string content, string to)
+        public async Task SendMsg(string from, string content, string to)
         {
             //var userId = CurrentUsers.GetIdByToken(token);
             var chat = chatService.GetChatByParticipants(from, to);
             var id = chatService.GetNewMsgIdInChat(chat.Id);
 
-    /*        if (userToConnection.ContainsKey(to)) {
+            if (userToConnection.ContainsKey(to)) {
                 var connectionIds = userToConnection[to];
                 foreach(var conId in connectionIds)
                     await Clients.Client(conId).SendAsync(ReceiveMessage, new MessageResponse(id, content, DateTime.Now, true, from));
             }
-            else*/
+            else
                 await Clients.AllExcept(Context.ConnectionId)
-                .SendAsync(ReceiveMessage, new MessageResponse(), content, DateTime.Now, true, from);
+                .SendAsync(ReceiveMessage, new MessageResponse(id, content, DateTime.Now, true, from));
         }
        
         public async Task SetIdInServer(string username)
         {
-            if (userToConnection[username] == null)
+            if (!userToConnection.ContainsKey(username))
                 userToConnection[username] = new List<string>();
 
             userToConnection[username].Add(Context.ConnectionId);

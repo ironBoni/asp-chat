@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import MessageField from '../MessageField/MessageField';
 import UserImage from '../UserImage/UserImage';
 import './Conversation.css';
@@ -12,8 +13,12 @@ const Conversation = (props) => {
     const [connection, setConnection] = useState(null);
     const [msg, setMsg] = useState("");
     const [msgList, setMsgList] = useState([]);
+    var newMsgs = [];
     var audioPieces = [];
     var token = props.token;
+    const latestChat = useRef(null);
+    latestChat.current = msgList;
+    const [counter, setCounter] = useState(0);
     const [showAudioModal, setShowAudioModal] = useState(false);
     const [showFileModal, setShowFileModal] = useState(false);
     const [showVideoModal, setShowVideoModal] = useState(false);
@@ -72,15 +77,14 @@ const Conversation = (props) => {
 
         setConnection(connect)
     }, []);
-
-    function handleMsg(a, msgId, content, from, d) {
-        console.log(id);
-        console.log(content);
-        console.log(from);
-        console.log(a);
-        console.log(d);
-        var msg = { id: msgId, content: content, created: new Date(), sent:true, senderUsername: from };
-        console.log(msg)
+    // content - V
+    // d - to
+    function handleMsg(a, content, dateTime, sent, to) {
+        var msgId = Math.floor(1000 * Math.random() + 200);
+        var msg = { id: msgId, content: content, created: new Date(), sent:true, senderUsername: chosenChat.id };
+        //console.log(msg)
+        newMsgs.push(msg);
+        setCounter(Math.random() * 1000);
         //var newMessages = [...msgList];
         //newMessages.push(newMsg);
         //setMsgList(newMessages);
@@ -93,13 +97,21 @@ const Conversation = (props) => {
     useEffect(() => {
         if (connection) {
             connection.start()
-                .then(() => {
-                    connection.on("ReceiveMessage", handleMsg)
+                .then(result => {
+                    connection.on("ReceiveMessage", message => {
+                        console.log(message);
+                        console.log(latestChat.current);
+                        const updatedMsgList = [...latestChat.current];
+                        updatedMsgList.push(message);
+                        setMsgList(updatedMsgList);
+                    })
+                    connection.invoke("SetIdInServer", props.username).then(res => {});
                 })
+                .catch(e => console.log('Connection failed: ', e));
         }
     }, [connection])
 
-    const sendMessage = () => {
+    async function sendMessage() {
         if (msg) {
             var newMessages = [...msgList];
             var msgListInDb;
@@ -146,22 +158,26 @@ const Conversation = (props) => {
             }
             fetch(dataServer + "api/transfer/", config);
 
-            if (connection) {
                 //connection.invoke("SetIdInServer", props.username).then(res => { 
-                connection.invoke("SendMessage", props.username, msg, chosenChat.id);
+                try {
+                await connection.invoke("SendMsg", props.username, msg, chosenChat.id);
+                }
+                catch(e) {
+                    console.log(e);
+                }
                 //}).catch(error => console.log(error));
                 //connection.send("SetIdInServer", props.username).then(res => { }).catch(error => console.log(error));
-            }
+            
         }
     };
 
-    const onSend = (e) => {
-        sendMessage();
+    async function onSend(e) {
+        await sendMessage();
     }
 
-    const onEnter = (e) => {
+    async function onEnter(e){
         if (e.key === "Enter") {
-            sendMessage();
+            await sendMessage();
         }
     }
 
