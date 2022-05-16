@@ -219,7 +219,8 @@ function ChatList(props) {
                     {contactsLst.map((user, key) => {
                         if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                                updateLastM={props.updateLastProp} username={props.username} token={props.token} />)
+                                updateLastM={props.updateLastProp} username={props.username} token={props.token} 
+                                renderAgain = {props.renderAgain}/>)
                         }
                     })}
                 </div>
