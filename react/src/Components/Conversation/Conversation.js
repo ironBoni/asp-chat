@@ -26,9 +26,6 @@ const Conversation = (props) => {
     const [sTop, setSTop] = useState(0)
     const [voiceRecorder, setVoiceRecorder] = useState(null);
 
-    function toggleRender() {
-        props.setRender(!props.render); 
-    }
 
     const [stream, setStream] = useState({
         hasAccessToMic: false, voiceRecorder: null
@@ -76,14 +73,14 @@ const Conversation = (props) => {
 
     useEffect(() => {
         try {
-        const connect = new HubConnectionBuilder()
-            .withUrl(dataServer + "hub")
-            .withAutomaticReconnect()
-            .build();
-            
+            const connect = new HubConnectionBuilder()
+                .withUrl(dataServer + "hub")
+                .withAutomaticReconnect()
+                .build();
+
             setConnection(connect)
         }
-        catch(e) { console.log(e); }
+        catch (e) { console.log(e); }
     }, []);
 
     useEffect(() => {
@@ -94,8 +91,9 @@ const Conversation = (props) => {
                         const updatedMsgList = [...latestChat.current];
                         updatedMsgList.push(message);
                         setMsgList(updatedMsgList);
+                        updateLastMsgInGui();
                     })
-                    connection.invoke("SetIdInServer", props.username).then(res => {}).catch(e => console.log("Not connected"));
+                    connection.invoke("SetIdInServer", props.username).then(res => { }).catch(e => console.log("Not connected"));
                 })
                 .catch(e => console.log('Connection failed: ', e));
         }
@@ -129,8 +127,7 @@ const Conversation = (props) => {
             setMsgList(newMessages);
             setMsg("");
             updateScroll();
-        // updateLastMsgInGui();
-            toggleRender();
+            updateLastMsgInGui();
             setTimeout(updateScroll, 125);
 
             //POST - Transfer
@@ -148,12 +145,13 @@ const Conversation = (props) => {
             }
             fetch(dataServer + "api/transfer/", config);
 
-                try {
+            try {
                 await connection.invoke("SendMsg", props.username, msg, chosenChat.id);
-                }
-                catch(e) {
-                    console.log(e);
-                } 
+            }
+            catch (e) {
+                console.log(e);
+            }
+            updateLastMsgInGui();
         }
     };
 
@@ -161,7 +159,7 @@ const Conversation = (props) => {
         await sendMessage();
     }
 
-    async function onEnter(e){
+    async function onEnter(e) {
         if (e.key === "Enter") {
             await sendMessage();
         }

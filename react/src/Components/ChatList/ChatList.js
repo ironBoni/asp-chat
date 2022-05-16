@@ -42,7 +42,7 @@ function ChatList(props) {
                     setContactsAlready = true;
                 });
         });
-    });
+    }, []);
 
     useEffect(async () => {
         var id = props.username;
