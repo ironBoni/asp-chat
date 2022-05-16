@@ -26,9 +26,6 @@ const Conversation = (props) => {
     const [sTop, setSTop] = useState(0)
     const [voiceRecorder, setVoiceRecorder] = useState(null);
 
-    function toggleRender() {
-        props.setRender(!props.render); 
-    }
 
     const [stream, setStream] = useState({
         hasAccessToMic: false, voiceRecorder: null
@@ -94,6 +91,7 @@ const Conversation = (props) => {
                         const updatedMsgList = [...latestChat.current];
                         updatedMsgList.push(message);
                         setMsgList(updatedMsgList);
+                        updateLastMsgInGui();
                     })
                     connection.invoke("SetIdInServer", props.username).then(res => {}).catch(e => console.log("Not connected"));
                 })
@@ -129,8 +127,7 @@ const Conversation = (props) => {
             setMsgList(newMessages);
             setMsg("");
             updateScroll();
-        // updateLastMsgInGui();
-            toggleRender();
+            updateLastMsgInGui();
             setTimeout(updateScroll, 125);
 
             //POST - Transfer

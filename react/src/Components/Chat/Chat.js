@@ -7,7 +7,6 @@ import Welcome from '../Welcome/Welcome';
 import { Nav, Navbar, Container } from "react-bootstrap"
 
 const Chat = (props) => {
-    const [render, setRender] = useState(false);
     const updateLastArray = useRef(Array(users.length).fill(null));
     const [chosenChat, setChosenChat] = useState();
     function handleClick() {
@@ -21,7 +20,7 @@ const Chat = (props) => {
             <Navbar bg="dark" variant="dark">
                 <Container>
                    
-                    <Navbar.Brand className="nav" onClick={handleClick}> <img class="logo-nav" src="/images/webIcon.png" /></Navbar.Brand>
+                    <Navbar.Brand className="nav" onClick={handleClick}> <img className="logo-nav" src="/images/webIcon.png" /></Navbar.Brand>
                     <Nav className="me-auto">
                     <Nav.Link className="nav" href="http://localhost:5266/Ratings/">Ratings</Nav.Link>
                         <Nav.Link className="nav" href="#chat">Chat</Nav.Link>
@@ -38,7 +37,7 @@ const Chat = (props) => {
                         setToken={props.setToken} />
                     {chosenChat ?
                         <Conversation chosenChat={chosenChat} updateLastProp={updateLastArray}
-                            setIsShowSignIn={props.setIsShowSignIn} username={props.username} token={props.token} setRender={setRender} render={render} />
+                            setIsShowSignIn={props.setIsShowSignIn} username={props.username} token={props.token}/>
                         : <Welcome />}
                 </div>
             </div>
