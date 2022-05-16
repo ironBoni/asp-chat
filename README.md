@@ -7,12 +7,14 @@ go to the "react" directory.<br/>
 run the following commands:
 1. npm install @microsoft/signalr
 2. npm install react-bootstrap
+in the **"react" directory** - run **npm start**.
 
 **ASP.NET MVC (Parts 0-2)**: <br/>
 (Open the server - Go to "Main" and open "Main.sln").
 Right-click on "AspNetMvc" project > "Set As Startup Project".
 Run the application.
 **To see the rating page go to http://localhost:5266/Ratings**
+(or go to http://localhost:3000 and you can choose it from the nav bar)
 
 **ASP.NET WebAPI (Part 3) - localhost:5186** <br/>
 (Open the server - Go to "Main" and open "Main.sln").
