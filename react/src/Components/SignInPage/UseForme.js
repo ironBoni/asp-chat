@@ -70,7 +70,7 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
         method: 'POST',
         headers: {
           'accept': '*/*',
-          'content-Type': 'application/json'
+          'content-Type': 'application/json',
         },
         body: JSON.stringify(data)
       }
