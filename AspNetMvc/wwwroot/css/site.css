@@ -78,4 +78,15 @@ body {
     max-width: 600px;
     overflow-wrap: break-word;
 }
+.logo-nav {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-left: 45%;
+}
+
+.container-nav {
+    margin-left: 0px !important;
+}
 
