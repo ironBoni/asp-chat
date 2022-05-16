@@ -37,7 +37,7 @@ const Conversation = (props) => {
                 userNotifier();
         });
     }
-    
+
     function focusTextBox() {
         /* when the react is the wwwroot folder built and static
          if the focus() function is called the focus is behaving unexpectedly.
@@ -47,7 +47,7 @@ const Conversation = (props) => {
         if (textbox && window.location.href.indexOf(aspMvcServer) < 0)
             textbox.focus();
     }
-    
+
     const [recordInfo, setRecordInfo] = useState({
         isRecording: false, canRecord: false, url: ""
     });
@@ -162,6 +162,21 @@ const Conversation = (props) => {
             var res = await fetch(dataServer + "api/contacts/server/" + id, config);
             var response = await res.json();
 
+            //POST - api/contacts/{id}/messages
+            var data = { "content": msg };
+            var config = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': '*/*',
+                    'Accept-Endcoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+            fetch(dataServer + "api/contacts/" + props.chosenChat.id + "/messages", config);
+
             //POST - Transfer to the other server
             var data = { "from": props.username, "to": props.chosenChat.id, "content": msg };
             var config = {
@@ -175,25 +190,9 @@ const Conversation = (props) => {
                 },
                 body: JSON.stringify(data)
             }
-            fetch(response.server + "api/transfer/", config);
-
-            //POST - api/contacts/{id}/messages
-            var data = { "from": props.username, "to": props.chosenChat.id, "content": msg };
-            var config = {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Accept': '*/*',
-                    'Accept-Endcoding': 'gzip, deflate, br',
-                    'Connection': 'keep-alive',
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }
-
             // if ther second user has different server, then send
             if (dataServer.indexOf(response.server) < 0 && (response.server).indexOf(dataServer) < 0)
-                fetch(dataServer + "api/contacts/" + props.chosenChat.id + "/messages", config);
+                fetch(response.server + "api/transfer/", config);
 
             try {
                 await connection.invoke("SendMsg", props.username, msg, props.chosenChat.id);

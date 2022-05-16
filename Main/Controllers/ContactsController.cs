@@ -70,6 +70,7 @@ namespace AspWebApi.Controllers {
             var chat = chatService.GetChatByParticipants(id, Current.Username);
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
             string sender = Current.Username;
+            // sent = true because it was sent from my server
             var message = new Message(msgId, req.Content, sender, true);
             var success = chatService.AddMessage(chat.Id, message);
             if(!success) return BadRequest("The message could not be added.");
