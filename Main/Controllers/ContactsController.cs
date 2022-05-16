@@ -42,7 +42,6 @@ namespace AspWebApi.Controllers {
         public IActionResult GetLastMessage(string id)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var m = messages[messages.Count - 1]; 
