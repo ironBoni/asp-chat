@@ -22,6 +22,10 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
+
+    },[props.render])
+
+    useEffect(() => {
         fetch(dataServer+"api/Login/" + id).then(res => res.json()).then(tok => {
             token = tok.token;
             props.setToken(tok.token);
@@ -202,7 +206,7 @@ function ChatList(props) {
                     {contactsLst.map((user, key) => {
                         if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                                updateLastM={props.updateLastProp} username={props.username}/>)
+                                updateLastM={props.updateLastProp} username={props.username} token={props.token}/>)
                         }
                     })}
                 </div>
