@@ -22,7 +22,7 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
-        fetch(dataServer + "api/Login/" + id).then(res => res.json()).then(tok => {
+        fetch(dataServer+"api/Login/" + id).then(res => res.json()).then(tok => {
             token = tok.token;
             props.setToken(tok.token);
             var config = {
@@ -42,16 +42,22 @@ function ChatList(props) {
                     setContactsAlready = true;
                 });
         })
-    }, [])
-    useEffect(() => {
+    useEffect(async () => {
         var id = props.username;
+                // GET to get the server of the idToAdd 
+        var config = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                }
         if (!id)
             id = 'noam';
-        var userData = users.filter((user) => user.id === id)[0];
+        var res = await fetch(dataServer + "api/contacts/server/" + id, config);
+        var response = await res.json();
 
-
-        setUserImage(userData.profileImage);
-        setname(userData.name);
+        setUserImage(response.profileImage);
+        setname(response.name);
 
     })
 
@@ -211,7 +217,7 @@ function ChatList(props) {
                     {contactsLst.map((user, key) => {
                         if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                                updateLastM={props.updateLastProp} username={props.username} />)
+                                updateLastM={props.updateLastProp} username={props.username} token={props.token}/>)
                         }
                     })}
                 </div>

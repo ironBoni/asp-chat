@@ -12,14 +12,13 @@ run the following commands:
 (Open the server - Go to "Main" and open "Main.sln").
 Right-click on "AspNetMvc" project > "Set As Startup Project".
 Run the application.
-The home page is the react-client (in wwwroot).
 **To see the rating page go to http://localhost:5266/Ratings**
 
 **ASP.NET WebAPI (Part 3) - localhost:5186** <br/>
 (Open the server - Go to "Main" and open "Main.sln").
 Set as startup project, and run it.
 
-To run the client we recommand on "npm start" in "react" folder (although it can be viewed from the ASP.NET-MVC home page).
+To run the client we recommand on "npm start" in "react" folder.
 
 **First, you should sign in in order to get a token from the server.**
 Meaning, send a **POST request to http://localhost:5186/api/Login**

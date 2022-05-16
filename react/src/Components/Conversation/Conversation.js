@@ -25,6 +25,11 @@ const Conversation = (props) => {
     var isRecordActive = false;
     const [sTop, setSTop] = useState(0)
     const [voiceRecorder, setVoiceRecorder] = useState(null);
+
+    function toggleRender() {
+        props.setRender(!props.render); 
+    }
+
     const [stream, setStream] = useState({
         hasAccessToMic: false, voiceRecorder: null
     });
@@ -124,7 +129,8 @@ const Conversation = (props) => {
             setMsgList(newMessages);
             setMsg("");
             updateScroll();
-            updateLastMsgInGui();
+        // updateLastMsgInGui();
+            toggleRender();
             setTimeout(updateScroll, 125);
 
             //POST - Transfer

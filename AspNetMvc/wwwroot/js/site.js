@@ -17,7 +17,7 @@ $(document).ready(function () {
     $('.star-ratings').width(star_rating_width);
 });
 
-
+/*
 $(function () {
     var connection = new signalR.HubConnectionBuilder().withUrl("/myHub").build();
 
@@ -33,4 +33,4 @@ $(function () {
     connection.on("ChangeReceived", function (value) {
         $('textarea').val(value);
     });
-});
+});*/

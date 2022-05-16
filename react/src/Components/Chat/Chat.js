@@ -6,6 +6,7 @@ import Conversation from '../Conversation/Conversation'
 import Welcome from '../Welcome/Welcome';
 
 const Chat = (props) => {
+    const [render, setRender] = useState(false);
     const updateLastArray = useRef(Array(users.length).fill(null));
 
     const [chosenChat, setChosenChat] = useState();
@@ -17,7 +18,7 @@ const Chat = (props) => {
                 setToken = {props.setToken}/>
                 {chosenChat ?
                     <Conversation chosenChat={chosenChat} updateLastProp = {updateLastArray}
-                    setIsShowSignIn = {props.setIsShowSignIn} username= {props.username} token = {props.token}/>
+                    setIsShowSignIn = {props.setIsShowSignIn} username= {props.username} token = {props.token} setRender={setRender} render={render}/>
                     : <Welcome />}
             </div>
         </div>
