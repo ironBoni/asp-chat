@@ -130,7 +130,18 @@ const Conversation = (props) => {
             updateLastMsgInGui();
             setTimeout(updateScroll, 125);
 
-            //POST - Transfer
+            // GET to get the server of the other user 
+            var config = {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            }
+
+            var res = await fetch(dataServer + "api/contacts/server/" + id, config);
+            var response = await res.json();
+
+            //POST - Transfer to the other server
             var data = { "from": props.username, "to": chosenChat.id, "content": msg };
             var config = {
                 method: 'POST',
@@ -143,7 +154,25 @@ const Conversation = (props) => {
                 },
                 body: JSON.stringify(data)
             }
-            fetch(dataServer + "api/transfer/", config);
+            fetch(response.server + "api/transfer/", config);
+
+            //POST - api/contacts/{id}/messages
+            var data = { "from": props.username, "to": chosenChat.id, "content": msg };
+            var config = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': '*/*',
+                    'Accept-Endcoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+
+            // if ther second user has different server, then send
+            if(dataServer.indexOf(response.server) < 0 && (response.server).indexOf(dataServer) < 0)
+                fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages", config);
 
             try {
                 await connection.invoke("SendMsg", props.username, msg, chosenChat.id);
