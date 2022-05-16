@@ -43,15 +43,22 @@ function ChatList(props) {
                 });
         })
     } , [])
-    useEffect(() => {
+    useEffect(async () => {
         var id = props.username;
+                // GET to get the server of the idToAdd 
+        var config = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                }
         if (!id)
             id = 'noam';
-        var userData = users.filter((user) => user.id === id)[0];
+        var res = await fetch(dataServer + "api/contacts/server/" + id, config);
+        var response = await res.json();
 
-
-        setUserImage(userData.profileImage);
-        setname(userData.name);
+        setUserImage(response.profileImage);
+        setname(response.name);
 
     })
 
