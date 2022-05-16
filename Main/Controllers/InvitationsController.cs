@@ -7,7 +7,6 @@ using Models.DataServices.Interfaces;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AspWebApi.Controllers {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class InvitationsController : ControllerBase {
@@ -23,7 +22,7 @@ namespace AspWebApi.Controllers {
         {
 
             string response;
-            var success = service.AcceptInvitation(req.From, req.Server, out response);
+            var success = service.AcceptInvitation(req.From, req.Server, req.To, out response);
             if (success) return StatusCode(201);
             return BadRequest(response);
         }
