@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import MessageField from '../MessageField/MessageField';
 import UserImage from '../UserImage/UserImage';
 import './Conversation.css';
-import { dataServer, chats, video_extensions, audio_extensions, image_extensions } from '../../Data/data';
+import { dataServer, chats, video_extensions, audio_extensions, image_extensions, aspMvcServer } from '../../Data/data';
 import { Modal } from 'react-bootstrap';
 import Contact from '../Contact/Contact';
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
@@ -37,6 +37,17 @@ const Conversation = (props) => {
                 userNotifier();
         });
     }
+    
+    function focusTextBox() {
+        /* when the react is the wwwroot folder built and static
+         if the focus() function is called the focus is behaving unexpectedly.
+        However, if focusing while "npm start", it works great
+        in in the README we will ask the teacher to check with "npm start"*/
+        var textbox = document.getElementById('textbox');
+        if (textbox && window.location.href.indexOf(aspMvcServer) < 0)
+            textbox.focus();
+    }
+    
     const [recordInfo, setRecordInfo] = useState({
         isRecording: false, canRecord: false, url: ""
     });
@@ -68,6 +79,8 @@ const Conversation = (props) => {
                 setMsgList(data);
                 oldUser = props.chosenChat.id;
             });
+
+        focusTextBox();
     }, [props.chosenChat])
 
     useEffect(() => {
