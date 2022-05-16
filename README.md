@@ -1,8 +1,10 @@
 To open the Server's code - 
 Clone and **Go to the Main folder, and run Main.sln**.
+**Set as startup project (the "AspWebApi"), and Start without Debugging.**
+then, **Set the MVC as startup project (the "AspNetMvc"), and Start without Debugging.**
 <br/>
 
-**First of all - npm install in "react" directory**<br/>
+**React - npm install in "react" directory**<br/>
 go to the "react" directory.<br/>
 run the following commands:
 1. npm install @microsoft/signalr
@@ -10,18 +12,11 @@ run the following commands:
 in the **"react" directory** - run **npm start**.
 
 **ASP.NET MVC (Parts 0-2)**: <br/>
-(Open the server - Go to "Main" and open "Main.sln").
-Right-click on "AspNetMvc" project > "Set As Startup Project".
-Run the application.
+(Assuming you already started (in that order) the : 1. WebAPI project. 2. MVC. 3. React as mentioned in the beggining).
 **To see the rating page go to http://localhost:5266/Ratings**
 (or go to http://localhost:3000 and you can choose it from the nav bar)
 
 **ASP.NET WebAPI (Part 3) - localhost:5186** <br/>
-(Open the server - Go to "Main" and open "Main.sln").
-Set as startup project, and run it.
-
-To run the client we recommand on "npm start" in "react" folder.
-
 **First, you should sign in in order to get a token from the server.**
 Meaning, send a **POST request to http://localhost:5186/api/Login**
 **in the body:
@@ -59,7 +54,7 @@ in the second login with: "dan", "Np1234"**
 you can send message from one to the second,
 and see that it wil get it immediately by the server ChatHub.
 
-React - general use instructions
+**React - general use instructions**
 1. Enter "react" folder and run "npm start".
 2. enter username: "noam", and password: "Np1234". <br/>
 3. To chat with Ron, click on his name in the left menu. <br/>
