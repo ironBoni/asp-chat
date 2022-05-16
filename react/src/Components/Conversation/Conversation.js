@@ -73,14 +73,14 @@ const Conversation = (props) => {
 
     useEffect(() => {
         try {
-        const connect = new HubConnectionBuilder()
-            .withUrl(dataServer + "hub")
-            .withAutomaticReconnect()
-            .build();
-            
+            const connect = new HubConnectionBuilder()
+                .withUrl(dataServer + "hub")
+                .withAutomaticReconnect()
+                .build();
+
             setConnection(connect)
         }
-        catch(e) { console.log(e); }
+        catch (e) { console.log(e); }
     }, []);
 
     useEffect(() => {
@@ -93,7 +93,7 @@ const Conversation = (props) => {
                         setMsgList(updatedMsgList);
                         updateLastMsgInGui();
                     })
-                    connection.invoke("SetIdInServer", props.username).then(res => {}).catch(e => console.log("Not connected"));
+                    connection.invoke("SetIdInServer", props.username).then(res => { }).catch(e => console.log("Not connected"));
                 })
                 .catch(e => console.log('Connection failed: ', e));
         }
@@ -145,12 +145,13 @@ const Conversation = (props) => {
             }
             fetch(dataServer + "api/transfer/", config);
 
-                try {
+            try {
                 await connection.invoke("SendMsg", props.username, msg, chosenChat.id);
-                }
-                catch(e) {
-                    console.log(e);
-                } 
+            }
+            catch (e) {
+                console.log(e);
+            }
+            updateLastMsgInGui();
         }
     };
 
@@ -158,7 +159,7 @@ const Conversation = (props) => {
         await sendMessage();
     }
 
-    async function onEnter(e){
+    async function onEnter(e) {
         if (e.key === "Enter") {
             await sendMessage();
         }
