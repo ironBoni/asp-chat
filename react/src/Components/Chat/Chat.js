@@ -20,10 +20,13 @@ const Chat = (props) => {
         <>
             <Navbar bg="dark" variant="dark">
                 <Container>
-                    <Navbar.Brand className="nav" onClick={handleClick}>Logout</Navbar.Brand>
+                   
+                    <Navbar.Brand className="nav" onClick={handleClick}> <img class="logo-nav" src="/images/webIcon.png" /></Navbar.Brand>
                     <Nav className="me-auto">
+                    <Nav.Link className="nav" href="http://localhost:5266/Ratings/">Ratings</Nav.Link>
                         <Nav.Link className="nav" href="#chat">Chat</Nav.Link>
-                        <Nav.Link className="nav" href="#Ratings">Ratings</Nav.Link>
+                        <Nav.Link className="nav" onClick={handleClick}>Logout</Nav.Link>
+                        
                     </Nav>
                 </Container>
             </Navbar>
