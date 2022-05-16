@@ -44,7 +44,7 @@ POST /api/Register - in the body:<br/>
 }
 
 Invitations, Transfer, Contacts:
-as mentioned in the exercise.
+and every API request as mentioned in the exercise.
 
 **SignalR - Part4**
 **in the client (npm start in "react" folder)
