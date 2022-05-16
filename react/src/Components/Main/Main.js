@@ -59,7 +59,7 @@ export default function Main() {
                   </div>
                 </div>
               </div>)
-                : (<Chat setIsShowSignIn={setIsShowSignIn} username = {username} token={token} setToken={setToken}/>)}
+                : (<Chat setIsSubmittedUser={setIsSubmittedUser} setIsShowSignIn={setIsShowSignIn} username = {username} token={token} setToken={setToken}/>)}
         </div>
     )
 }
