@@ -50,7 +50,6 @@ const Conversation = (props) => {
         setSTop(2000);
     }
 
-    const { chosenChat } = props;
     var id = props.username;
     var canAddRecord = false;
     var alreadyGotMessages = false;
@@ -64,12 +63,12 @@ const Conversation = (props) => {
     }
 
     useEffect(() => {
-        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages", config).then(res => res.json())
+        fetch(dataServer + "api/contacts/" + props.chosenChat.id + "/messages", config).then(res => res.json())
             .then(data => {
                 setMsgList(data);
-                oldUser = chosenChat.id;
+                oldUser = props.chosenChat.id;
             });
-    }, [chosenChat])
+    }, [props.chosenChat])
 
     useEffect(() => {
         try {
@@ -89,9 +88,18 @@ const Conversation = (props) => {
                 .then(result => {
                     connection.on("ReceiveMessage", message => {
                         const updatedMsgList = [...latestChat.current];
+                        var chosenChatId = localStorage.getItem(id + "chosenChat")
+                        props.setRenderAgain(!props.renderAgain)
+                        updateScroll();
+                        updateLastMsgInGui();
+                        setTimeout(updateScroll, 125);
+
+                        if (message.senderUsername !== chosenChatId) return;
                         updatedMsgList.push(message);
                         setMsgList(updatedMsgList);
+                        updateScroll();
                         updateLastMsgInGui();
+                        setTimeout(updateScroll, 125);
                     })
                     connection.invoke("SetIdInServer", props.username).then(res => { }).catch(e => console.log("Not connected"));
                 })
@@ -106,7 +114,7 @@ const Conversation = (props) => {
             // get last message
             chats.forEach(chatData => {
                 chatData.participicants.forEach(participicant => {
-                    if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
+                    if (participicant === props.chosenChat.id && chatData.participicants.includes(id)) {
                         msgListInDb = chatData.messages;
                         return;
                     }
@@ -142,7 +150,7 @@ const Conversation = (props) => {
             var response = await res.json();
 
             //POST - Transfer to the other server
-            var data = { "from": props.username, "to": chosenChat.id, "content": msg };
+            var data = { "from": props.username, "to": props.chosenChat.id, "content": msg };
             var config = {
                 method: 'POST',
                 headers: {
@@ -157,7 +165,7 @@ const Conversation = (props) => {
             fetch(response.server + "api/transfer/", config);
 
             //POST - api/contacts/{id}/messages
-            var data = { "from": props.username, "to": chosenChat.id, "content": msg };
+            var data = { "from": props.username, "to": props.chosenChat.id, "content": msg };
             var config = {
                 method: 'POST',
                 headers: {
@@ -171,11 +179,11 @@ const Conversation = (props) => {
             }
 
             // if ther second user has different server, then send
-            if(dataServer.indexOf(response.server) < 0 && (response.server).indexOf(dataServer) < 0)
-                fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages", config);
+            if (dataServer.indexOf(response.server) < 0 && (response.server).indexOf(dataServer) < 0)
+                fetch(dataServer + "api/contacts/" + props.chosenChat.id + "/messages", config);
 
             try {
-                await connection.invoke("SendMsg", props.username, msg, chosenChat.id);
+                await connection.invoke("SendMsg", props.username, msg, props.chosenChat.id);
             }
             catch (e) {
                 console.log(e);
@@ -210,7 +218,7 @@ const Conversation = (props) => {
         // get last message - for audio
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
+                if (participicant === props.chosenChat.id && chatData.participicants.includes(id)) {
                     newId = Math.max.apply(Math, chatData.messages.map((msg => {
                         msgListInDb = chatData.messages;
                         return msg.id;
@@ -352,7 +360,7 @@ const Conversation = (props) => {
             // get last message
             chats.forEach(chatData => {
                 chatData.participicants.forEach(participicant => {
-                    if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
+                    if (participicant === props.chosenChat.id && chatData.participicants.includes(id)) {
                         lastMsgId = Math.max.apply(Math, chatData.messages.map((msg => {
                             msgListInDb = chatData.messages;
                             return msg.id;
@@ -385,7 +393,7 @@ const Conversation = (props) => {
         // get last message     
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
+                if (participicant === props.chosenChat.id && chatData.participicants.includes(id)) {
                     lastMessageId = Math.max.apply(Math, chatData.messages.map((msg => {
                         msgListInDb = chatData.messages;
                         return msg.id;
@@ -415,8 +423,8 @@ const Conversation = (props) => {
         <div className="col-9 conversation">
             <div className='conversation-container'>
                 <div className='user-title'>
-                    <UserImage src={chosenChat.profileImage} headOf={chosenChat.name} />
-                    <div className='user-name'>{chosenChat.name}</div>
+                    <UserImage src={props.chosenChat.profileImage} headOf={props.chosenChat.name} />
+                    <div className='user-name'>{props.chosenChat.name}</div>
                 </div>
                 <div className='message-container' id="chat" scolltop={sTop}>
                     {msgList?.map((msg, key) => (

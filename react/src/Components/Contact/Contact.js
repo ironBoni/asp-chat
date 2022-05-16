@@ -8,7 +8,7 @@ const Contact = (props) => {
     const [lastMsgTime, setLastMsgTime] = useState('');
     const [lastMsgType, setLastMsgType] = useState('text');
     const [fileName, setFileName] = useState('');
-    var myid = props.username;
+    var id = props.username;
 
     async function updateLastMessage() {
         var config = {
@@ -28,8 +28,12 @@ const Contact = (props) => {
             updateLastM.current.push(updateLastMessage);
     }, []);
 
+    function setChat() {
+        setChosenChat(userInfo);
+        localStorage.setItem(id+"chosenChat", userInfo.id)
+    }
     return (
-        <div className='contact' onClick={() => setChosenChat(userInfo)}>
+        <div className='contact' onClick={() => setChat()}>
             <img className='profile-image' alt='profile' src={userInfo.profileImage}></img>
             <div className='text'>
                 <h6 className='contact-name'>{userInfo.name}</h6>
