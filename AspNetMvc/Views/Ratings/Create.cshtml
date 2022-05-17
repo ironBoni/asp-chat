@@ -11,13 +11,25 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-
             <div class="form-group">
-                <label asp-for="Rate" class="control-label"></label>
-                <input asp-for="Rate" class="form-control" />
-                <span asp-validation-for="Rate" class="text-danger"></span>
-
-            </div><br /><br />
+                <tr>
+                    <td>
+                        <fieldset class="rating">
+                            <input type="radio" id="star5" name="@Html.NameFor(model => model.Rate)" value="5" required/>
+                            <label for="star5" title="WOW!">5 stars</label>
+                            <input type="radio" id="star4" name="@Html.NameFor(model => model.Rate)" value="4" />
+                            <label for="star4" title="Pretty good">4 stars</label>
+                            <input type="radio" id="star3" name="@Html.NameFor(model => model.Rate)" value="3" />
+                            <label for="star3" title="Cool">3 stars</label>
+                            <input type="radio" id="star2" name="@Html.NameFor(model => model.Rate)" value="2" />
+                            <label for="star2" title="Not good">2 stars</label>
+                            <input type="radio" id="star1" name="@Html.NameFor(model => model.Rate)" value="1" />
+                            <label for="star1" title="Bad!!">1 star</label>
+                        </fieldset>
+                    </td>
+                </tr>
+            </div>
+            <br /><br />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />

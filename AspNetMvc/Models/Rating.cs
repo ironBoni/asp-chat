@@ -7,7 +7,7 @@ namespace AspNetMvc.Models
         [Required]
         public int ID { get; set; }
         [Required]
-        [Range(1,5,ErrorMessage = "Rate must be between 1 to 5!")]
+        [Range(1, 5, ErrorMessage = "Rate must be between 1 to 5!")]
         public int Rate { get; set; }
         [Required]
         [MaxLength(80, ErrorMessage = "Exceeded max length! 80 chars requried")]
