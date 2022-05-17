@@ -7,9 +7,10 @@ import Welcome from '../Welcome/Welcome';
 import { Nav, Navbar, Container } from "react-bootstrap"
 
 const Chat = (props) => {
-    const [render, setRender] = useState(false);
     const updateLastArray = useRef(Array(users.length).fill(null));
     const [chosenChat, setChosenChat] = useState();
+    const [renderAgain, setRenderAgain] = useState(false);
+    
     function handleClick() {
         props.setIsShowSignIn(true);
         props.setIsSubmittedUser(false);
@@ -32,10 +33,11 @@ const Chat = (props) => {
                 <div className='row no-gutters rounded-lg shadow main'>
                     <ChatList setChosenChat={setChosenChat} updateLastProp={updateLastArray}
                         setIsShowSignIn={props.setIsShowSignIn} username={props.username} token={props.token}
-                        setToken={props.setToken} />
+                        setToken={props.setToken} renderAgain = {renderAgain}/>
                     {chosenChat ?
-                        <Conversation chosenChat={chosenChat} updateLastProp={updateLastArray}
-                            setIsShowSignIn={props.setIsShowSignIn} username={props.username} token={props.token} setRender={setRender} render={render} />
+                        <Conversation chosenChat={chosenChat} updateLastProp={updateLastArray} setRenderAgain={setRenderAgain}
+                            setIsShowSignIn={props.setIsShowSignIn} username={props.username} token={props.token}
+                            renderAgain = {renderAgain}/>
                         : <Welcome />}
                 </div>
             </div>

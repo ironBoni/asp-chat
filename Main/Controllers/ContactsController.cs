@@ -32,7 +32,6 @@ namespace AspWebApi.Controllers {
         public IActionResult GetMessagesByContact(string id)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             return Ok(messages.Select(m => new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
@@ -43,7 +42,6 @@ namespace AspWebApi.Controllers {
         public IActionResult GetLastMessage(string id)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var m = messages[messages.Count - 1]; 
@@ -55,7 +53,6 @@ namespace AspWebApi.Controllers {
         public IActionResult GetMessagesByContact(string id, int id2)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var m = messages.Find(m => m.Id == id2);
@@ -67,15 +64,13 @@ namespace AspWebApi.Controllers {
         public IActionResult SendMessage(string id, [FromBody] SendMessageRequest req)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
-
+       
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var chat = chatService.GetChatByParticipants(id, Current.Username);
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
-            string sender = "";
-            if (req.SenderUsername == null) sender = id;
-            else sender = Current.Username;
+            string sender = Current.Username;
+            // sent = true because it was sent from my server
             var message = new Message(msgId, req.Content, sender, true);
             var success = chatService.AddMessage(chat.Id, message);
             if(!success) return BadRequest("The message could not be added.");
@@ -87,8 +82,7 @@ namespace AspWebApi.Controllers {
         public IActionResult RemoveMessageById(string id, int id2)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
-
+            
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             messages.Remove(messages.Find(m => m.Id == id2));
@@ -101,8 +95,7 @@ namespace AspWebApi.Controllers {
         public IActionResult UpdateMessageById(string id, int id2, [FromBody] PutMessageRequest req)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
-
+            
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var message = messages.Find(m => m.Id == id2);
@@ -115,7 +108,6 @@ namespace AspWebApi.Controllers {
         public IEnumerable<Contact> Get()
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
             var result = userService.GetContacts(Current.Username);
 
             return result;
@@ -148,8 +140,7 @@ namespace AspWebApi.Controllers {
         public IActionResult Get(string username)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
-
+          
             var result = userService.GetContacts(Current.Username).Find(contact => contact.Id == username);
             if (result == null)
                 return NotFound();
@@ -161,8 +152,7 @@ namespace AspWebApi.Controllers {
         public IActionResult Put(string id, [FromBody] PutContactRequest request)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            UserService.SetContactsForThisUser(Current.Username);
-
+           
             var contact = userService.GetContacts(Current.Username).Find(c => c.Id == id);
             if (contact == null)
                 return StatusCode(400);

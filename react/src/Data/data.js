@@ -767,6 +767,7 @@ export const chats = [
 
 export const myServer = "localhost://3000/";
 export const dataServer = "http://localhost:5186/";
+export const aspMvcServer = "localhost:5266";
 export const users = [
     {
         id: 'noam',

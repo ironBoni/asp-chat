@@ -22,11 +22,7 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
-
-    },[props.render])
-
-    useEffect(() => {
-        fetch(dataServer+"api/Login/" + id).then(res => res.json()).then(tok => {
+        fetch(dataServer + "api/Login/" + id).then(res => res.json()).then(tok => {
             token = tok.token;
             props.setToken(tok.token);
             var config = {
@@ -45,17 +41,18 @@ function ChatList(props) {
                     setContactsLst(myContacts);
                     setContactsAlready = true;
                 });
-        })
-    } , [])
+        });
+    }, []);
+
     useEffect(async () => {
         var id = props.username;
-                // GET to get the server of the idToAdd 
+        // GET to get the server of the idToAdd 
         var config = {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                }
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        }
         if (!id)
             id = 'noam';
         var res = await fetch(dataServer + "api/contacts/server/" + id, config);
@@ -112,6 +109,7 @@ function ChatList(props) {
             headers: {
                 'accept': '*/*',
                 'content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         }
@@ -136,6 +134,21 @@ function ChatList(props) {
         setContactsLst(newContacts);
         setErrorAddUser('');
         setShowAddModal(false);
+
+        // Send Invitation to him
+        // POST request - from (id), to (idToAdd), server (of me)
+        data = { "from": id, "to": idToAdd, "server": response.server };
+        config = {
+            method: 'POST',
+            headers: {
+                'accept': '*/*',
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+        //if((response.server).indexOf(dataServer) < 0 &&
+        //    dataServer.indexOf(response.server) < 0)
+        fetch(dataServer + "api/invitations/", config);
     };
 
     const addUserPressedEnter = (e) => {
@@ -206,7 +219,8 @@ function ChatList(props) {
                     {contactsLst.map((user, key) => {
                         if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                                updateLastM={props.updateLastProp} username={props.username} token={props.token}/>)
+                                updateLastM={props.updateLastProp} username={props.username} token={props.token} 
+                                renderAgain = {props.renderAgain}/>)
                         }
                     })}
                 </div>

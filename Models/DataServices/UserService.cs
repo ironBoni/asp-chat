@@ -24,7 +24,7 @@ namespace Models.DataServices {
             new User("ran", "Ran Levi", "Np1234", "/profile/ran.webp"),
         };
 
-        public static void SetContactsForThisUser(string username)
+        /*public static void SetContactsForThisUser(string username)
         {
             var user = users.Find(user => user.Username == username);
             if (user == null) return;
@@ -32,7 +32,7 @@ namespace Models.DataServices {
             if(!CurrentUsers.IdToContactsDict.ContainsKey(username))
                 CurrentUsers.SetContactsForUser(username);
             user.Contacts = CurrentUsers.IdToContactsDict[username];
-        }
+        }*/
 
         private static IDataService<Chat, int> chatsService = new ChatService();
 
@@ -177,12 +177,64 @@ namespace Models.DataServices {
             return chatsService.Delete(chatToRemove.Id);
         }
 
-        public bool AcceptInvitation(string from, string server, out string response)
+        public bool AcceptInvitation(string from, string server, string to, out string response)
         {
             var userToAdd = users.Find(u => u.Username == from);
             string name = "";
-            if (userToAdd == null) name = userToAdd.Username;
-            return AddContact(from, name, server, out response);
+            if (userToAdd == null) {
+                response = "no such user";
+                return false;
+            }
+            //var username = Current.Username;
+            var currentUser = users.Find(user => user.Username == to);
+            if(currentUser == null) {
+                response = "such user doesn't exists";
+                return false;
+            }
+            var currentContacts = GetContacts(to);
+
+            if (currentContacts == null)
+            {
+                response = "There are not contacts.";
+                return false;
+            }
+
+            // You cannot add someone that is already in your chats.
+            if (currentContacts.Any(user => user.Id == from))
+            {
+                response = "User cannot be added, because he's already in your chat list.";
+                return false;
+            }
+
+            var newChat = new Chat(new List<string>() {
+                to, from});
+
+            var requestor = users.Find(user => user.Username == from);
+            // then add it
+            if (requestor == null)
+            {
+                response = "The user doesn't exist in the system.";
+                return false;
+            }
+
+            if (requestor.Nickname == null || requestor.Nickname == "")
+                name = requestor.Username;
+            else
+                name = requestor.Nickname;
+            requestor.Server = server;
+
+            var newContact = new Contact(from, name, server, null, null, requestor.ProfileImage);
+            if (!currentUser.Contacts.Contains(newContact))
+            {
+                currentUser.Contacts.Add(newContact);
+                CurrentUsers.IdToContactsDict[currentUser.Username] = currentUser.Contacts;
+            }
+
+            response = "";
+            if (chatsService.GetAll().Find(c => c.Participants.Contains(from) 
+                && c.Participants.Contains(Current.Username)) != null)
+                return true;
+            return chatsService.Create(newChat);
         }
     }
 }

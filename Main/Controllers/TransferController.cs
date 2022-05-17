@@ -9,14 +9,16 @@ using Models.DataServices.Interfaces;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AspWebApi.Controllers {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TransferController : ControllerBase {
         private IChatService service;
+        private IUserService userService;
+
         public TransferController()
         {
             service = new ChatService();
+            userService = new UserService();
         }
 
         // POST api/<TransferController>
@@ -39,7 +41,8 @@ namespace AspWebApi.Controllers {
             }
 
             var messageId = service.GetNewMsgIdInChat(chat.Id);
-            var addSuccess = service.AddMessage(chat.Id, new Message(messageId, request.Content, request.From, true));
+            // the sent is false because it was not sent from my server
+            var addSuccess = service.AddMessage(chat.Id, new Message(messageId, request.Content, request.From, false));
             if(!addSuccess) return BadRequest();
             return Ok();
         }
