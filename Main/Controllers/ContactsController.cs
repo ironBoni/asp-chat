@@ -43,7 +43,10 @@ namespace AspWebApi.Controllers {
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             var messages = chatService.GetAllMessages(id, Current.Username);
+            var chat=  chatService.GetChatByParticipants(id, Current.Username);
+            var msgId = chatService.GetNewMsgIdInChat(chat.Id);
             if (messages == null) return BadRequest();
+            if (messages.Count == 0) return Ok(new MessageResponse(1, "", DateTime.Now, true, id));
             var m = messages[messages.Count - 1]; 
             return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
         }
