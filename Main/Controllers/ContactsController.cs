@@ -19,10 +19,9 @@ namespace AspWebApi.Controllers {
     public class ContactsController : ControllerBase {
         private readonly IUserService userService;
         private readonly IChatService chatService;
-        //private readonly IHubContext<ChatHub> _hub;
+        
         public ContactsController()
         {
-          //  _hub = hub;
             userService = new UserService();
             chatService = new ChatService();
         }
@@ -43,7 +42,12 @@ namespace AspWebApi.Controllers {
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             var messages = chatService.GetAllMessages(id, Current.Username);
+            var chat=  chatService.GetChatByParticipants(id, Current.Username);
+            if(chat == null) return BadRequest();
+            
+            var msgId = chatService.GetNewMsgIdInChat(chat.Id);
             if (messages == null) return BadRequest();
+            if (messages.Count == 0) return Ok(new MessageResponse(1, "", DateTime.Now, true, id));
             var m = messages[messages.Count - 1]; 
             return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
         }
@@ -56,6 +60,7 @@ namespace AspWebApi.Controllers {
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var m = messages.Find(m => m.Id == id2);
+            if (m == null) return NotFound();
             return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
         }
 
@@ -68,6 +73,8 @@ namespace AspWebApi.Controllers {
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var chat = chatService.GetChatByParticipants(id, Current.Username);
+            if(chat == null) return BadRequest();
+            
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
             string sender = Current.Username;
             // sent = true because it was sent from my server
@@ -119,6 +126,7 @@ namespace AspWebApi.Controllers {
         {
             var user = userService.GetById(id);
             if(user == null) return NotFound();
+            user.Server = userService.GetFullServerUrl(user.Server);
             return Ok(new GetUserDetailsResponse(user.Server, user.Nickname, user.ProfileImage));
         }
 

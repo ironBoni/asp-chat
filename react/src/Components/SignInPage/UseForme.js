@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { users, dataServer } from '../../Data/data';
 
 const useForm = (submitForm, validate, type, setUsername, setToken) => {
@@ -12,6 +12,8 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoginOk, setIsLoginOk] = useState(false);
+
+  var correctPass = useRef("");
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -39,15 +41,17 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     };
   }
 
-  async function handleLogin(e) {
+  function handleLogin(e) {
     setUsername(values.id);
-    e.preventDefault();
     var result = validate(values)
     setErrors(result.errors);
+    if(values.password === correctPass.current) {
+      submitForm();
+      return;
+    }
     if (Object.keys(errors).length === 0) {
       setUsername(values.id);
-      var token = await waitForToken();
-      submitForm();
+      waitForToken();
     }
   };
 
@@ -88,8 +92,8 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     submitForm();
   };
 
-  async function waitForToken() {
-    var res = await fetch(dataServer + "api/Login", {
+  function waitForToken() {
+    fetch(dataServer + "api/Login", {
       method: 'POST',
       headers: {
         'Accept': '*/*',
@@ -97,10 +101,20 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
         'Connection': 'keep-alive',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({ "username": values.id, "password": values.password })})
-    var token = await res.json();
-    setToken(token.token);
-    return token.token;
+      body: JSON.stringify({ "username": values.id, "password": values.password })
+    })
+      .then(res => res.json()).then(loginResponse => {
+        correctPass.current = loginResponse.correctPass;
+        setToken(loginResponse.token.token);
+        if (loginResponse.isCorrectInput === true) {
+          submitForm();
+        }
+        else {
+          var notOkLoginErrors = { password: "Id or Password are incorrect" };
+          setErrors(notOkLoginErrors);
+          return;
+        }
+      });
   }
 
   if (type == 'login')

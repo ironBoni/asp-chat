@@ -13,12 +13,10 @@ namespace AspWebApi.Controllers {
     [ApiController]
     public class TransferController : ControllerBase {
         private IChatService service;
-        private IUserService userService;
-
+    
         public TransferController()
         {
             service = new ChatService();
-            userService = new UserService();
         }
 
         // POST api/<TransferController>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './ChatList.css';
 import Contact from '../Contact/Contact'
-import { users, chats, myServer, dataServer } from '../../Data/data'
+import { users, chats, myServer, dataServer, aspMvcServer } from '../../Data/data'
 import { Modal } from 'react-bootstrap';
 
 function ChatList(props) {
@@ -146,8 +146,8 @@ function ChatList(props) {
             },
             body: JSON.stringify(data)
         }
-        //if((response.server).indexOf(dataServer) < 0 &&
-        //    dataServer.indexOf(response.server) < 0)
+        if((response.server).indexOf(dataServer) < 0 &&
+            dataServer.indexOf(response.server) < 0)
         fetch(dataServer + "api/invitations/", config);
     };
 
@@ -156,6 +156,17 @@ function ChatList(props) {
             addUserAsFriend(e);
         }
     }
+
+    useEffect(() => {
+        /* when the react is the wwwroot folder built and static
+         if the focus() function is called the focus is behaving unexpectedly.
+        However, if focusing while "npm start", it works great
+        in in the README we will ask the teacher to check with "npm start"*/
+        var textBox = document.getElementById('contact-user');
+
+        if (textBox && window.location.href.indexOf(aspMvcServer) < 0)
+            textBox.focus();
+    }, [showAddModal])
 
     return (
         <div className='col-3 border-right '>

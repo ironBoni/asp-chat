@@ -6,5 +6,6 @@ using System.Threading.Tasks;
 
 namespace Models.DataServices.Interfaces {
     public interface IUserService : IDataService<User, string>, IContactService {
+        string GetFullServerUrl(string url);
     }
 }

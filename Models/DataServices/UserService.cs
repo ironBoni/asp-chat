@@ -24,16 +24,6 @@ namespace Models.DataServices {
             new User("ran", "Ran Levi", "Np1234", "/profile/ran.webp"),
         };
 
-        /*public static void SetContactsForThisUser(string username)
-        {
-            var user = users.Find(user => user.Username == username);
-            if (user == null) return;
-            
-            if(!CurrentUsers.IdToContactsDict.ContainsKey(username))
-                CurrentUsers.SetContactsForUser(username);
-            user.Contacts = CurrentUsers.IdToContactsDict[username];
-        }*/
-
         private static IDataService<Chat, int> chatsService = new ChatService();
 
         public List<Contact> GetContacts(string username)
@@ -235,6 +225,15 @@ namespace Models.DataServices {
                 && c.Participants.Contains(Current.Username)) != null)
                 return true;
             return chatsService.Create(newChat);
+        }
+
+        public string GetFullServerUrl(string url)
+        {
+            if(!url.EndsWith("/"))
+                url = url + "/";
+            if (!url.StartsWith("http://"))
+                url = "http://" + url;
+            return url;
         }
     }
 }

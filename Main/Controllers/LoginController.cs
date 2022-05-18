@@ -24,28 +24,13 @@ namespace AspWebApi.Controllers {
             serivce = new UserService();
             this.configuration = configuration;
         }
-        // GET: api/<LoginController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
+        
         // GET api/<LoginController>/5
         [HttpGet("{id}")]
         public TokenResponse Get(string id)
         {
             if (!CurrentUsers.IdToContactsDict.ContainsKey(id)) return null;
             return new TokenResponse(CurrentUsers.IdToTokenDict[id]);
-        }
-
-        private void CreateHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var mac = new HMACSHA512())
-            {
-                passwordSalt = mac.Key;
-                passwordHash = mac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            }
         }
 
         private TokenResponse CreateToken(User user)
@@ -71,22 +56,6 @@ namespace AspWebApi.Controllers {
             var tokenKey = new JwtSecurityTokenHandler().WriteToken(token);
             CurrentUsers.IdToTokenDict[user.Username] = tokenKey;
             return new TokenResponse(tokenKey);
-            /*       List<Claim> claims = new List<Claim>
-                   {
-                       new Claim(ClaimTypes.Name, user.Username)
-                   };
-
-                   var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                       configuration.GetSection("Jwt:Key").Value));
-
-                   var mac = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-                   var token = new JwtSecurityToken(
-                       claims: claims,
-                       expires: DateTime.Now.AddDays(1),
-                       signingCredentials: mac);
-
-                   var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-                   return jwt;*/
         }
 
         // POST api/<LoginController>
@@ -94,23 +63,11 @@ namespace AspWebApi.Controllers {
         public IActionResult Post([FromBody] LoginRequest req)
         {
             var user = serivce.GetById(req.Username);
-            if (user == null) return BadRequest("User doesn't exist.");
+            if (user == null) return Ok(new LoginResponse("User doesn't exist.", false, user.Password, CreateToken(user)));
             var isCorrect = user.Password == req.Password;
-            if (!isCorrect) return BadRequest("Username and password does not match.");
+            if (!isCorrect) return Ok(new LoginResponse("Username and password does not match.", false, user.Password, CreateToken(user)));
 
-            return Ok(CreateToken(user));
-        }
-
-        // PUT api/<LoginController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<LoginController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return Ok(new LoginResponse("Good Login", true, CreateToken(user)));
         }
     }
 }
