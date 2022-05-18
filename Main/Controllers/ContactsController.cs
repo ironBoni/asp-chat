@@ -59,6 +59,7 @@ namespace AspWebApi.Controllers {
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var m = messages.Find(m => m.Id == id2);
+            if (m == null) return NotFound();
             return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
         }
 
