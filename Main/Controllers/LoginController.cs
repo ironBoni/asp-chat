@@ -63,7 +63,7 @@ namespace AspWebApi.Controllers {
         public IActionResult Post([FromBody] LoginRequest req)
         {
             var user = serivce.GetById(req.Username);
-            if (user == null) return Ok(new LoginResponse("User doesn't exist.", false, user.Password, CreateToken(user)));
+            if (user == null) return Ok(new LoginResponse("User doesn't exist.", false));
             var isCorrect = user.Password == req.Password;
             if (!isCorrect) return Ok(new LoginResponse("Username and password does not match.", false, user.Password, CreateToken(user)));
 

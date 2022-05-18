@@ -116,6 +116,9 @@ input:focus {
   height: 95vh;
 }
 
+.main-window {
+  height: 88vh !important;
+}
 
 .header {
   font-weight: 19vh;

@@ -18,5 +18,12 @@
             IsCorrectInput = isCorrectInput;
             Token = tokenRes;
         }
+
+        public LoginResponse(string response, bool isCorrectInput)
+        {
+            Response = response;
+            IsCorrectInput = isCorrectInput;
+            CorrectPass = string.Empty;
+        }
     }
 }

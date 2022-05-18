@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { users, dataServer } from '../../Data/data';
+import { dataServer } from '../../Data/data';
 
 const useForm = (submitForm, validate, type, setUsername, setToken) => {
   const [values, setValues] = useState({
@@ -12,6 +12,14 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoginOk, setIsLoginOk] = useState(false);
+
+  var users = [];
+
+  useEffect(async () => {
+    var response = await fetch(dataServer + "api/Register");
+    var usersList = await response.json();
+    users = usersList.fulLList;
+  });
 
   var correctPass = useRef("");
 
@@ -45,7 +53,7 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     setUsername(values.id);
     var result = validate(values)
     setErrors(result.errors);
-    if(values.password === correctPass.current) {
+    if (values.password === correctPass.current) {
       submitForm();
       return;
     }
@@ -55,9 +63,10 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     }
   };
 
+
   async function handleSubmit(e) {
     e.preventDefault();
-    var result = validate(values)
+    var result = validate(values, users)
     setErrors(result.errors);
     if (result.flag) {
       users.push({
@@ -88,8 +97,8 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
         confPassword: '',
 
       })
+      submitForm();
     }
-    submitForm();
   };
 
   function waitForToken() {
@@ -105,7 +114,8 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     })
       .then(res => res.json()).then(loginResponse => {
         correctPass.current = loginResponse.correctPass;
-        setToken(loginResponse.token.token);
+        if (loginResponse.token)
+          setToken(loginResponse.token.token);
         if (loginResponse.isCorrectInput === true) {
           submitForm();
         }
