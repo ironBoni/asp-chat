@@ -169,7 +169,7 @@ function ChatList(props) {
     }, [showAddModal])
 
     return (
-        <div className='col-3 border-right '>
+        <div className='col-3 border-right main-window'>
             <div className='chatList-container'>
                 <div className='settings-tray'>
                     <button className='click-button' onClick={() => setShowImageModal(true)}>
