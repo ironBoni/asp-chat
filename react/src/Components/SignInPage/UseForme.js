@@ -15,8 +15,8 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
 
   var users = [];
 
-  useEffect(async() => {
-    var response = await fetch(dataServer+"api/Register");
+  useEffect(async () => {
+    var response = await fetch(dataServer + "api/Register");
     var usersList = await response.json();
     users = usersList.fulLList;
   });
@@ -63,7 +63,7 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     }
   };
 
-  
+
   async function handleSubmit(e) {
     e.preventDefault();
     var result = validate(values, users)
@@ -73,7 +73,7 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
         id: values.id, name: values.name, password: values.password,
         profileImage: values.profileImage
       })
-      
+
       // POST request to add contact to server
       var data = {
         "id": values.id, "name": values.name, "password": values.password,
@@ -114,7 +114,8 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     })
       .then(res => res.json()).then(loginResponse => {
         correctPass.current = loginResponse.correctPass;
-        setToken(loginResponse.token.token);
+        if (loginResponse.token)
+          setToken(loginResponse.token.token);
         if (loginResponse.isCorrectInput === true) {
           submitForm();
         }
