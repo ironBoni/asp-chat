@@ -25,13 +25,6 @@ namespace AspWebApi.Controllers {
             return Ok(new UsersList(users.Select(user => user.Username).ToList()));
         }
 
-        // GET api/<RegisterController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<RegisterController>
         [Route("/api/Register")]
         [HttpPost]
