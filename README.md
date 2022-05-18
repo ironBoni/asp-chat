@@ -92,4 +92,4 @@ System.IdentityModel.Tokens.Jwt
 Microsoft.EntityFrameworkCore.SqlServer, 
 Microsoft.EntityFrameworkCore.Tools
   
-The Images sources in imageSources.txt (in the "react" directory).
+The Images' sources in imageSources.txt (in the "react" directory).
