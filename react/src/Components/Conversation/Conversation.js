@@ -193,11 +193,7 @@ const Conversation = (props) => {
             var hisServer = response.server;
             var len = hisServer.length;
             // if ther second user has different server, then send
-            console.log("his server: " + response.server);
-            console.log("my server: " + dataServer);
-            console.log(dataServer.indexOf(response.server) < 0);
-            console.log((response.server).indexOf(dataServer) < 0);
-
+        
             if (hisServer[len - 1] != '/')
                 hisServer = hisServer + '/';
             if (dataServer.indexOf(hisServer) < 0 && (hisServer).indexOf(dataServer) < 0) {

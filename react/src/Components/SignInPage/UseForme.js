@@ -105,7 +105,6 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     })
       .then(res => res.json()).then(loginResponse => {
         correctPass.current = loginResponse.correctPass;
-        console.log("correct pass is " + correctPass.current);
         setToken(loginResponse.token.token);
         if (loginResponse.isCorrectInput === true) {
           submitForm();
