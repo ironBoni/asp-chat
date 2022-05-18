@@ -123,6 +123,7 @@ namespace AspWebApi.Controllers {
         {
             var user = userService.GetById(id);
             if(user == null) return NotFound();
+            user.Server = userService.GetFullServerUrl(user.Server);
             return Ok(new GetUserDetailsResponse(user.Server, user.Nickname, user.ProfileImage));
         }
 

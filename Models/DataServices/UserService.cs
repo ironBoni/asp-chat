@@ -236,5 +236,14 @@ namespace Models.DataServices {
                 return true;
             return chatsService.Create(newChat);
         }
+
+        public string GetFullServerUrl(string url)
+        {
+            if(!url.EndsWith("/"))
+                url = url + "/";
+            if (!url.StartsWith("http://"))
+                url = "http://" + url;
+            return url;
+        }
     }
 }

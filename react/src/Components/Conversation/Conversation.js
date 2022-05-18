@@ -159,7 +159,7 @@ const Conversation = (props) => {
                 }
             }
 
-            var res = await fetch(dataServer + "api/contacts/server/" + id, config);
+            var res = await fetch(dataServer + "api/contacts/server/" + props.chosenChat.id, config);
             var response = await res.json();
 
             //POST - api/contacts/{id}/messages
@@ -190,9 +190,19 @@ const Conversation = (props) => {
                 },
                 body: JSON.stringify(data)
             }
+            var hisServer = response.server;
+            var len = hisServer.length;
             // if ther second user has different server, then send
-            if (dataServer.indexOf(response.server) < 0 && (response.server).indexOf(dataServer) < 0)
-                fetch(response.server + "api/transfer/", config);
+            console.log("his server: " + response.server);
+            console.log("my server: " + dataServer);
+            console.log(dataServer.indexOf(response.server) < 0);
+            console.log((response.server).indexOf(dataServer) < 0);
+
+            if (hisServer[len - 1] != '/')
+                hisServer = hisServer + '/';
+            if (dataServer.indexOf(hisServer) < 0 && (hisServer).indexOf(dataServer) < 0) {
+                fetch(hisServer + "api/transfer/", config);
+            }
 
             try {
                 await connection.invoke("SendMsg", props.username, msg, props.chosenChat.id);

@@ -146,8 +146,8 @@ function ChatList(props) {
             },
             body: JSON.stringify(data)
         }
-        //if((response.server).indexOf(dataServer) < 0 &&
-        //    dataServer.indexOf(response.server) < 0)
+        if((response.server).indexOf(dataServer) < 0 &&
+            dataServer.indexOf(response.server) < 0)
         fetch(dataServer + "api/invitations/", config);
     };
 
