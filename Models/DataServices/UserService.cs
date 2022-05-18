@@ -24,16 +24,6 @@ namespace Models.DataServices {
             new User("ran", "Ran Levi", "Np1234", "/profile/ran.webp"),
         };
 
-        /*public static void SetContactsForThisUser(string username)
-        {
-            var user = users.Find(user => user.Username == username);
-            if (user == null) return;
-            
-            if(!CurrentUsers.IdToContactsDict.ContainsKey(username))
-                CurrentUsers.SetContactsForUser(username);
-            user.Contacts = CurrentUsers.IdToContactsDict[username];
-        }*/
-
         private static IDataService<Chat, int> chatsService = new ChatService();
 
         public List<Contact> GetContacts(string username)
