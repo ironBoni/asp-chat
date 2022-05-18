@@ -92,5 +92,4 @@ System.IdentityModel.Tokens.Jwt
 Microsoft.EntityFrameworkCore.SqlServer, 
 Microsoft.EntityFrameworkCore.Tools
   
-The Images (profile images, button-images), Audio (Hatikva.mp3), 
-Video (Hatikva.mp4) sources in imageSources.txt (in the "react" directory).
+The Images sources in imageSources.txt (in the "react" directory).
