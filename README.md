@@ -80,16 +80,16 @@ and see that it wil get it immediately by the server ChatHub.
 **React: Packages:** react-bootstrap, @microsoft/signalr,   
 **ASP.Net: Packages:**
 "AspWebApi" project's Packages:
-Microsoft.AspNetCore.Authentication.JwtBearer
-Microsoft.AspNetCore.Identity.EntityFrameworkCore
-Microsoft.AspNetCore.SignalR
-Microsoft.AspNetCore.SignalR.Client
-Microsoft.AspNetCore.SignalR.Core
-Microsoft.IdentityModel.Tokens
+Microsoft.AspNetCore.Authentication.JwtBearer, 
+Microsoft.AspNetCore.Identity.EntityFrameworkCore, 
+Microsoft.AspNetCore.SignalR, 
+Microsoft.AspNetCore.SignalR.Client, 
+Microsoft.AspNetCore.SignalR.Core, 
+Microsoft.IdentityModel.Tokens, 
 System.IdentityModel.Tokens.Jwt
 
 "AspNetMvc" project's Packages:
-Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.SqlServer, 
 Microsoft.EntityFrameworkCore.Tools
   
 The Images (profile images, button-images), Audio (Hatikva.mp3), 
