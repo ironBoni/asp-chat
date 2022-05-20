@@ -1,0 +1,659 @@
+{
+	"info": {
+		"_postman_id": "eaf98f4a-d3be-4bd2-9537-f68ecb0b81dc",
+		"name": "Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"noam\",\r\n    \"password\": \"Np1234\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5186/api/Login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET - contacts/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts/dan",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/dan",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"dan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts/1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST - contacts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"yuval\",\r\n    \"name\": \"Yuval Baruchi\",\r\n    \"server\": \"localhost:5186\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts/dan - 2",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/dan",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"dan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT contacts/yuval",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Charles\",\r\n    \"server\": \"localhost:7266\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/yuval",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"yuval"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET - contacts/ - 2",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE contacts/ron",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/ron",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"ron"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get-Contacts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from\": \"ron\",\r\n    \"to\": \"dvir\",\r\n    \"content\": \"hello\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5186/api/transfer/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"transfer",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invitations",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from\": \"shlomo\",\r\n    \"to\": \"noam\", \r\n    \"server\":  \"http://localhost:5186/\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5186/api/Invitations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"Invitations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts/ron/messages/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/dvir/messages/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"dvir",
+						"messages",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST - contacts/ron/messages/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"hey\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/dvir/messages/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"dvir",
+						"messages",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts/ron/messages/1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/dvir/messages/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"dvir",
+						"messages",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE - contacts/ron/messages/1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/dvir/messages/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"dvir",
+						"messages",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT - contacts/ron/messages/2",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"what?\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5186/api/contacts/dvir/messages/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"contacts",
+						"dvir",
+						"messages",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST - Register",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"Eithan\",\r\n    \"name\": \"Eithan Cohen\",\r\n    \"password\": \"Np1234\",\r\n    \"profileImage\": \"/profile/shlomo.png\",\r\n    \"server\": \"http://localhost:5186\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5186/api/Register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5186",
+					"path": [
+						"api",
+						"Register"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
