@@ -3,7 +3,7 @@ import './MessageField.css'
 import { Modal } from 'react-bootstrap';
 
 export default function MessageField(props) {
-    var myid = localStorage.getItem('id');
+    var myid = props.username;
     const [showImageModal, setShowImageModal] = useState(false);
     const audioRef = useRef()
     var content;
@@ -25,7 +25,7 @@ export default function MessageField(props) {
                 <div id={props.senderUsername === myid ? 'file-div' : 'file-div-end'}>
                     <img src='/images/file-icon.png' className='file-image' alt='file'></img>
                     <div className='name-div'>{props.fileName}</div>
-                    <aside className='file-ext'>{props.fileName.split('.')[1].toUpperCase()}</aside>
+                    {/*<aside className='file-ext'>{props.fileName.split('.')[1].toUpperCase()}</aside>*/}
                 </div>
             </div>
         </a>))

@@ -1,4 +1,6 @@
-﻿using AspWebApi.Models.Transfer;
+﻿using AspWebApi.Models.Hubs;
+using AspWebApi.Models.Transfer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.DataServices;
@@ -11,6 +13,7 @@ namespace AspWebApi.Controllers {
     [ApiController]
     public class TransferController : ControllerBase {
         private IChatService service;
+    
         public TransferController()
         {
             service = new ChatService();
@@ -18,7 +21,8 @@ namespace AspWebApi.Controllers {
 
         // POST api/<TransferController>
         [HttpPost]
-        public IActionResult Post([FromBody] TransferRequest request)
+        [Route("/api/transfer")]
+        public IActionResult Post([Bind("From,To,Content")] TransferRequest request)
         {
             Chat chat = service.GetAll().Find(c => c.Participants.Contains(request.From) 
             && c.Participants.Contains(request.To));
@@ -35,7 +39,8 @@ namespace AspWebApi.Controllers {
             }
 
             var messageId = service.GetNewMsgIdInChat(chat.Id);
-            var addSuccess = service.AddMessage(chat.Id, new Message(messageId, request.Content, request.From, true));
+            // the sent is false because it was not sent from my server
+            var addSuccess = service.AddMessage(chat.Id, new Message(messageId, request.Content, request.From, false));
             if(!addSuccess) return BadRequest();
             return Ok();
         }

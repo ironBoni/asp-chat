@@ -252,9 +252,6 @@
     font-size: 14.5px;
 }
 
-a {
-    width: 25vw !important;
-}
 
 #file-div-end {
     position: relative;
@@ -282,3 +279,8 @@ a {
     justify-content: end;
     margin-top: 7px;
 }
+
+/* MAYBE NEEDED
+ a {
+    width: 25vw !important;
+} */

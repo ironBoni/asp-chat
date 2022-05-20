@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import './ChatList.css';
 import Contact from '../Contact/Contact'
-import { users, chats, myServer, dataServer } from '../../Data/data'
+import { users, chats, myServer, dataServer, aspMvcServer } from '../../Data/data'
 import { Modal } from 'react-bootstrap';
 
 function ChatList(props) {
-    var id = localStorage.getItem('id');
+    var id = props.username;
     var myContacts = [];
+    var token = props.token;
+    //var token = props.token;
     var setContactsAlready = false;
     // goes over the chat and find the contacts he talked with.
     // GET from the server the list of contact
@@ -20,6 +22,7 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
+<<<<<<< HEAD
         if(myContacts.length === 0 && setContactsAlready === false) {
             fetch(dataServer+"api/contacts/").then(res => res.json())
             .then(data => {
@@ -29,13 +32,46 @@ function ChatList(props) {
             });
         }
         var id = localStorage.getItem('id');
+=======
+        fetch(dataServer + "api/Login/" + id).then(res => res.json()).then(tok => {
+            token = tok.token;
+            props.setToken(tok.token);
+            var config = {
+                method: 'GET',
+                headers: {
+                    'Accept': '*/*',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            }
+            fetch(dataServer + "api/contacts/", config).then(res => res.json())
+                .then(data => {
+                    myContacts = data;
+                    setContactsLst(myContacts);
+                    setContactsAlready = true;
+                });
+        });
+    }, []);
+
+    useEffect(async () => {
+        var id = props.username;
+        // GET to get the server of the idToAdd 
+        var config = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        }
+>>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
         if (!id)
             id = 'noam';
-        var userData = users.filter((user) => user.id === id)[0];
+        var res = await fetch(dataServer + "api/contacts/server/" + id, config);
+        var response = await res.json();
 
-        
-        setUserImage(userData.profileImage);
-        setname(userData.name);
+        setUserImage(response.profileImage);
+        setname(response.name);
 
     })
 
@@ -52,29 +88,42 @@ function ChatList(props) {
         if (!textBox)
             return;
         var idToAdd = textBox.value.trimEnd();
-        var myid = localStorage.getItem('id');
+        var myid = props.username;
         var nick = "";
         var user = getUserInfoByid(idToAdd);
-        console.log(user);
         if (!user) nick = idToAdd;
         else nick = user.name;
         // GET to get the server of the idToAdd 
+<<<<<<< HEAD
         var res = await fetch(dataServer+"api/contacts/server/"+idToAdd);
         var response = await res.json();
         var profileImage = response.profileImage;
         if(res.status === 404) {
+=======
+        var config = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        }
+
+        var res = await fetch(dataServer + "api/contacts/server/" + idToAdd, config);
+        var response = await res.json();
+        var profileImage = response.profileImage;
+        if (res.status === 404) {
+>>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
             setErrorAddUser("id doesn't exist.");
             return;
         }
 
-        if(idToAdd === myid) {
+        if (idToAdd === myid) {
             setErrorAddUser("You cannot add yourself to the chat list.");
             return;
         }
-        console.log(res.server);
 
         // POST request to add contact to server
         var data = { "id": idToAdd, "name": response.name, "server": response.server };
+<<<<<<< HEAD
         console.log(data);
         var config = {
             method: 'POST',
@@ -88,8 +137,20 @@ function ChatList(props) {
         var res = await fetch(dataServer+"api/Contacts/", config);
         console.log(res.status);
         console.log('after POST')
+=======
+        var config = {
+            method: 'POST',
+            headers: {
+                'accept': '*/*',
+                'content-type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        }
+        var res = await fetch(dataServer + "api/Contacts/", config);
+>>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
 
-        if(res.status === 400) {
+        if (res.status === 400) {
             setErrorAddUser("This user is already in your contacts list.");
             return;
         }
@@ -101,13 +162,28 @@ function ChatList(props) {
             messages: []
         });
         var newContacts = [...contactsLst];
-        newContacts.push({ name: response.name, profileImage: profileImage, id: idToAdd,
-        server: response.server, last: ''});
-        console.log({ name: response.name, profileImage: profileImage, id: idToAdd,
-            server: response.server, last: ''});
+        newContacts.push({
+            name: response.name, profileImage: profileImage, id: idToAdd,
+            server: response.server, last: ''
+        });
         setContactsLst(newContacts);
         setErrorAddUser('');
         setShowAddModal(false);
+
+        // Send Invitation to him
+        // POST request - from (id), to (idToAdd), server (of me)
+        data = { "from": id, "to": idToAdd, "server": response.server };
+        config = {
+            method: 'POST',
+            headers: {
+                'accept': '*/*',
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+        if((response.server).indexOf(dataServer) < 0 &&
+            dataServer.indexOf(response.server) < 0)
+        fetch(dataServer + "api/invitations/", config);
     };
 
     const addUserPressedEnter = (e) => {
@@ -116,8 +192,19 @@ function ChatList(props) {
         }
     }
 
+    useEffect(() => {
+        /* when the react is the wwwroot folder built and static
+         if the focus() function is called the focus is behaving unexpectedly.
+        However, if focusing while "npm start", it works great
+        in in the README we will ask the teacher to check with "npm start"*/
+        var textBox = document.getElementById('contact-user');
+
+        if (textBox && window.location.href.indexOf(aspMvcServer) < 0)
+            textBox.focus();
+    }, [showAddModal])
+
     return (
-        <div className='col-3 border-right '>
+        <div className='col-3 border-right main-window'>
             <div className='chatList-container'>
                 <div className='settings-tray'>
                     <button className='click-button' onClick={() => setShowImageModal(true)}>
@@ -175,10 +262,11 @@ function ChatList(props) {
                 </div>
 
                 <div className='left-bar'>
-                    { contactsLst.map((user, key) => {
-                        if (user.id != localStorage.getItem('id')) {
+                    {contactsLst.map((user, key) => {
+                        if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                                updateLastM={props.updateLastProp} />)
+                                updateLastM={props.updateLastProp} username={props.username} token={props.token} 
+                                renderAgain = {props.renderAgain}/>)
                         }
                     })}
                 </div>

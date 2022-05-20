@@ -38,7 +38,7 @@ namespace AspNetMvc.Controllers {
             }
             else
             {
-                var search = service.GetAll().FindAll(Rating => Rating.Name.Contains(query));
+                var search = service.GetAll().FindAll(Rating => Rating.Feedback.Contains(query));
                 return View("Index", search);
             }
 
@@ -52,7 +52,7 @@ namespace AspNetMvc.Controllers {
             }
             else
             {
-                var search = service.GetAll().FindAll(Rating => Rating.Name.Contains(query));
+                var search = service.GetAll().FindAll(Rating => Rating.Feedback.Contains(query));
                 if(search.Count == 0)
                 {
                     return PartialView(null);
@@ -124,7 +124,7 @@ namespace AspNetMvc.Controllers {
                 {
                     service.Update(rating);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     if (!RatingExists(rating.ID))
                     {

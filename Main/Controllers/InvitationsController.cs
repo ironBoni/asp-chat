@@ -1,4 +1,5 @@
 ﻿using AspWebApi.Models.Invitations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DataServices;
 using Models.DataServices.Interfaces;
@@ -21,7 +22,7 @@ namespace AspWebApi.Controllers {
         {
 
             string response;
-            var success = service.AcceptInvitation(req.From, req.Server, out response);
+            var success = service.AcceptInvitation(req.From, req.Server, req.To, out response);
             if (success) return StatusCode(201);
             return BadRequest(response);
         }

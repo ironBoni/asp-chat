@@ -127,7 +127,6 @@ namespace Models.DataServices {
             if (chat == null)
                 return false;
             chat.Id = entity.Id;
-            //
             return true;
         }
 

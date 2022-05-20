@@ -1,21 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import MessageField from '../MessageField/MessageField';
 import UserImage from '../UserImage/UserImage';
 import './Conversation.css';
-import { dataServer, chats, video_extensions, audio_extensions, image_extensions } from '../../Data/data';
+import { dataServer, chats, video_extensions, audio_extensions, image_extensions, aspMvcServer } from '../../Data/data';
 import { Modal } from 'react-bootstrap';
 import Contact from '../Contact/Contact';
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+
 
 const Conversation = (props) => {
+    const [connection, setConnection] = useState(null);
     const [msg, setMsg] = useState("");
     const [msgList, setMsgList] = useState([]);
+    var newMsgs = [];
     var audioPieces = [];
+    var token = props.token;
+    const latestChat = useRef(null);
+    latestChat.current = msgList;
+    const [counter, setCounter] = useState(0);
     const [showAudioModal, setShowAudioModal] = useState(false);
     const [showFileModal, setShowFileModal] = useState(false);
     const [showVideoModal, setShowVideoModal] = useState(false);
     var isRecordActive = false;
     const [sTop, setSTop] = useState(0)
     const [voiceRecorder, setVoiceRecorder] = useState(null);
+
+
     const [stream, setStream] = useState({
         hasAccessToMic: false, voiceRecorder: null
     });
@@ -26,6 +37,17 @@ const Conversation = (props) => {
                 userNotifier();
         });
     }
+
+    function focusTextBox() {
+        /* when the react is the wwwroot folder built and static
+         if the focus() function is called the focus is behaving unexpectedly.
+        However, if focusing while "npm start", it works great
+        in in the README we will ask the teacher to check with "npm start"*/
+        var textbox = document.getElementById('textbox');
+        if (textbox && window.location.href.indexOf(aspMvcServer) < 0)
+            textbox.focus();
+    }
+
     const [recordInfo, setRecordInfo] = useState({
         isRecording: false, canRecord: false, url: ""
     });
@@ -39,32 +61,77 @@ const Conversation = (props) => {
         setSTop(2000);
     }
 
-    const { chosenChat } = props;
-    var id = localStorage.getItem('id');
+    var id = props.username;
     var canAddRecord = false;
     var alreadyGotMessages = false;
     var oldUser = "";
+    var connectionId = "";
+    var config = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }
 
     useEffect(() => {
+<<<<<<< HEAD
         fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages").then(res => res.json())
+=======
+        fetch(dataServer + "api/contacts/" + props.chosenChat.id + "/messages", config).then(res => res.json())
+>>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
             .then(data => {
                 setMsgList(data);
-                oldUser = chosenChat.id;
+                oldUser = props.chosenChat.id;
             });
-    }, [chosenChat])
+
+        focusTextBox();
+    }, [props.chosenChat])
 
     useEffect(() => {
-        var shouldBreak = false;
-    });
+        try {
+            const connect = new HubConnectionBuilder()
+                .withUrl(dataServer + "hub")
+                .withAutomaticReconnect()
+                .build();
 
-    const sendMessage = () => {
+            setConnection(connect)
+        }
+        catch (e) { console.log(e); }
+    }, []);
+
+    useEffect(() => {
+        if (connection) {
+            connection.start()
+                .then(result => {
+                    connection.on("ReceiveMessage", message => {
+                        const updatedMsgList = [...latestChat.current];
+                        var chosenChatId = localStorage.getItem(id + "chosenChat")
+                        props.setRenderAgain(!props.renderAgain)
+                        updateScroll();
+                        updateLastMsgInGui();
+                        setTimeout(updateScroll, 125);
+
+                        if (message.senderUsername !== chosenChatId) return;
+                        updatedMsgList.push(message);
+                        setMsgList(updatedMsgList);
+                        updateScroll();
+                        updateLastMsgInGui();
+                        setTimeout(updateScroll, 125);
+                    })
+                    connection.invoke("SetIdInServer", props.username).then(res => { }).catch(e => console.log("Not connected"));
+                })
+                .catch(e => console.log('Connection failed: ', e));
+        }
+    }, [connection])
+
+    async function sendMessage() {
         if (msg) {
-            const newMessages = [...msgList];
+            var newMessages = [...msgList];
             var msgListInDb;
             // get last message
             chats.forEach(chatData => {
                 chatData.participicants.forEach(participicant => {
-                    if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
+                    if (participicant === props.chosenChat.id && chatData.participicants.includes(id)) {
                         msgListInDb = chatData.messages;
                         return;
                     }
@@ -80,35 +147,85 @@ const Conversation = (props) => {
                 created: new Date()
             };
 
+            var newMessages = [...msgList];
             newMessages.push(newMsg);
-            msgListInDb.push(newMsg)
             setMsgList(newMessages);
             setMsg("");
             updateScroll();
             updateLastMsgInGui();
             setTimeout(updateScroll, 125);
 
-            //POST - Transfer
-            var data = { "from": id, "to": chosenChat.id, "content": msg };
+            // GET to get the server of the other user 
+            var config = {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            }
+
+            var res = await fetch(dataServer + "api/contacts/server/" + props.chosenChat.id, config);
+            var response = await res.json();
+
+            //POST - api/contacts/{id}/messages
+            var data = { "content": msg };
             var config = {
                 method: 'POST',
                 headers: {
+<<<<<<< HEAD
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
+=======
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': '*/*',
+                    'Accept-Endcoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Content-type': 'application/json'
+>>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
                 },
                 body: JSON.stringify(data)
             }
-            fetch(dataServer + "api/transfer/", config);
+            fetch(dataServer + "api/contacts/" + props.chosenChat.id + "/messages", config);
+
+            //POST - Transfer to the other server
+            var data = { "from": props.username, "to": props.chosenChat.id, "content": msg };
+            var config = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': '*/*',
+                    'Accept-Endcoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+            var hisServer = response.server;
+            var len = hisServer.length;
+            // if ther second user has different server, then send
+        
+            if (hisServer[len - 1] != '/')
+                hisServer = hisServer + '/';
+            if (dataServer.indexOf(hisServer) < 0 && (hisServer).indexOf(dataServer) < 0) {
+                fetch(hisServer + "api/transfer/", config);
+            }
+
+            try {
+                await connection.invoke("SendMsg", props.username, msg, props.chosenChat.id);
+            }
+            catch (e) {
+                console.log(e);
+            }
+            updateLastMsgInGui();
         }
     };
 
-    const onSend = (e) => {
-        sendMessage();
+    async function onSend(e) {
+        await sendMessage();
     }
 
-    const onEnter = (e) => {
+    async function onEnter(e) {
         if (e.key === "Enter") {
-            sendMessage();
+            await sendMessage();
         }
     }
 
@@ -128,7 +245,7 @@ const Conversation = (props) => {
         // get last message - for audio
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
+                if (participicant === props.chosenChat.id && chatData.participicants.includes(id)) {
                     newId = Math.max.apply(Math, chatData.messages.map((msg => {
                         msgListInDb = chatData.messages;
                         return msg.id;
@@ -152,7 +269,6 @@ const Conversation = (props) => {
             && canAddRecord) {
             newMessages.push(newMsg);
             setMsgList(newMessages);
-            msgListInDb.push(newMsg);
             canAddRecord = false;
             updateLastMsgInGui();
             setTimeout(updateScroll, 125);
@@ -265,13 +381,13 @@ const Conversation = (props) => {
         fileReader.readAsDataURL(input.files[0])
         fileReader.onload = (event) => {
             var fileSrc = event.target.result
-            const newMessages = [...msgList];
+            var newMessages = [...msgList];
             var lastMsgId;
             var msgListInDb;
             // get last message
             chats.forEach(chatData => {
                 chatData.participicants.forEach(participicant => {
-                    if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
+                    if (participicant === props.chosenChat.id && chatData.participicants.includes(id)) {
                         lastMsgId = Math.max.apply(Math, chatData.messages.map((msg => {
                             msgListInDb = chatData.messages;
                             return msg.id;
@@ -292,7 +408,6 @@ const Conversation = (props) => {
             };
 
             newMessages.push(newMsg);
-            msgListInDb.push(newMsg)
             setTimeout(updateScroll, 125);
             setMsgList(newMessages);
             updateLastMsgInGui();
@@ -305,7 +420,7 @@ const Conversation = (props) => {
         // get last message     
         chats.forEach(chatData => {
             chatData.participicants.forEach(participicant => {
-                if (participicant === chosenChat.id && chatData.participicants.includes(id)) {
+                if (participicant === props.chosenChat.id && chatData.participicants.includes(id)) {
                     lastMessageId = Math.max.apply(Math, chatData.messages.map((msg => {
                         msgListInDb = chatData.messages;
                         return msg.id;
@@ -326,7 +441,6 @@ const Conversation = (props) => {
         };
 
         newMessages.push(newMsg);
-        msgListInDb.push(newMsg)
         setMsgList(newMessages);
         setTimeout(updateScroll, 125);
         updateLastMsgInGui();
@@ -336,13 +450,13 @@ const Conversation = (props) => {
         <div className="col-9 conversation">
             <div className='conversation-container'>
                 <div className='user-title'>
-                    <UserImage src={chosenChat.profileImage} headOf={chosenChat.name} />
-                    <div className='user-name'>{chosenChat.name}</div>
+                    <UserImage src={props.chosenChat.profileImage} headOf={props.chosenChat.name} />
+                    <div className='user-name'>{props.chosenChat.name}</div>
                 </div>
                 <div className='message-container' id="chat" scolltop={sTop}>
                     {msgList?.map((msg, key) => (
                         <MessageField type={msg.type} content={msg.content} senderUsername={msg.senderUsername} key={key}
-                            fileName={msg.fileName}>
+                            fileName={msg.fileName} username={props.username}>
                         </MessageField>
                     ))}
                 </div>

@@ -1,6 +1,5 @@
-import { users } from "../../Data/data";
 
-export default function validateInfo(values) {
+export default function validateInfo(values, users) {
   let errors = {};
   var flag=true;
 
@@ -25,8 +24,8 @@ export default function validateInfo(values) {
     flag = false;
   }
 
-  users.forEach(element => {
-    if (element.id === values.id){
+  users.forEach(id => {
+    if (id === values.id){
       errors.id = 'id already exsist';
       flag=false;
     }

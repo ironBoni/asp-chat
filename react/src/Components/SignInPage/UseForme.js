@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { users, dataServer } from '../../Data/data';
+import { useState, useEffect, useRef } from 'react';
+import { dataServer } from '../../Data/data';
 
-const useForm = (submitForm, validate, type) => {
+const useForm = (submitForm, validate, type, setUsername, setToken) => {
   const [values, setValues] = useState({
     id: '',
     name: '',
@@ -11,6 +11,18 @@ const useForm = (submitForm, validate, type) => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoginOk, setIsLoginOk] = useState(false);
+
+  var users = [];
+
+  useEffect(async () => {
+    var response = await fetch(dataServer + "api/Register");
+    var usersList = await response.json();
+    users = usersList.fulLList;
+  });
+
+  var correctPass = useRef("");
+  var oldUser = useRef("");
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -39,20 +51,33 @@ const useForm = (submitForm, validate, type) => {
   }
 
   function handleLogin(e) {
+<<<<<<< HEAD
     e.preventDefault();
     var result  = validate(values)
     setErrors(result.errors);    
     setIsSubmitting(true);
   };
+=======
+    setUsername(values.id);
+    var result = validate(values)
+    setErrors(result.errors);
+    if (values.password === correctPass.current && values.id === oldUser) {
+      submitForm();
+      return;
+    }
+    if (Object.keys(errors).length === 0) {
+      setUsername(values.id);
+      waitForToken();
+    }
+  };
+
+>>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
 
   async function handleSubmit(e) {
     e.preventDefault();
-    var result = validate(values)
+    var result = validate(values, users)
     setErrors(result.errors);
-    console.log(result.flag);
-    console.log(e.target.name);
     if (result.flag) {
-      console.log("line 47");
       users.push({
         id: values.id, name: values.name, password: values.password,
         profileImage: values.profileImage
@@ -63,17 +88,14 @@ const useForm = (submitForm, validate, type) => {
         "id": values.id, "name": values.name, "password": values.password,
         "profileImage": values.profileImage, "server": "http://localhost:5186"
       };
-      console.log(data);
       var config = {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          'accept': '*/*',
+          'content-Type': 'application/json',
         },
         body: JSON.stringify(data)
       }
-      console.log('before POST')
-      console.log(dataServer + "api/Register");
       var res = await fetch(dataServer + "api/Register", config);
 
       setValues({
@@ -84,22 +106,36 @@ const useForm = (submitForm, validate, type) => {
         confPassword: '',
 
       })
+      submitForm();
     }
-    setIsSubmitting(true);
-    console.log("after post");
   };
 
-
-  useEffect(
-    (e) => {
-      if (Object.keys(errors).length === 0 && isSubmitting) {
-
-        submitForm();
-        localStorage.setItem("id", values.id);
-      }
-    },
-    [errors]
-  );
+  function waitForToken() {
+    fetch(dataServer + "api/Login", {
+      method: 'POST',
+      headers: {
+        'Accept': '*/*',
+        'Accept-Endcoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({ "username": values.id, "password": values.password })
+    })
+      .then(res => res.json()).then(loginResponse => {
+        correctPass.current = loginResponse.correctPass;
+        correctPass.current = values.id;
+        if (loginResponse.token)
+          setToken(loginResponse.token.token);
+        if (loginResponse.isCorrectInput === true) {
+          submitForm();
+        }
+        else {
+          var notOkLoginErrors = { password: "Id or Password are incorrect" };
+          setErrors(notOkLoginErrors);
+          return;
+        }
+      });
+  }
 
   if (type == 'login')
     return { handleChange, handleLogin, values, errors };
