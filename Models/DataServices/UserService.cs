@@ -79,7 +79,10 @@ namespace Models.DataServices {
                 currentUser.Contacts.Add(newContact);
                 CurrentUsers.IdToContactsDict[currentUser.Username] = currentUser.Contacts;
             }
-
+            var friendUser = users.Find(user => user.Username == friendToAdd);
+            var newContactFriend = new Contact(username, currentUser.Nickname, server, null, null, currentUser.ProfileImage);
+            friendUser.Contacts.Add(newContactFriend);
+            CurrentUsers.IdToContactsDict[friendUser.Username] = friendUser.Contacts;
             response = "";
             return chatsService.Create(newChat);
         }
