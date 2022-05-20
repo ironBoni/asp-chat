@@ -20,8 +20,19 @@ const Contact = (props) => {
         var res = await fetch(dataServer + "api/contacts/" + userInfo.id + "/messages/last", config);
         var response = await res.json();
         setLastMsg(response.content);
+
+        if (!response.created || response.created == null || response.created == undefined) {
+            setLastMsgTime("");
+            return;
+        }
+        var date = new Date(Date.parse(response.created));
+        var time = date.toLocaleTimeString().substring(0, 5)
+        if (time[time.length - 1] === ":") {
+            time = time.substring(0, time.length - 1)
+        }
+        setLastMsgTime(date.toLocaleDateString() + " " + time);
     }
-    
+
     useEffect(() => {
         updateLastMessage();
         if (updateLastM && updateLastM.current)
@@ -30,7 +41,7 @@ const Contact = (props) => {
 
     function setChat() {
         setChosenChat(userInfo);
-        localStorage.setItem(id+"chosenChat", userInfo.id)
+        localStorage.setItem(id + "chosenChat", userInfo.id)
     }
     return (
         <div className='contact' onClick={() => setChat()}>
