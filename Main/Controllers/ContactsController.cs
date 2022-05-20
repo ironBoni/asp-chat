@@ -32,7 +32,7 @@ namespace AspWebApi.Controllers {
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             var messages = chatService.GetAllMessages(id, Current.Username);
-            if (messages == null) return BadRequest();
+            if (messages == null) return NotFound();
             return Ok(messages.Select(m => new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
         }
 
@@ -43,10 +43,10 @@ namespace AspWebApi.Controllers {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             var messages = chatService.GetAllMessages(id, Current.Username);
             var chat=  chatService.GetChatByParticipants(id, Current.Username);
-            if(chat == null) return BadRequest();
+            if(chat == null) return NotFound();
             
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
-            if (messages == null) return BadRequest();
+            if (messages == null) return NotFound();
             if (messages.Count == 0) return Ok(new MessageResponse(1, "", DateTime.Now, true, id));
             var m = messages[messages.Count - 1]; 
             return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
@@ -58,7 +58,7 @@ namespace AspWebApi.Controllers {
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             var messages = chatService.GetAllMessages(id, Current.Username);
-            if (messages == null) return BadRequest();
+            if (messages == null) return NotFound();
             var m = messages.Find(m => m.Id == id2);
             if (m == null) return NotFound();
             return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
