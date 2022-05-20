@@ -69,7 +69,7 @@ namespace AspWebApi.Controllers {
 
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
             if (messages == null) return NotFound();
-            if (messages.Count == 0) return Ok(UpdateSentSingle(new MessageResponse(1, "", DateTime.Now, true, id)));
+            if (messages.Count == 0) return Ok(UpdateSentSingle(new MessageResponse(1, "", null, true, id)));
             var m = messages[messages.Count - 1];
             return Ok(UpdateSentSingle(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
         }
@@ -157,6 +157,7 @@ namespace AspWebApi.Controllers {
         [Route("/api/Contacts")]
         public IActionResult Post([FromBody] ContactRequest req)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             string response;
             var isAddOk = userService.AddContact(req.Id, req.Name, req.Server, out response);
             if (!isAddOk)

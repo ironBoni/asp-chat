@@ -21,27 +21,23 @@ function ChatList(props) {
     const [errorAddUser, setErrorAddUser] = useState('')
     const [showAddModal, setShowAddModal] = useState(false);
 
-    useEffect(() => {
-        fetch(dataServer + "api/Login/" + id).then(res => res.json()).then(tok => {
-            token = tok.token;
-            props.setToken(tok.token);
-            var config = {
-                method: 'GET',
-                headers: {
-                    'Accept': '*/*',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'Connection': 'keep-alive',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                }
+    useEffect(async () => {
+        var config = {
+            method: 'GET',
+            headers: {
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             }
-            fetch(dataServer + "api/contacts/", config).then(res => res.json())
-                .then(data => {
-                    myContacts = data;
-                    setContactsLst(myContacts);
-                    setContactsAlready = true;
-                });
-        });
+        }
+        var res = await fetch(dataServer + "api/contacts/", config)
+        var data = await res.json();
+        myContacts = data;
+        setContactsLst(myContacts);
+        setContactsAlready = true;
+
     }, []);
 
     useEffect(async () => {
@@ -146,9 +142,9 @@ function ChatList(props) {
             },
             body: JSON.stringify(data)
         }
-        if((response.server).indexOf(dataServer) < 0 &&
+        if ((response.server).indexOf(dataServer) < 0 &&
             dataServer.indexOf(response.server) < 0)
-        fetch(dataServer + "api/invitations/", config);
+            fetch(dataServer + "api/invitations/", config);
     };
 
     const addUserPressedEnter = (e) => {
@@ -230,8 +226,8 @@ function ChatList(props) {
                     {contactsLst.map((user, key) => {
                         if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
-                                updateLastM={props.updateLastProp} username={props.username} token={props.token} 
-                                renderAgain = {props.renderAgain}/>)
+                                updateLastM={props.updateLastProp} username={props.username} token={props.token}
+                                renderAgain={props.renderAgain} />)
                         }
                     })}
                 </div>
