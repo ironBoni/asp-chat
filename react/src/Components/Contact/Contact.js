@@ -20,6 +20,13 @@ const Contact = (props) => {
         var res = await fetch(dataServer + "api/contacts/" + userInfo.id + "/messages/last", config);
         var response = await res.json();
         setLastMsg(response.content);
+
+        var date = new Date(Date.parse(response.created));
+        var time =date.toLocaleTimeString().substring(0, 5)
+        if(time[time.length -1 ] ===":" ){
+            time=time.substring(0,time.length-1)
+        }
+        setLastMsgTime(date.toLocaleDateString() + " " + time);
     }
     
     useEffect(() => {
