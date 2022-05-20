@@ -59,6 +59,7 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
       return;
     }
     if (Object.keys(errors).length === 0) {
+      // if (result.flag){
       setUsername(values.id);
       waitForToken();
     }
