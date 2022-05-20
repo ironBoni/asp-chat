@@ -51,13 +51,6 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
   }
 
   function handleLogin(e) {
-<<<<<<< HEAD
-    e.preventDefault();
-    var result  = validate(values)
-    setErrors(result.errors);    
-    setIsSubmitting(true);
-  };
-=======
     setUsername(values.id);
     var result = validate(values)
     setErrors(result.errors);
@@ -71,7 +64,6 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     }
   };
 
->>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
 
   async function handleSubmit(e) {
     e.preventDefault();

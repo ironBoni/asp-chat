@@ -74,11 +74,7 @@ const Conversation = (props) => {
     }
 
     useEffect(() => {
-<<<<<<< HEAD
-        fetch(dataServer + "api/contacts/" + chosenChat.id + "/messages").then(res => res.json())
-=======
         fetch(dataServer + "api/contacts/" + props.chosenChat.id + "/messages", config).then(res => res.json())
->>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
             .then(data => {
                 setMsgList(data);
                 oldUser = props.chosenChat.id;
@@ -171,16 +167,11 @@ const Conversation = (props) => {
             var config = {
                 method: 'POST',
                 headers: {
-<<<<<<< HEAD
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-=======
                     'Authorization': 'Bearer ' + token,
                     'Accept': '*/*',
                     'Accept-Endcoding': 'gzip, deflate, br',
                     'Connection': 'keep-alive',
                     'Content-type': 'application/json'
->>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
                 },
                 body: JSON.stringify(data)
             }

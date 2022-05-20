@@ -22,17 +22,6 @@ function ChatList(props) {
     const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
-<<<<<<< HEAD
-        if(myContacts.length === 0 && setContactsAlready === false) {
-            fetch(dataServer+"api/contacts/").then(res => res.json())
-            .then(data => {
-                myContacts = data;
-                setContactsLst(myContacts);
-                setContactsAlready = true;
-            });
-        }
-        var id = localStorage.getItem('id');
-=======
         fetch(dataServer + "api/Login/" + id).then(res => res.json()).then(tok => {
             token = tok.token;
             props.setToken(tok.token);
@@ -64,7 +53,6 @@ function ChatList(props) {
                 'Authorization': 'Bearer ' + token
             }
         }
->>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
         if (!id)
             id = 'noam';
         var res = await fetch(dataServer + "api/contacts/server/" + id, config);
@@ -94,12 +82,6 @@ function ChatList(props) {
         if (!user) nick = idToAdd;
         else nick = user.name;
         // GET to get the server of the idToAdd 
-<<<<<<< HEAD
-        var res = await fetch(dataServer+"api/contacts/server/"+idToAdd);
-        var response = await res.json();
-        var profileImage = response.profileImage;
-        if(res.status === 404) {
-=======
         var config = {
             method: 'GET',
             headers: {
@@ -111,7 +93,6 @@ function ChatList(props) {
         var response = await res.json();
         var profileImage = response.profileImage;
         if (res.status === 404) {
->>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
             setErrorAddUser("id doesn't exist.");
             return;
         }
@@ -123,21 +104,6 @@ function ChatList(props) {
 
         // POST request to add contact to server
         var data = { "id": idToAdd, "name": response.name, "server": response.server };
-<<<<<<< HEAD
-        console.log(data);
-        var config = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        }
-        console.log('before POST')
-        var res = await fetch(dataServer+"api/Contacts/", config);
-        console.log(res.status);
-        console.log('after POST')
-=======
         var config = {
             method: 'POST',
             headers: {
@@ -148,7 +114,6 @@ function ChatList(props) {
             body: JSON.stringify(data)
         }
         var res = await fetch(dataServer + "api/Contacts/", config);
->>>>>>> f68f11e413a5a30a57bb42be5709e8b8e90a3f15
 
         if (res.status === 400) {
             setErrorAddUser("This user is already in your contacts list.");
