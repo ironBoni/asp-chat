@@ -22,6 +22,7 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
   });
 
   var correctPass = useRef("");
+  var oldUser = useRef("");
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -53,7 +54,7 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     setUsername(values.id);
     var result = validate(values)
     setErrors(result.errors);
-    if (values.password === correctPass.current) {
+    if (values.password === correctPass.current && values.id === oldUser) {
       submitForm();
       return;
     }
@@ -114,6 +115,7 @@ const useForm = (submitForm, validate, type, setUsername, setToken) => {
     })
       .then(res => res.json()).then(loginResponse => {
         correctPass.current = loginResponse.correctPass;
+        correctPass.current = values.id;
         if (loginResponse.token)
           setToken(loginResponse.token.token);
         if (loginResponse.isCorrectInput === true) {
