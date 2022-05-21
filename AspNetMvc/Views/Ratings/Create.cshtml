@@ -31,15 +31,15 @@
             </div>
             <br /><br />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" placeholder="Enter Name" class="form-control" style="border-radius: 30px;" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <label asp-for="Feedback" class="control-label"></label>
-                <input asp-for="Feedback" class="form-control" />
+                <input asp-for="Feedback" placeholder="Write Feedback" class="form-control" style="border-radius: 30px;"/>
                 <span asp-validation-for="Feedback" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" /> |
                 <button type="button" class="btn btn-secondary" onClick="location.href='@Url.Action("", "Ratings")'">Cancel</button>
