@@ -13,7 +13,7 @@ namespace AspNetMvc.Controllers {
 
         public IActionResult Index()
         {
-            return Redirect("/index.html");
+            return Redirect("/Rating/index.html");
         }
 
         public IActionResult Privacy()

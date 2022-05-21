@@ -8,8 +8,6 @@
          $('tbody').load('/Ratings/SearchPart?query='+s)
      })
 
-
-    
 });
 
 function SubmitForm(e) {

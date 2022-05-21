@@ -133,3 +133,7 @@ body {
         top: 2px;
     }
 
+input{
+    border: none;
+    border-radius: 30px;
+}
