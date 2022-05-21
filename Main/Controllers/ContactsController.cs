@@ -19,11 +19,32 @@ namespace AspWebApi.Controllers {
     public class ContactsController : ControllerBase {
         private readonly IUserService userService;
         private readonly IChatService chatService;
-        
+
         public ContactsController()
         {
             userService = new UserService();
             chatService = new ChatService();
+        }
+
+        private List<MessageResponse> UpdateSent(List<MessageResponse> messages)
+        {
+            foreach (var message in messages)
+            {
+                if (message.SenderUsername == Current.Username)
+                    message.Sent = true;
+                else
+                    message.Sent = false;
+            }
+            return messages;
+        }
+
+        private MessageResponse UpdateSentSingle(MessageResponse message)
+        {
+            if (message.SenderUsername == Current.Username)
+                message.Sent = true;
+            else
+                message.Sent = false;
+            return message;
         }
 
         [HttpGet]
@@ -32,8 +53,9 @@ namespace AspWebApi.Controllers {
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             var messages = chatService.GetAllMessages(id, Current.Username);
-            if (messages == null) return BadRequest();
-            return Ok(messages.Select(m => new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
+            if (messages == null) return NotFound();
+            var msgList = messages.Select(m => new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)).ToList();
+            return Ok(UpdateSent(msgList));
         }
 
         [HttpGet]
@@ -42,14 +64,14 @@ namespace AspWebApi.Controllers {
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             var messages = chatService.GetAllMessages(id, Current.Username);
-            var chat=  chatService.GetChatByParticipants(id, Current.Username);
-            if(chat == null) return BadRequest();
-            
+            var chat = chatService.GetChatByParticipants(id, Current.Username);
+            if (chat == null) return NotFound();
+
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
-            if (messages == null) return BadRequest();
-            if (messages.Count == 0) return Ok(new MessageResponse(1, "", DateTime.Now, true, id));
-            var m = messages[messages.Count - 1]; 
-            return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
+            if (messages == null) return NotFound();
+            if (messages.Count == 0) return Ok(UpdateSentSingle(new MessageResponse(1, "", null, true, id)));
+            var m = messages[messages.Count - 1];
+            return Ok(UpdateSentSingle(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
         }
 
         [HttpGet]
@@ -58,10 +80,10 @@ namespace AspWebApi.Controllers {
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             var messages = chatService.GetAllMessages(id, Current.Username);
-            if (messages == null) return BadRequest();
+            if (messages == null) return NotFound();
             var m = messages.Find(m => m.Id == id2);
             if (m == null) return NotFound();
-            return Ok(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername));
+            return Ok(UpdateSentSingle(new MessageResponse(m.Id, m.Text, m.WrittenIn, m.Sent, m.SenderUsername)));
         }
 
         [HttpPost]
@@ -69,18 +91,18 @@ namespace AspWebApi.Controllers {
         public IActionResult SendMessage(string id, [FromBody] SendMessageRequest req)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-       
+
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var chat = chatService.GetChatByParticipants(id, Current.Username);
-            if(chat == null) return BadRequest();
-            
+            if (chat == null) return BadRequest();
+
             var msgId = chatService.GetNewMsgIdInChat(chat.Id);
             string sender = Current.Username;
             // sent = true because it was sent from my server
             var message = new Message(msgId, req.Content, sender, true);
             var success = chatService.AddMessage(chat.Id, message);
-            if(!success) return BadRequest("The message could not be added.");
+            if (!success) return BadRequest("The message could not be added.");
             return StatusCode(201);
         }
 
@@ -89,7 +111,7 @@ namespace AspWebApi.Controllers {
         public IActionResult RemoveMessageById(string id, int id2)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            
+
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             messages.Remove(messages.Find(m => m.Id == id2));
@@ -102,7 +124,7 @@ namespace AspWebApi.Controllers {
         public IActionResult UpdateMessageById(string id, int id2, [FromBody] PutMessageRequest req)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-            
+
             var messages = chatService.GetAllMessages(id, Current.Username);
             if (messages == null) return BadRequest();
             var message = messages.Find(m => m.Id == id2);
@@ -125,7 +147,7 @@ namespace AspWebApi.Controllers {
         public IActionResult GetServerByUsername(string id)
         {
             var user = userService.GetById(id);
-            if(user == null) return NotFound();
+            if (user == null) return NotFound();
             user.Server = userService.GetFullServerUrl(user.Server);
             return Ok(new GetUserDetailsResponse(user.Server, user.Nickname, user.ProfileImage));
         }
@@ -135,6 +157,7 @@ namespace AspWebApi.Controllers {
         [Route("/api/Contacts")]
         public IActionResult Post([FromBody] ContactRequest req)
         {
+            Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
             string response;
             var isAddOk = userService.AddContact(req.Id, req.Name, req.Server, out response);
             if (!isAddOk)
@@ -148,7 +171,7 @@ namespace AspWebApi.Controllers {
         public IActionResult Get(string username)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-          
+
             var result = userService.GetContacts(Current.Username).Find(contact => contact.Id == username);
             if (result == null)
                 return NotFound();
@@ -160,7 +183,7 @@ namespace AspWebApi.Controllers {
         public IActionResult Put(string id, [FromBody] PutContactRequest request)
         {
             Current.Username = User.Claims.SingleOrDefault(i => i.Type.EndsWith("UserId"))?.Value;
-           
+
             var contact = userService.GetContacts(Current.Username).Find(c => c.Id == id);
             if (contact == null)
                 return StatusCode(400);
