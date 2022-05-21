@@ -48,7 +48,8 @@ namespace AspNetMvc.Controllers {
 
             if (query == null)
             {
-                return PartialView(query);
+                var all = service.GetAll();
+                return PartialView(all);
             }
             else
             {

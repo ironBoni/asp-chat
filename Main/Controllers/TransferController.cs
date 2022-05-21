@@ -34,7 +34,7 @@ namespace AspWebApi.Controllers {
                     request.To
                 });
                 var success = service.Create(chat);
-                if (success) { return Ok(); }
+                if (success) { return StatusCode(201); }
                 else return BadRequest();
             }
 
