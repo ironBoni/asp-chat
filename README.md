@@ -4,11 +4,12 @@ Clone and **Go to the Main folder, and run Main.sln**.
 then, **Set the MVC as startup project (the "AspNetMvc"), and Start without Debugging.**
 <br/>
 
-**React - npm install in "react" directory**<br/>
+**React - install packages in "react" directory**<br/>
 go to the "react" directory.<br/>
-run the following commands:
+run the following command: **npm install**<br/>
+it's equivalent to these commands: <br/>
 1. npm install @microsoft/signalr
-2. npm install react-bootstrap
+2. npm install react-bootstrap <br/>
 in the **"react" directory** - run **npm start**.
 
 **ASP.NET MVC (Parts 0-2)**: <br/>
