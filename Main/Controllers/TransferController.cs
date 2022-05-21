@@ -42,7 +42,7 @@ namespace AspWebApi.Controllers {
             // the sent is false because it was not sent from my server
             var addSuccess = service.AddMessage(chat.Id, new Message(messageId, request.Content, request.From, false));
             if(!addSuccess) return BadRequest();
-            return Ok();
+            return StatusCode(201);
         }
     }
 }
