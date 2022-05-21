@@ -10,7 +10,7 @@ run the following command: **npm install**<br/>
 it's equivalent to these commands: <br/>
 1. npm install @microsoft/signalr
 2. npm install react-bootstrap <br/>
-in the **"react" directory** - run **npm start**.
+After "npm install" in the **"react" directory** - run **npm start**.
 
 **ASP.NET MVC (Parts 0-2)**: <br/>
 (Assuming you already started (in that order) the : 1. WebAPI project. 2. MVC. 3. React as mentioned in the beggining).
