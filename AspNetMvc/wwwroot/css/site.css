@@ -44,6 +44,10 @@ body {
     padding: 0;
     margin-left: 39%
 }
+
+.float-rate {
+    float: left;
+}
 .fill-ratings {
     color: #ddb85d    ;
     padding: 0;

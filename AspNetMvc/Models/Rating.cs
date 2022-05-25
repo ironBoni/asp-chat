@@ -13,6 +13,7 @@ namespace AspNetMvc.Models
         [MaxLength(80, ErrorMessage = "Exceeded max length! 80 chars requried")]
         public string Name { get; set; }
         [MaxLength(200, ErrorMessage = "Exceeded max length! 200 chars requried")]
+        [Required]
         public string Feedback { get; set; }
         public DateTime DateTime { get; set; }
         public Rating(int id, int rate, string name, string feedback)
