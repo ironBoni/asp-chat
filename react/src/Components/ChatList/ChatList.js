@@ -99,7 +99,7 @@ function ChatList(props) {
         }
 
         // POST request to add contact to server
-        var data = { "id": idToAdd, "name": idToAdd, "server": response.server };
+        var data = { "id": idToAdd, "name": response.name, "server": response.server };
         var config = {
             method: 'POST',
             headers: {
