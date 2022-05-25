@@ -40,14 +40,18 @@ namespace Models.DataServices {
             var currentUser = users.Find(user => user.Username == Current.Username);
             var currentContacts = GetContacts(username);
 
+            if (currentUser == null)
+            {
+                response = "Username doesn't exists.";
+                return false;
+            }
             if (currentContacts == null)
             {
-                response = "There are not contacts.";
-                return false;
+                currentUser.Contacts = new List<Contact>();
             }
 
             // You cannot add yourself to the chat list.
-            if (username == friendToAdd)
+            if (username == friendToAdd && GetFullServerUrl(server) == Current.MyServerUrl)
             {
                 response = "You cannot add yourself to the chat list";
                 return false;
@@ -63,12 +67,12 @@ namespace Models.DataServices {
             var newChat = new Chat(new List<string>() {
                 username, friendToAdd});
 
-            var friend = users.Find(user => user.Username == friendToAdd);
+            User friend = users.Find(user => user.Username == friendToAdd);
             // then add it
             if (friend == null)
             {
-                response = "The user doesn't exist in the system.";
-                return false;
+                friend = new User(friendToAdd, name, Current.Password, Current.DefaultImage, server);
+                users.Add(friend);
             }
 
             friend.Server = server;
@@ -80,7 +84,7 @@ namespace Models.DataServices {
                 CurrentUsers.IdToContactsDict[currentUser.Username] = currentUser.Contacts;
             }
             var friendUser = users.Find(user => user.Username == friendToAdd);
-            var newContactFriend = new Contact(username, currentUser.Nickname, server, null, null, currentUser.ProfileImage);
+            var newContactFriend = new Contact(username, currentUser.Nickname, Current.MyServerUrl, null, null, currentUser.ProfileImage);
             friendUser.Contacts.Add(newContactFriend);
             CurrentUsers.IdToContactsDict[friendUser.Username] = friendUser.Contacts;
             response = "";
@@ -172,28 +176,34 @@ namespace Models.DataServices {
 
         public bool AcceptInvitation(string from, string server, string to, out string response)
         {
-            var userToAdd = users.Find(u => u.Username == from);
-            string name = "";
-            if (userToAdd == null) {
-                response = "no such user";
-                return false;
+            var hisServer = GetFullServerUrl(server);
+            response = "ok";
+            // it's the same server, this is why to post to /api/contacts add him to the system already.
+            if (server == hisServer)
+                return true;
+
+            User userToAdd = users.Find(u => u.Username == from);
+            if (userToAdd == null)
+            {
+                userToAdd = new User(from, from, Current.Password, Current.DefaultImage, server);
+                users.Add(userToAdd);
             }
-            //var username = Current.Username;
+            //The username to add to;
             var currentUser = users.Find(user => user.Username == to);
-            if(currentUser == null) {
-                response = "such user doesn't exists";
+            if (currentUser == null)
+            {
+                response = "such user does not exists";
                 return false;
             }
             var currentContacts = GetContacts(to);
 
             if (currentContacts == null)
             {
-                response = "There are not contacts.";
-                return false;
+                currentContacts = new List<Contact>();
             }
 
             // You cannot add someone that is already in your chats.
-            if (currentContacts.Any(user => user.Id == from))
+            if (currentContacts.Any(user => user.Id == from && user.Name == from))
             {
                 response = "User cannot be added, because he's already in your chat list.";
                 return false;
@@ -210,13 +220,9 @@ namespace Models.DataServices {
                 return false;
             }
 
-            if (requestor.Nickname == null || requestor.Nickname == "")
-                name = requestor.Username;
-            else
-                name = requestor.Nickname;
             requestor.Server = server;
 
-            var newContact = new Contact(from, name, server, null, null, requestor.ProfileImage);
+            var newContact = new Contact(from, from, server, null, null, Current.DefaultImage);
             if (!currentUser.Contacts.Contains(newContact))
             {
                 currentUser.Contacts.Add(newContact);
@@ -224,7 +230,7 @@ namespace Models.DataServices {
             }
 
             response = "";
-            if (chatsService.GetAll().Find(c => c.Participants.Contains(from) 
+            if (chatsService.GetAll().Find(c => c.Participants.Contains(from)
                 && c.Participants.Contains(Current.Username)) != null)
                 return true;
             return chatsService.Create(newChat);
@@ -232,7 +238,7 @@ namespace Models.DataServices {
 
         public string GetFullServerUrl(string url)
         {
-            if(!url.EndsWith("/"))
+            if (!url.EndsWith("/"))
                 url = url + "/";
             if (!url.StartsWith("http://"))
                 url = "http://" + url;

@@ -1,25 +1,55 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './ChatList.css';
 import Contact from '../Contact/Contact'
 import { users, chats, myServer, dataServer, aspMvcServer } from '../../Data/data'
 import { Modal } from 'react-bootstrap';
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 function ChatList(props) {
     var id = props.username;
-    var myContacts = [];
+    var myContacts = useRef([]);
     var token = props.token;
     //var token = props.token;
     var setContactsAlready = false;
     // goes over the chat and find the contacts he talked with.
     // GET from the server the list of contact
-
+    const [contactCon, setContactCon] = useState(null);
     const [usersList, setUsersList] = useState(users);
-    const [contactsLst, setContactsLst] = useState(myContacts);
+    const [contactsLst, setContactsLst] = useState([]);
     const [userImage, setUserImage] = useState('');
     const [name, setname] = useState('');
     const [showImageModal, setShowImageModal] = useState(false);
     const [errorAddUser, setErrorAddUser] = useState('')
     const [showAddModal, setShowAddModal] = useState(false);
+
+    useEffect(() => {
+        try {
+            const connect = new HubConnectionBuilder()
+                .withUrl(dataServer + "hub")
+                .withAutomaticReconnect()
+                .build();
+
+            setContactCon(connect)
+        }
+        catch (e) { console.log(e); }
+    }, []);
+
+    useEffect(() => {
+        if (contactCon) {
+            contactCon.start()
+                .then(result => {
+                    contactCon.on("ReceiveContact", contact => {
+                        myContacts.current.push({
+                            name: contact.name, profileImage: '/images/default.jpg', id: contact.id,
+                            server: contact.server, last: ''
+                        });
+                        setContactsLst(myContacts)
+                    })
+                    contactCon.invoke("SetIdInServer", props.username).then(res => { }).catch(e => console.log("Not connected"));
+                })
+                .catch(e => console.log('Connection failed: ', e));
+        }
+    }, [contactCon])
 
     useEffect(async () => {
         var config = {
@@ -34,8 +64,8 @@ function ChatList(props) {
         }
         var res = await fetch(dataServer + "api/contacts/", config)
         var data = await res.json();
-        myContacts = data;
-        setContactsLst(myContacts);
+        myContacts.current = data;
+        setContactsLst(data);
         setContactsAlready = true;
 
     }, []);
@@ -59,14 +89,6 @@ function ChatList(props) {
 
     })
 
-    useEffect(() => {
-    }, [showAddModal])
-
-
-    const getUserInfoByid = (otherid) =>
-        users.filter((user) => user.id === otherid)[0];
-
-
     async function addUserAsFriend() {
         var textBox = document.getElementById('contact-user');
         var textBoxNick = document.getElementById('contact-nickname');
@@ -78,32 +100,36 @@ function ChatList(props) {
         var nickname = textBoxNick.value;
         var server = textBoxServer.value;
 
+        try {
+            await contactCon.invoke("AddContact", id, idToAdd, nickname, server);
+        }
+        catch (e) {
+            console.log(e);
+        }
         var myid = props.username;
-        var nick = nickname;
-        var user = getUserInfoByid(idToAdd);
 
         try {
-        // GET to get the server of the idToAdd 
-        var config = {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token
+            // GET to get the server of the idToAdd 
+            var config = {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
             }
-        }
 
-        var res = await fetch(dataServer + "api/contacts/server/" + idToAdd, config);
-        var response = await res.json();
-        var profileImage = response.profileImage;
-        if (res.status === 404) {
-            setErrorAddUser("id doesn't exist.");
-            return;
-        }
+            var res = await fetch(dataServer + "api/contacts/server/" + idToAdd, config);
+            var response = await res.json();
+            var profileImage = response.profileImage;
+            if (res.status === 404) {
+                setErrorAddUser("id doesn't exist.");
+                return;
+            }
 
-        if (idToAdd === myid) {
-            setErrorAddUser("You cannot add yourself to the chat list.");
-            return;
-        }
-    } catch(e) { console.log("The user you're adding is in another server.")}
+            if (idToAdd === myid) {
+                setErrorAddUser("You cannot add yourself to the chat list.");
+                return;
+            }
+        } catch (e) { console.log("The user you're adding is in another server.") }
 
         // POST request to add contact to server
         var data = { "id": idToAdd, "name": nickname, "server": server };
@@ -129,14 +155,15 @@ function ChatList(props) {
             participicants: [idToAdd, id],
             messages: []
         });
-        var newContacts = [...contactsLst];
+        var newContacts = [...myContacts.current];
 
-        if(!profileImage || profileImage == undefined) 
+        if (!profileImage || profileImage == undefined)
             profileImage = '/images/default.jpg';
         newContacts.push({
             name: nickname, profileImage: profileImage, id: idToAdd,
             server: server, last: ''
         });
+        myContacts.current = newContacts;
         setContactsLst(newContacts);
         setErrorAddUser('');
         setShowAddModal(false);
@@ -244,7 +271,7 @@ function ChatList(props) {
                 </div>
 
                 <div className='left-bar'>
-                    {contactsLst.map((user, key) => {
+                    {myContacts.current.map((user, key) => {
                         if (user.id != props.username) {
                             return (<Contact userInfo={user} setChosenChat={props.setChosenChat} key={key}
                                 updateLastM={props.updateLastProp} username={props.username} token={props.token}
