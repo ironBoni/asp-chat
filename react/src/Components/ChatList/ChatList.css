@@ -21,6 +21,10 @@
   border-top-left-radius: 7px;
 }
 
+.padd {
+  padding: 4px;
+}
+
 .no-gutters {
   padding: 0;
 }

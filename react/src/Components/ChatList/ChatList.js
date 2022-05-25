@@ -69,14 +69,20 @@ function ChatList(props) {
 
     async function addUserAsFriend() {
         var textBox = document.getElementById('contact-user');
-        if (!textBox)
+        var textBoxNick = document.getElementById('contact-nickname');
+        var textBoxServer = document.getElementById('contact-server');
+
+        if (!textBox || !textBoxNick || !textBoxServer)
             return;
         var idToAdd = textBox.value.trimEnd();
+        var nickname = textBoxNick.value;
+        var server = textBoxServer.value;
+
         var myid = props.username;
-        var nick = "";
+        var nick = nickname;
         var user = getUserInfoByid(idToAdd);
-        if (!user) nick = idToAdd;
-        else nick = user.name;
+
+        try {
         // GET to get the server of the idToAdd 
         var config = {
             method: 'GET',
@@ -97,9 +103,10 @@ function ChatList(props) {
             setErrorAddUser("You cannot add yourself to the chat list.");
             return;
         }
+    } catch(e) { console.log("The user you're adding is in another server.")}
 
         // POST request to add contact to server
-        var data = { "id": idToAdd, "name": response.name, "server": response.server };
+        var data = { "id": idToAdd, "name": nickname, "server": server };
         var config = {
             method: 'POST',
             headers: {
@@ -123,9 +130,12 @@ function ChatList(props) {
             messages: []
         });
         var newContacts = [...contactsLst];
+
+        if(!profileImage || profileImage == undefined) 
+            profileImage = '/images/default.jpg';
         newContacts.push({
-            name: response.name, profileImage: profileImage, id: idToAdd,
-            server: response.server, last: ''
+            name: nickname, profileImage: profileImage, id: idToAdd,
+            server: server, last: ''
         });
         setContactsLst(newContacts);
         setErrorAddUser('');
@@ -133,7 +143,7 @@ function ChatList(props) {
 
         // Send Invitation to him
         // POST request - from (id), to (idToAdd), server (of me)
-        data = { "from": id, "to": idToAdd, "server": response.server };
+        data = { "from": id, "to": idToAdd, "server": server };
         config = {
             method: 'POST',
             headers: {
@@ -142,9 +152,10 @@ function ChatList(props) {
             },
             body: JSON.stringify(data)
         }
-        if ((response.server).indexOf(dataServer) < 0 &&
-            dataServer.indexOf(response.server) < 0)
-            fetch(dataServer + "api/invitations/", config);
+
+        fetch(dataServer + "api/invitations/", config).then(res => {
+            console.log("invitations status: " + res.status);
+        })
     };
 
     const addUserPressedEnter = (e) => {
@@ -187,12 +198,22 @@ function ChatList(props) {
                                 setErrorAddUser('');
                             }}>
                                 <Modal.Header closeButton className='header'>
-                                    Please enter id to add:
+                                    Add Contact
                                 </Modal.Header>
                                 <Modal.Body>{
                                     <div>
-                                        <input type="text" placeholder='Enter a id'
-                                            className="form-control" id="contact-user" onKeyDown={addUserPressedEnter} />
+                                        <div className='padd'>
+                                            <input type="text" placeholder='Enter a id'
+                                                className="form-control" id="contact-user" onKeyDown={addUserPressedEnter} />
+                                        </div>
+                                        <div className='padd'>
+                                            <input type="text" placeholder='Enter nickname'
+                                                className="form-control" id="contact-nickname" onKeyDown={addUserPressedEnter} />
+                                        </div>
+                                        <div className='padd'>
+                                            <input type="text" placeholder='Enter the server'
+                                                className="form-control" id="contact-server" onKeyDown={addUserPressedEnter} />
+                                        </div>
                                         <div className='error-add-user' id='errorAddingUser'>{errorAddUser}</div>
                                     </div>
                                 }</Modal.Body>
