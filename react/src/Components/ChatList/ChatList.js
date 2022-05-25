@@ -72,11 +72,24 @@ function ChatList(props) {
         var textBoxNick = document.getElementById('contact-nickname');
         var textBoxServer = document.getElementById('contact-server');
 
-        if (!textBox || !textBoxNick || !textBoxServer)
-            return;
         var idToAdd = textBox.value.trimEnd();
         var nickname = textBoxNick.value;
         var server = textBoxServer.value;
+        
+        if (!idToAdd) {
+            console.log("dsssdddd");
+            setErrorAddUser("id is required!");
+            return;
+        }
+        if (!nickname) {
+            setErrorAddUser("nickname is required!");
+            return;
+        }
+        if (!server) {
+            setErrorAddUser("server is required!");
+            return;
+        }
+
 
         var myid = props.username;
         var nick = nickname;
@@ -204,15 +217,15 @@ function ChatList(props) {
                                     <div>
                                         <div className='padd'>
                                             <input type="text" placeholder='Enter a id'
-                                                className="form-control" id="contact-user" onKeyDown={addUserPressedEnter} />
+                                                className="form-control" id="contact-user" onKeyDown={addUserPressedEnter} required   />
                                         </div>
                                         <div className='padd'>
                                             <input type="text" placeholder='Enter nickname'
-                                                className="form-control" id="contact-nickname" onKeyDown={addUserPressedEnter} />
+                                                className="form-control" id="contact-nickname" onKeyDown={addUserPressedEnter} required />
                                         </div>
                                         <div className='padd'>
                                             <input type="text" placeholder='Enter the server'
-                                                className="form-control" id="contact-server" onKeyDown={addUserPressedEnter} />
+                                                className="form-control" id="contact-server" onKeyDown={addUserPressedEnter} required/>
                                         </div>
                                         <div className='error-add-user' id='errorAddingUser'>{errorAddUser}</div>
                                     </div>
