@@ -179,7 +179,7 @@ namespace Models.DataServices {
             var hisServer = GetFullServerUrl(server);
             response = "ok";
             // it's the same server, this is why to post to /api/contacts add him to the system already.
-            if (server == hisServer)
+            if (Current.MyServerUrl == hisServer)
                 return true;
 
             User userToAdd = users.Find(u => u.Username == from);
