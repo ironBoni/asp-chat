@@ -12,11 +12,11 @@ namespace AspWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class TransferController : ControllerBase {
-        private IChatService service;
+        private IChatService chatService;
     
-        public TransferController()
+        public TransferController(IChatService chatServ)
         {
-            service = new ChatService();
+            chatService = chatServ;
         }
 
         // POST api/<TransferController>
@@ -24,7 +24,7 @@ namespace AspWebApi.Controllers {
         [Route("/api/transfer")]
         public IActionResult Post([Bind("From,To,Content")] TransferRequest request)
         {
-            Chat chat = service.GetAll().Find(c => c.Participants.Contains(request.From) 
+            Chat chat = chatService.GetAll().Find(c => c.Participants.Contains(request.From) 
             && c.Participants.Contains(request.To));
             if (chat == null)
             {
@@ -33,14 +33,14 @@ namespace AspWebApi.Controllers {
                     request.From,
                     request.To
                 });
-                var success = service.Create(chat);
+                var success = chatService.Create(chat);
                 if (success) { return StatusCode(201); }
                 else return BadRequest();
             }
 
-            var messageId = service.GetNewMsgIdInChat(chat.Id);
+            var messageId = chatService.GetNewMsgIdInChat(chat.Id);
             // the sent is false because it was not sent from my server
-            var addSuccess = service.AddMessage(chat.Id, new Message(messageId, request.Content, request.From, false));
+            var addSuccess = chatService.AddMessage(chat.Id, new Message(messageId, request.Content, request.From, false));
             if(!addSuccess) return BadRequest();
             return StatusCode(201);
         }

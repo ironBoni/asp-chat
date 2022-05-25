@@ -10,10 +10,11 @@ namespace AspWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class InvitationsController : ControllerBase {
-        private IUserService service;
-        public InvitationsController()
+        private readonly IUserService userService;
+
+        public InvitationsController(IUserService userServ)
         {
-            service = new UserService();
+            userService = userServ;
         }
 
         // POST api/<InvitationsController>
@@ -22,7 +23,7 @@ namespace AspWebApi.Controllers {
         {
 
             string response;
-            var success = service.AcceptInvitation(req.From, req.Server, req.To, out response);
+            var success = userService.AcceptInvitation(req.From, req.Server, req.To, out response);
             if (success) return StatusCode(201);
             return BadRequest(response);
         }

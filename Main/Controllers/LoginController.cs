@@ -16,12 +16,12 @@ namespace AspWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase {
-        private readonly IUserService serivce;
+        private readonly IUserService userService;
         private readonly IConfiguration configuration;
 
-        public LoginController(IConfiguration configuration)
+        public LoginController(IUserService userServ, IConfiguration configuration)
         {
-            serivce = new UserService();
+            userService = userServ;
             this.configuration = configuration;
         }
         
@@ -62,7 +62,7 @@ namespace AspWebApi.Controllers {
         [HttpPost]
         public IActionResult Post([FromBody] LoginRequest req)
         {
-            var user = serivce.GetById(req.Username);
+            var user = userService.GetById(req.Username);
             if (user == null) return Ok(new LoginResponse("User doesn't exist.", false));
             var isCorrect = user.Password == req.Password;
             if (!isCorrect) return Ok(new LoginResponse("Username and password does not match.", false, user.Password, CreateToken(user)));

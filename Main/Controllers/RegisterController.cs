@@ -11,16 +11,17 @@ namespace AspWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class RegisterController : ControllerBase {
-        private IUserService service;
-        public RegisterController()
+        private IUserService userService;
+  
+        public RegisterController(IUserService userServ)
         {
-            service = new UserService();
+            userService = userServ;
         }
         // GET: api/<RegisterController>
         [HttpGet]
         public IActionResult Get()
         {
-            var users = service.GetAll();
+            var users = userService.GetAll();
             if(users == null) return NotFound();
             return Ok(new UsersList(users.Select(user => user.Username).ToList()));
         }
@@ -30,8 +31,8 @@ namespace AspWebApi.Controllers {
         [HttpPost]
         public IActionResult Post([FromBody] RegisterRequest req)
         {
-            bool isUserExist = service.GetById(req.Id) != null;
-            var success = !isUserExist && service.Create(new User(req.Id, req.Name, req.Password, req.ProfileImage, req.Server));
+            bool isUserExist = userService.GetById(req.Id) != null;
+            var success = !isUserExist && userService.Create(new User(req.Id, req.Name, req.Password, req.ProfileImage, req.Server));
 
             if (!success) return BadRequest("User already exist.");
             return Ok();
