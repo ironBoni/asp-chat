@@ -189,7 +189,15 @@ function ChatList(props) {
             body: JSON.stringify(data)
         }
 
-        fetch(textBoxServer.value + "api/invitations/", config).then(res => {
+        var url = server;
+        if (url[url.length-1] !== "/")
+                url = url + "/";
+            if (url.indexOf("http://") == -1)
+                url = "http://" + url;
+        url = url.trim();
+        url = url.replace(/\s/g, '');
+        console.log("url is" + url);
+        fetch(url + "api/invitations/", config).then(res => {
             console.log("invitations status: " + res.status);
         })
     };

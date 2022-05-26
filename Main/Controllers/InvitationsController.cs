@@ -19,6 +19,7 @@ namespace AspWebApi.Controllers {
 
         // POST api/<InvitationsController>
         [HttpPost]
+        [Route("/api/invitations")]
         public IActionResult Post([FromBody] InvitationRequest req)
         {
 

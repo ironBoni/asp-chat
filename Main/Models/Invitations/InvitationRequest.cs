@@ -1,5 +1,4 @@
 ﻿namespace AspWebApi.Models.Invitations {
-    [Serializable]
     public class InvitationRequest {
         public string From { get; set; }
         // To my server.
