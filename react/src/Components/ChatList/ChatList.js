@@ -133,10 +133,6 @@ function ChatList(props) {
             var res = await fetch(dataServer + "api/contacts/server/" + idToAdd, config);
             var response = await res.json();
             var profileImage = response.profileImage;
-            if (res.status === 404) {
-                setErrorAddUser("id doesn't exist.");
-                return;
-            }
 
             if (idToAdd === myid) {
                 setErrorAddUser("You cannot add yourself to the chat list.");
@@ -193,7 +189,7 @@ function ChatList(props) {
             body: JSON.stringify(data)
         }
 
-        fetch(dataServer + "api/invitations/", config).then(res => {
+        fetch(textBoxServer.value + "api/invitations/", config).then(res => {
             console.log("invitations status: " + res.status);
         })
     };
