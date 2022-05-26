@@ -202,23 +202,11 @@ namespace Models.DataServices {
                 currentContacts = new List<Contact>();
             }
 
-            // You cannot add someone that is already in your chats.
-            if (currentContacts.Any(user => user.Id == from && user.Name == from))
-            {
-                response = "User cannot be added, because he's already in your chat list.";
-                return false;
-            }
-
             var newChat = new Chat(new List<string>() {
                 to, from});
 
             var requestor = users.Find(user => user.Username == from);
             // then add it
-            if (requestor == null)
-            {
-                response = "The user doesn't exist in the system.";
-                return false;
-            }
 
             requestor.Server = server;
 

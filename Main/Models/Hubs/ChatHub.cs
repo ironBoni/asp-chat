@@ -9,7 +9,7 @@ namespace AspWebApi.Models.Hubs {
     public class ChatHub : Hub {
         private readonly IUserService userService;
         private readonly IChatService chatService;
-        private static ConcurrentDictionary<string, List<string>> userToConnection = new ConcurrentDictionary<string, List<string>>();
+        public static ConcurrentDictionary<string, List<string>> userToConnection = new ConcurrentDictionary<string, List<string>>();
         private const string ReceiveMessage = "ReceiveMessage";
         private const string ReceiveContact = "ReceiveContact";
         public ChatHub(IUserService userServ, IChatService chatServ)

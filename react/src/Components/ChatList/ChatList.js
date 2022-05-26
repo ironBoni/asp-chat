@@ -179,7 +179,7 @@ function ChatList(props) {
 
         // Send Invitation to him
         // POST request - from (id), to (idToAdd), server (of me)
-        data = { "from": id, "to": idToAdd, "server": server };
+        data = { "from": id, "to": idToAdd, "server": dataServer };
         config = {
             method: 'POST',
             headers: {
